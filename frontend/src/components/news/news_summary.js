@@ -1,5 +1,3 @@
-// frontend/components/news/news_summary.js
-
 import React from 'react';
 
 const NewsSummary = ({ summary }) => {

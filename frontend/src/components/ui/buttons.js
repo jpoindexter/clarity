@@ -1,5 +1,3 @@
-// frontend/components/ui/buttons.js
-
 import React from 'react';
 
 const Button = ({ text, onClick, style }) => {

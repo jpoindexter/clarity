@@ -1,5 +1,3 @@
-// frontend/components/ui/modals.js
-
 import React from 'react';
 
 const Modal = ({ isOpen, closeModal, content }) => {
@@ -35,6 +33,10 @@ const modalStyle = {
   borderRadius: '4px',
   width: '300px',
   textAlign: 'center',
+};
+
+const buttonStyle = {
+  marginTop: '10px',
 };
 
 export default Modal;

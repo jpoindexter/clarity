@@ -1,4 +1,3 @@
-// news_list.js
 import React from 'react';
 
 const NewsList = ({ newsItems }) => {

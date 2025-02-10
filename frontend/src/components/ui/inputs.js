@@ -1,5 +1,3 @@
-// frontend/components/ui/inputs.js
-
 import React from 'react';
 
 const Input = ({ placeholder, value, onChange, type = 'text' }) => {

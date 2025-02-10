@@ -1,5 +1,3 @@
-// frontend/components/news/news_source.js
-
 import React from 'react';
 
 const NewsSource = ({ source }) => {

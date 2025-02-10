@@ -1,5 +1,3 @@
-// frontend/components/news/news_topic_tag.js
-
 import React from 'react';
 
 const NewsTopicTag = ({ topic }) => {

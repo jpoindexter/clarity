@@ -1,10 +1,8 @@
-// frontend/components/news/news_card.js
-
 import React from 'react';
-import Card from '../ui/cards';
+import Card from '../common/Card';
 
 const NewsCard = ({ title, description, source, link }) => {
-  return <Card title={title} description={description} link={link} />;
+  return <Card title={title} content={description} />;
 };
 
 export default NewsCard;
