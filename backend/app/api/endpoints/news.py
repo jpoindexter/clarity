@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from crud import news as crud
 from api import deps
-from src.config.config import settings
+from config.config import settings
 from backend.tests.utils.news import create_random_news
 from backend.tests.utils.utils import random_lower_string
 

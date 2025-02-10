@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from database.rss_feeds import RSS_FEEDS  # ✅ Ensure correct path
+from ..database.rss_feeds import RSS_FEEDS  # ✅ Ensure correct path
 
 # ✅ Load environment variables from .env file (if present)
 load_dotenv()

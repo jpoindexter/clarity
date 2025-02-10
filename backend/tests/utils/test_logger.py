@@ -1,6 +1,5 @@
-# backend/tests/utils/test_logger.py
 from utils.logger import setup_logger
 
-def test_logger():
-    logger = setup_logger("test")
+def test_setup_logger():
+    logger = setup_logger(__name__)
     assert logger is not None

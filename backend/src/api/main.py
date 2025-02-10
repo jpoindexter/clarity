@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.endpoints.news import router as news_router
+from backend.src.api.endpoints.news import router as news_router
 
 app = FastAPI()
 
