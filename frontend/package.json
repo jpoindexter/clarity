@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:605e2bc634942fec157fb7bce5256561bcea4b19738486ffcfb20e65806162c6
-size 311
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "next.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  }
+}
