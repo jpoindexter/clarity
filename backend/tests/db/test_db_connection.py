@@ -1,5 +1,5 @@
 # backend/tests/db/test_db_connection.py
-from backend.src.database.db_helper import get_db_connection
+from database.db_helper import get_db_connection
 
 def test_db_connection():
     conn = get_db_connection()

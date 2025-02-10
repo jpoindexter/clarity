@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from '../components/ui/modals'; // Add this import
+import { getNews } from '../api/api';
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -7,9 +8,8 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Add this state
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/fetch')
-      .then((response) => response.json())
-      .then((data) => setData(data))
+    getNews()
+      .then((articles) => setData(articles))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 

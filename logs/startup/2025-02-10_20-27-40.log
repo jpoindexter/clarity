@@ -1,0 +1,16 @@
+2025-02-10 20:27:40 - 🚀 Stopping any existing processes on ports 8000 and 3000...
+2025-02-10 20:27:40 - 🚀 Stopping any existing processes on ports 8000 and 3000...
+2025-02-10 20:27:40 - ✅ Stopped processes on port 8000
+2025-02-10 20:27:40 - ✅ Stopped processes on port 8000
+2025-02-10 20:27:40 - ✅ Stopped processes on port 3000
+2025-02-10 20:27:40 - ✅ Stopped processes on port 3000
+2025-02-10 20:27:40 - 📂 Navigated to project root: /Users/jasonpoindexter/Documents/GitHub/clairity/scripts
+2025-02-10 20:27:40 - 📂 Navigated to project root: /Users/jasonpoindexter/Documents/GitHub/clairity/scripts
+2025-02-10 20:27:40 - 🔄 Attaching to existing tmux session: clairity
+2025-02-10 20:27:40 - 🔄 Attaching to existing tmux session: clairity
+2025-02-10 20:27:40 - 🌍 Opening the frontend in the browser...
+2025-02-10 20:27:40 - 🌍 Opening the frontend in the browser...
+2025-02-10 20:27:40 - ✅ Frontend opened in browser
+2025-02-10 20:27:40 - ✅ Frontend opened in browser
+2025-02-10 20:27:40 - ✅ Clairity is now running in tmux. Use 'tmux attach -t clairity' to view.
+2025-02-10 20:27:40 - ✅ Clairity is now running in tmux. Use 'tmux attach -t clairity' to view.

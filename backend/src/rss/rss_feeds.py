@@ -1,4 +1,4 @@
-from backend.src.database.db_helper import get_rss_feeds  # Ensure this import is correct
+from database.db_helper import get_rss_feeds  # Ensure this import is correct
 
 def fetch_rss_feeds():
     """Fetch the latest RSS feeds from the database"""

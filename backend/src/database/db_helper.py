@@ -45,6 +45,28 @@ def get_rss_feeds():
                 for row in cursor.fetchall()
             ]
 
+### ✅ ADD THIS FUNCTION BELOW ###
+def fetch_articles():
+    """Retrieve articles from the database"""
+    with get_db_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, title, content, author, published_at
+                FROM articles
+                ORDER BY published_at DESC
+                LIMIT 10;
+            """)
+            return [
+                {
+                    "id": row[0],
+                    "title": row[1],
+                    "content": row[2],
+                    "author": row[3],
+                    "published_at": row[4]
+                }
+                for row in cursor.fetchall()
+            ]
+
 # Run table creation at startup
 if __name__ == "__main__":
     create_rss_table()

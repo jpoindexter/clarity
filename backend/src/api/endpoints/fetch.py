@@ -1,12 +1,11 @@
-from fastapi import APIRouter
-from backend.src.utils.fetch_module import fetch_news  # Ensure this import is correct
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from database import models, schemas
+from api.deps import get_db
 
 router = APIRouter()
 
-@router.get("/fetch", summary="Fetch the latest news articles")
-async def fetch_articles():
-    """
-    Fetch the latest news articles from RSS sources and return them.
-    """
-    articles = fetch_news()
-    return {"articles": articles}
+@router.get("/api/news", summary="Retrieve the latest news")
+def get_news(db: Session = Depends(get_db)):
+    news = db.query(models.News).all()
+    return news

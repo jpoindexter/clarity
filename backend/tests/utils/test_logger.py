@@ -1,5 +1,5 @@
 # backend/tests/utils/test_logger.py
-from backend.src.utils.logger import setup_logger
+from utils.logger import setup_logger
 
 def test_logger():
     logger = setup_logger("test")
