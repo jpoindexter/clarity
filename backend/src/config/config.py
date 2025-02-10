@@ -1,15 +1,25 @@
+"""
+Configuration settings for the FastAPI project.
+
+This module loads environment variables and defines application-wide settings.
+"""
+
 import os
 from dotenv import load_dotenv
-from ..database.rss_feeds import RSS_FEEDS  # ✅ Ensure correct path
+from rss.rss_feeds import RSS_FEEDS  # ✅ Ensure correct path
 
 # ✅ Load environment variables from .env file (if present)
 load_dotenv()
+
 
 class Config:
     """Global Configuration Settings"""
 
     # ✅ Database Configuration
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/ai_news_db")
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql://jpoindexter:dontforgetme@localhost:5432/ai_news_db"
+    )
 
     # ✅ FastAPI Configuration
     API_TITLE: str = "AI News API"
@@ -22,7 +32,7 @@ class Config:
     # ✅ RSS Feeds Configuration (Safe Fallback)
     try:
         RSS_FEEDS = RSS_FEEDS  # ✅ Load from `rss_feeds.py`
-    except Exception as e:
+    except (ImportError, ValueError) as e:  # ✅ More specific
         print(f"⚠️ Warning: Failed to load RSS feeds. Error: {e}")
         RSS_FEEDS = []  # Fallback to empty list
 
@@ -36,6 +46,7 @@ class Config:
     # ✅ Other Global Settings
     DEBUG_MODE: bool = os.getenv("DEBUG_MODE", "false").lower() == "true"
     FETCH_INTERVAL: int = int(os.getenv("FETCH_INTERVAL", "600"))  # 10 minutes default
+
 
 # ✅ Create a global settings instance
 settings = Config()
