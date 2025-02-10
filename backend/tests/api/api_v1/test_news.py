@@ -6,7 +6,7 @@ returns the expected responses.
 """
 
 from fastapi.testclient import TestClient
-from main import app  # ✅ Still needed
+from main import app  # ✅ Correct inside pytest  # ✅ Still needed
 
 client = TestClient(app)
 

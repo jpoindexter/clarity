@@ -3,7 +3,7 @@ Tests for the `/fetch` API endpoint.
 """
 
 from fastapi.testclient import TestClient
-from main import app
+from main import app  # ✅ Correct inside pytest
 
 client = TestClient(app)
 
