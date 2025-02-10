@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.crud.news import news as crud
+from src.crud.news import news as crud  # ✅ Correct
 from src.database.db_connection import get_db
 from src.schemas import news as schemas
 

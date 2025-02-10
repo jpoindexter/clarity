@@ -1,11 +1,18 @@
-# News CRUD operations (Dummy example)
 class NewsCRUD:
-    def get_all(self):
-        return [{"id": 1, "title": "Sample News"}]
+    def create_news(self, db, news):
+        pass  # Placeholder
 
-news = NewsCRUD()  # ✅ This ensures `from crud.news import news` works
+    def get_news(self, db, news_id):
+        pass  # Placeholder
 
-# Dummy schema for news
-class News:
-    id: int
-    title: str
+    def get_news_list(self, db, skip=0, limit=100):
+        pass  # Placeholder
+
+    def update_news(self, db, news_id, news):
+        pass  # Placeholder
+
+    def delete_news(self, db, news_id):
+        pass  # Placeholder
+
+# ✅ Ensure we instantiate it here
+news = NewsCRUD()  # <--- This is important!
