@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from backend.src.rss.rss_feeds import RSS_FEEDS  # ✅ Import feeds from file
+from backend.src.rss.rss_feeds import RSS_FEEDS  # Ensure this import is correct
 
 # Load environment variables from .env file (if present)
 load_dotenv()

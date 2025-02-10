@@ -19,6 +19,7 @@ def create_rss_table():
                     language VARCHAR(50),
                     region VARCHAR(50),
                     source_type VARCHAR(50),
+                    author VARCHAR(100),  # New column added
                     active BOOLEAN DEFAULT TRUE
                 );
             """)

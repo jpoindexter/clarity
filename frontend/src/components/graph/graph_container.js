@@ -1,12 +1,12 @@
 // frontend/components/graph/graph_container.js
 
 import React from 'react';
-import Graph from './graph';
+import ForceGraph from './force_graph'; // changed
 
 const GraphContainer = () => {
   return (
     <div style={containerStyle}>
-      <Graph />
+      <ForceGraph /> {/* changed */}
     </div>
   );
 };

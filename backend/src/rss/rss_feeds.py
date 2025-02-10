@@ -1,4 +1,4 @@
-from backend.src.database.db_helper import get_rss_feeds
+from backend.src.database.db_helper import get_rss_feeds  # Ensure this import is correct
 
 def fetch_rss_feeds():
     """Fetch the latest RSS feeds from the database"""
@@ -42,5 +42,8 @@ DEFAULT_RSS_FEEDS = [
     }
 ]
 
-# Load RSS feeds (use DB if available, otherwise fallback)
-RSS_FEEDS = fetch_rss_feeds()
+# Define your RSS feeds list.
+RSS_FEEDS = [
+    "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    # ...add additional feed URLs as needed...
+]

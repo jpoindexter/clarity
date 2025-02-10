@@ -1,4 +1,4 @@
-import ollama
+import ollama  # Ensure this import is correct
 
 def summarize_text(text, model="mistral"):
     """

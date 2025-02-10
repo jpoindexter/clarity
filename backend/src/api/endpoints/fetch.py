@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.src.utils.fetch_module import fetch_news  # Adjust path if needed
+from backend.src.utils.fetch_module import fetch_news  # Ensure this import is correct
 
 router = APIRouter()
 

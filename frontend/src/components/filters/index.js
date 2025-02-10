@@ -1,2 +1,2 @@
-export { default as SourceFilter } from './SourceFilter';
-export { default as KeywordFilter } from './KeywordFilter';
+export { default as SourceFilter } from './source_filter';
+export { default as KeywordFilter } from './keyword_filter';
