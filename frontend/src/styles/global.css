@@ -1,0 +1,48 @@
+/* Global Styles for AI News App */
+:root {
+    --primary-bg: #f5f5fa;
+    --primary-text: #0d0d0d;
+    --secondary-text: #5d5d5d;
+    --highlight-color: #f5a; /* Pink Accent */
+    --button-bg: #0d0d0d;
+    --button-text: #ffffff;
+    --border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  html, body {
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  a {
+    color: var(--highlight-color);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.85;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  

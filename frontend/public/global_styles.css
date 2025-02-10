@@ -1,0 +1,124 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Root Variables – Adjust Globally */
+:root {
+    --background-color: #F8F9FA; /* Light grayish white (ChatGPT-like) */
+    --text-color: #1A1A1A; /* Dark but not pure black for readability */
+    --link-color: #F56A98; /* Your pink accent color for links */
+    --button-bg: #222; /* Dark buttons, inspired by ChatGPT */
+    --button-text: #FFF; /* White text for contrast */
+    --border-color: rgba(0, 0, 0, 0.1); /* Subtle border color */
+    --hover-bg: rgba(0, 0, 0, 0.05); /* Light hover effect */
+}
+
+/* Base Styles */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #000;
+    font-weight: 600;
+}
+
+/* Paragraphs */
+p {
+    color: var(--text-color);
+}
+
+/* Links */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* Buttons */
+button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+/* Containers */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Input Fields */
+input, textarea {
+    background: #FFF;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--link-color);
+    box-shadow: 0 0 5px rgba(245, 106, 152, 0.3);
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Sidebar (If Needed) */
+.sidebar {
+    background: var(--background-color);
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+/* Chat Message Styles */
+.chat-message {
+    background: var(--background-color);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+
+.chat-message.user {
+    background: rgba(245, 106, 152, 0.1); /* Soft pink highlight for user messages */
+    border-left: 3px solid var(--link-color);
+}
+
+.chat-message.ai {
+    background: #FFF;
+    border-left: 3px solid var(--button-bg);
+}
