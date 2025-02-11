@@ -1,17 +1,15 @@
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from src.database.models.article import Base  # ✅ Correct import path
+from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./test.db"  # Change if using PostgreSQL/MySQL
+# ✅ Use a test database for pytest, fallback to real DB otherwise
+DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_db")
+if "PYTEST_RUNNING" in os.environ:
+    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/test_db"  # ✅ Use test DB
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = scoped_session(SessionLocal)
 
-# Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
-
-# ✅ Add this function to allow dependency injection in FastAPI
 def get_db():
     db = SessionLocal()
     try:

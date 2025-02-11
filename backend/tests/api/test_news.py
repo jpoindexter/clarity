@@ -1,10 +1,11 @@
-
 from fastapi.testclient import TestClient
-from config.config import settings
-from main import app  # ✅ Correct inside pytest
+from src.main import app  # ✅ Corrected import (removed backend.src)
+from src.database.db_connection import get_db  # ✅ Correct import
+import pytest
 
-client = TestClient(app)
+client = TestClient(app)  # ✅ Uses FastAPI TestClient
 
+@pytest.mark.usefixtures("test_db")  # ✅ Ensure we use the test database
 def test_news_endpoint():
-    response = client.get("/news")
-    assert response.status_code == 200
+    response = client.get("/api/news/")  # ✅ Ensure correct URL
+    assert response.status_code == 200  # ✅ Should now work
