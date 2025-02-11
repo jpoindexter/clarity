@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database.db_connection import get_db  # ✅ Fixed import
+from src.database.db import get_db  # ✅ Fixed import
 from src.database.models.article import Base  # ✅ Fixed import
 import os
 

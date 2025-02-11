@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database.models import Article  # ✅ Correct import for database models
+from src.database.models.article import Article  # ✅ Correct import for database models
 from src.schemas.articles import ArticleCreate, Article  # ✅ Correct import for schemas
 from src.api.dependencies.db import get_db  # ✅ Fixed import
 
