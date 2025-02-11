@@ -2,8 +2,8 @@ import pytest
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database.db_connection import get_db  # ✅ Ensures correct dependency injection
-from src.models.article import Base  # ✅ Correct import from refactored structure
+from backend.database.db_connection import get_db  # ✅ Ensures correct dependency injection
+from backend.models.article import Base  # ✅ Correct import from refactored structure
 
 # ✅ Use a temporary PostgreSQL test database
 TEST_DATABASE_URL = os.getenv(

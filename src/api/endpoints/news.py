@@ -3,22 +3,20 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from database.crud.news import news as crud  # ✅ Correct
-from src.database.db_connection import get_db  # ✅ Corrected import
-from src.schemas.news import NewsCreate, NewsUpdate, News  # ✅ Correct import for schemas
+from database.crud.news import news as crud  # ✅ Correct import for database interactions
+from database.db_connection import get_db  # ✅ Corrected import for database session
+from schemas.news import NewsCreate, NewsUpdate, News  # ✅ Correct import for schemas
 
 router = APIRouter()
 
-
-@router.post("/api/news/", response_model=schemas.News)
-def create_news(news: schemas.NewsCreate, db: Session = Depends(get_db)):
+@router.post("/api/news/", response_model=News)
+def create_news(news: NewsCreate, db: Session = Depends(get_db)):  # ✅ FIXED: Removed `schemas.` prefix
     """
     Create a new news item.
     """
     return crud.create_news(db=db, news=news)
 
-
-@router.get("/api/news/{news_id}", response_model=schemas.News)
+@router.get("/api/news/{news_id}", response_model=News)
 def read_news(news_id: int, db: Session = Depends(get_db)):
     """
     Retrieve a specific news item by ID.
@@ -28,8 +26,7 @@ def read_news(news_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="News not found")
     return db_news
 
-
-@router.get("/api/news/", response_model=List[schemas.News])
+@router.get("/api/news/", response_model=List[News])  # ✅ FIXED: Removed `schemas.` prefix
 def read_news_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
     Retrieve a list of news items.
@@ -37,9 +34,8 @@ def read_news_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     news = crud.get_news_list(db, skip=skip, limit=limit)
     return news
 
-
-@router.put("/api/news/{news_id}", response_model=schemas.News)
-def update_news(news_id: int, news: schemas.NewsUpdate, db: Session = Depends(get_db)):
+@router.put("/api/news/{news_id}", response_model=News)
+def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):  # ✅ FIXED: Removed `schemas.` prefix
     """
     Update an existing news item.
     """
@@ -48,8 +44,7 @@ def update_news(news_id: int, news: schemas.NewsUpdate, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="News not found")
     return crud.update_news(db=db, news_id=news_id, news=news)
 
-
-@router.delete("/api/news/{news_id}", response_model=schemas.News)
+@router.delete("/api/news/{news_id}", response_model=News)
 def delete_news(news_id: int, db: Session = Depends(get_db)):
     """
     Delete a news item.

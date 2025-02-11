@@ -3,7 +3,7 @@ Tests for the `/api/articles/` endpoint.
 """
 
 from fastapi.testclient import TestClient
-from src.main import app  # ✅ Ensure correct import
+from backend.main import app  # ✅ Ensure correct import
 
 client = TestClient(app)
 

@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from src.main import app  # ✅ Corrected import (removed backend.src)
-from src.database.db_connection import get_db  # ✅ Corrected import  # ✅ Correct import
+from backend.main import app  # ✅ Corrected import (removed backend.src)
+from backend.database.db_connection import get_db  # ✅ Corrected import  # ✅ Correct import
 import pytest
 
 client = TestClient(app)  # ✅ Uses FastAPI TestClient

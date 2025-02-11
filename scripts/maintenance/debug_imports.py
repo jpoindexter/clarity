@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Define the correct project root and log directory
-PROJECT_ROOT = "/Users/jasonpoindexter/Documents/GitHub/clairity/backend/src"
+PROJECT_ROOT = "/Users/jasonpoindexter/Documents/GitHub/clairity/src"
 LOG_DIR = "/Users/jasonpoindexter/Documents/GitHub/clairity/logs/scan"
 
 # Ensure the log directory exists
@@ -54,7 +54,7 @@ def check_missing_init():
         for file in missing_files:
             log_message(f"  - {file}")
         log_message("\n⚠️ Fix: Run this to create missing files:")
-        log_message("  find backend/src -type d -exec touch {}/__init__.py \\;\n")
+        log_message("  find src -type d -exec touch {}/__init__.py \\;\n")
     else:
         log_message("✅ All required __init__.py files are present.\n")
 
