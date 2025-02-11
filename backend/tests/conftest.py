@@ -1,20 +1,29 @@
 import pytest
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database.db import get_db  # ✅ Corrected import
-from src.models.article import Base  # ✅ Correct import
-import os
+from src.database.db_connection_connection import get_db  # ✅ Ensures correct dependency injection
+from src.models.article import Base  # ✅ Correct import from refactored structure
 
 # ✅ Use a temporary PostgreSQL test database
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_db")
+TEST_DATABASE_URL = os.getenv(
+    "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_db"
+)
 
 @pytest.fixture(scope="session")
-def test_db():
-    """Creates a temporary test database and cleans up after tests."""
-    engine = create_engine(TEST_DATABASE_URL)  # ✅ Use the test DB URL
-    Base.metadata.create_all(bind=engine)  # ✅ Create tables
+def test_engine():
+    """Creates a test database engine."""
+    engine = create_engine(TEST_DATABASE_URL)
+    Base.metadata.create_all(bind=engine)
+    yield engine
+    Base.metadata.drop_all(bind=engine)
 
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+@pytest.fixture(scope="session")
+def test_db(test_engine):
+    """Creates a temporary test session and provides a clean database."""
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=test_engine
+    )
 
     def override_get_db():
         """Dependency override to use the test database."""
@@ -25,4 +34,3 @@ def test_db():
             db.close()
 
     yield override_get_db  # ✅ Yield test DB session
-    Base.metadata.drop_all(bind=engine)  # ✅ Cleanup after tests

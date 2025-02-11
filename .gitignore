@@ -28,3 +28,5 @@ __pycache__/
 .git/lfs/
 .gitattributes
 frontend/node_modules/
+venv/
+logs/
