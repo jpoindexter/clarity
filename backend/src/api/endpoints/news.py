@@ -3,9 +3,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.database.crud.news import news as crud  # ✅ Correct
+from src.models.crud.news import news as crud  # ✅ Correct
 from src.database.db import get_db  # ✅ Corrected import
-from src.schemas import news as schemas
+from src.schemas.news import NewsCreate, NewsUpdate, News  # ✅ Correct import for schemas
 
 router = APIRouter()
 
