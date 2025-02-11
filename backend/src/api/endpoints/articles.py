@@ -1,8 +1,9 @@
+# filepath: backend/src/api/endpoints/articles.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.article import Article  # ✅ Correct import for database models
-from schemas.articles import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
-from database.db_connection import get_db  # ✅ Fixed import
+from ...models.article import Article
+from ...schemas.articles import ArticleCreate, Article as ArticleSchema
+from ...database.db_connection import get_db
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     """
     Create a new article in the database.
     """
-    new_article = Article(**article.model_dump())  # ✅ Fixed for Pydantic V2
+    new_article = Article(**article.model_dump())
     db.add(new_article)
     db.commit()
     db.refresh(new_article)

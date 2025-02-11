@@ -2,7 +2,7 @@ import pytest
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database.db_connection_connection import get_db  # ✅ Ensures correct dependency injection
+from src.database.db_connection import get_db  # ✅ Ensures correct dependency injection
 from src.models.article import Base  # ✅ Correct import from refactored structure
 
 # ✅ Use a temporary PostgreSQL test database
