@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database.db import get_db  # ✅ Fixed import
-from src.database.models.article import Base  # ✅ Fixed import
+from src.database.db import get_db  # ✅ Corrected import
+from src.models.article import Base  # ✅ Correct import
 import os
 
 # ✅ Use a temporary PostgreSQL test database
