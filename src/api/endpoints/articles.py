@@ -1,7 +1,9 @@
 # filepath: backend/src/api/endpoints/articles.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.article import Article
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.article import Article
 from schemas.articles import ArticleCreate, Article as ArticleSchema
 from database.db_connection import get_db
 
