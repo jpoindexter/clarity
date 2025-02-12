@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "🔄 Restarting all services..."
 
-sudo systemctl restart clairity-backend.service
-sudo systemctl restart clairity-frontend.service
+sudo systemctl restart Clarity-backend.service
+sudo systemctl restart Clarity-frontend.service
 
 echo "✅ Services restarted successfully!"

@@ -9,7 +9,7 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
 
-log "🚀 Starting Clairity Startup Process..."
+log "🚀 Starting Clarity Startup Process..."
 log "------------------------------------------"
 
 # ✅ **Step 1: Pre-Check Mode**
@@ -53,7 +53,7 @@ if [ ${#MISSING_FILES[@]} -ne 0 ]; then
 fi
 
 # ✅ **Step 2: Stop Only Relevant Processes**
-log "🔄 Checking for existing Clairity processes..."
+log "🔄 Checking for existing Clarity processes..."
 if lsof -i :8000 | grep LISTEN &> /dev/null; then
     log "✅ Backend is already running on port 8000"
 else

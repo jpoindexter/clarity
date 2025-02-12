@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div>
       <main style={{ textAlign: "center", padding: "20px" }}>
-        <h1>Clairity News</h1>
+        <h1>Clarity News</h1>
         <p>Latest news articles:</p>
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {news.map((article) => (

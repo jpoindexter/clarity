@@ -8,6 +8,6 @@ npm run build
 
 # Restart frontend service (assuming running with systemd)
 echo "🔄 Restarting frontend service..."
-sudo systemctl restart clairity-frontend.service
+sudo systemctl restart Clarity-frontend.service
 
 echo "✅ Frontend deployed successfully!"

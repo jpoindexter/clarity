@@ -6,7 +6,7 @@ ENV_FILE=".env"
 if [ ! -f "$ENV_FILE" ]; then
     cat <<EOL > "$ENV_FILE"
 # Database Config
-DATABASE_URL=postgresql://user:password@localhost:5432/clairity
+DATABASE_URL=postgresql://user:password@localhost:5432/Clarity
 
 # API Keys
 OPENAI_API_KEY=your-openai-api-key-here

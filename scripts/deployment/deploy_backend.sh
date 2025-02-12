@@ -10,6 +10,6 @@ pip install -r requirements.txt
 
 # Restart backend service (assuming running with systemd)
 echo "🔄 Restarting backend service..."
-sudo systemctl restart clairity-backend.service
+sudo systemctl restart Clarity-backend.service
 
 echo "✅ Backend deployed successfully!"

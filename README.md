@@ -1,2 +1,3 @@
-# clairity
- ai powered reserach
+# Clarity
+
+ai powered reserach
