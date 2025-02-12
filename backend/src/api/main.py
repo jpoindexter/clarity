@@ -20,5 +20,5 @@ app.add_middleware(
 )
 
 # ✅ Register API endpoints
-app.include_router(news_router, prefix="/api")  # ✅ News routes
-app.include_router(articles_router, prefix="/api")  # ✅ More specific than "fetch"
+app.include_router(news_router, prefix="/api", tags=["news"])  # ✅ News routes
+app.include_router(articles_router, prefix="/api", tags=["articles"])  # ✅ More specific than "fetch"
