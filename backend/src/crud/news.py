@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # ✅ Always import these normally so they work at runtime
-from schemas.articles import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
+from backend.src.schemas.content import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
 from database.db_connection import get_db  # ✅ Fixed import
 from models.article import Article  # ✅ Ensure the model is properly imported
 
