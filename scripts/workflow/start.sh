@@ -97,33 +97,17 @@ tell application "Terminal"
 end tell
 EOF
 
-# ✅ **Step 7: Open All Required Browser Tabs in Safari (Without Duplicating Windows)**
-log "🌍 Managing Safari browser tabs..."
+# ✅ **Step 7: Open All Required Browser Tabs in Safari (Ensuring Localhost is Included)**
+log "🌍 Opening browser tabs in Safari..."
 
 osascript <<EOF
 tell application "Safari"
-    if (count of windows) = 0 then
-        make new document
-        set URL of document 1 to "http://127.0.0.1:3000"
-        tell window 1
-            set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/docs"})
-            set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/api/news"})
-        end tell
-    else
-        # If Safari is already open, just refresh the tabs
-        tell window 1
-            set current tab to tab 1
-            set URL of current tab to "http://127.0.0.1:3000"
-            repeat with t in tabs
-                if URL of t contains "127.0.0.1:8000/docs" then
-                    set URL of t to "http://127.0.0.1:8000/docs"
-                end if
-                if URL of t contains "127.0.0.1:8000/api/news" then
-                    set URL of t to "http://127.0.0.1:8000/api/news"
-                end if
-            end repeat
-        end tell
-    end if
+    make new document
+    set URL of document 1 to "http://127.0.0.1:3000"
+    tell window 1
+        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/docs"})
+        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/api/news"})
+    end tell
 end tell
 EOF
 
@@ -147,3 +131,6 @@ fi
 
 log "✅ Startup complete! Backend, frontend, logs, and manual terminal are all open."
 log "🚀 Happy coding! 🎉"
+
+# ✅ **Step 9: Open Manual Terminal**
+osascript -e 'tell application "Terminal" to activate'  # Bring manual terminal to front
