@@ -37,8 +37,8 @@ fi
 if [ ! -f "backend/main.py" ]; then
     MISSING_FILES+=("backend/main.py")
 fi
-if [ ! -f "frontend/src/pages/index.js" ]; then
-    MISSING_FILES+=("frontend/src/pages/index.js")
+if [ ! -f "frontend/src/app/page.tsx" ]; then
+    MISSING_FILES+=("frontend/src/app/page.tsx")
 fi
 if [ ! -f "frontend/package.json" ]; then
     MISSING_FILES+=("frontend/package.json")
@@ -54,8 +54,17 @@ fi
 
 # ✅ **Step 2: Stop Only Relevant Processes**
 log "🔄 Checking for existing Clairity processes..."
-pkill -f "uvicorn backend.main:app" && log "✅ Stopped backend" || log "⚠️ Backend not running"
-pkill -f "npm run dev" && log "✅ Stopped frontend" || log "⚠️ Frontend not running"
+if lsof -i :8000 | grep LISTEN &> /dev/null; then
+    log "✅ Backend is already running on port 8000"
+else
+    log "⚠️ Backend not detected. It will be started."
+fi
+
+if lsof -i :3000 | grep LISTEN &> /dev/null; then
+    log "✅ Frontend is already running on port 3000"
+else
+    log "⚠️ Frontend not detected. It will be started."
+fi
 
 # ✅ **Step 3: Ensure Backend Virtual Environment Exists**
 if [ ! -d "venv" ]; then
@@ -116,6 +125,8 @@ if curl --output /dev/null --silent --head --fail "http://127.0.0.1:3000"; then
     log "✅ Frontend is running at http://127.0.0.1:3000"
 else
     log "❌ Frontend failed to start. Check logs for errors."
+    log "⚠️ Attempting to fix: Removing .next/ and restarting frontend..."
+    rm -rf frontend/.next && cd frontend && npm run dev & cd ..
 fi
 
 log "✅ Startup complete! Backend, frontend, logs, and manual terminal are all open."
