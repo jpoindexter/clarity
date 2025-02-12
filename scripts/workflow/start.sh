@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define log directory and create it if it doesn't exist
+# ✅ Define log directory and create it if it doesn't exist
 LOG_DIR="$(pwd)/logs/startup"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/$(date +'%Y-%m-%d_%H-%M-%S').log"
@@ -9,46 +9,114 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
 }
 
-{
-  log "🚀 Stopping any existing processes on ports 8000 and 3000..."
-  lsof -ti:8000 | xargs kill -9 2>/dev/null && log "✅ Stopped processes on port 8000" || log "⚠️ No processes found on port 8000"
-  lsof -ti:3000 | xargs kill -9 2>/dev/null && log "✅ Stopped processes on port 3000" || log "⚠️ No processes found on port 3000"
+log "🚀 Starting Clairity Startup Process..."
+log "------------------------------------------"
 
-  # Navigate to project root dynamically
-  ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-  if cd "$ROOT_DIR"; then
-      log "📂 Navigated to project root: $ROOT_DIR"
-  else
-      log "❌ Failed to navigate to project root"
-      exit 1
-  fi
+# ✅ **Step 1: Pre-Check Mode**
+MISSING_FILES=()
+MISSING_DEPS=()
 
-  # Ensure tmux session exists
-  TMUX_SESSION="clairity"
-  if tmux has-session -t $TMUX_SESSION 2>/dev/null; then
-      log "🔄 Attaching to existing tmux session: $TMUX_SESSION"
-  else
-      log "🔄 Creating new tmux session: $TMUX_SESSION..."
-      tmux new-session -d -s $TMUX_SESSION -n Backend
-      tmux send-keys -t $TMUX_SESSION:0 "cd $ROOT_DIR && source backend/venv/bin/activate && uvicorn backend.src.api.main:app --host 127.0.0.1 --port 8000 --reload | tee -a $LOG_FILE" C-m
-      log "⚡ Backend started in tmux Pane 1"
+# ✅ Check if Node.js, npm, Python, and Uvicorn are installed
+for cmd in node npm python3 uvicorn; do
+    if ! command -v $cmd &> /dev/null; then
+        MISSING_DEPS+=("$cmd")
+    fi
+done
 
-      # 🟢 Create a new pane for Frontend
-      tmux split-window -h -t $TMUX_SESSION
-      tmux send-keys -t $TMUX_SESSION:1 "cd $ROOT_DIR/frontend && npm run dev | tee -a $LOG_FILE" C-m
-      log "🖥️ Frontend started in tmux Pane 2"
+# ✅ Log missing dependencies and prompt user
+if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+    log "❌ Missing dependencies:"
+    for dep in "${MISSING_DEPS[@]}"; do
+        log "   - $dep (Not Installed)"
+    done
+    log "⚠️ Install missing dependencies before running the script again."
+    exit 1
+fi
 
-      # 🟢 Create another pane for logs/debugging
-      tmux split-window -v -t $TMUX_SESSION
-      tmux send-keys -t $TMUX_SESSION:2 "tail -f $LOG_FILE" C-m
-      log "📜 Logs running in tmux Pane 3"
-  fi
+# ✅ Check if backend and frontend files exist
+if [ ! -f "backend/main.py" ]; then
+    MISSING_FILES+=("backend/main.py")
+fi
+if [ ! -f "frontend/src/pages/index.js" ]; then
+    MISSING_FILES+=("frontend/src/pages/index.js")
+fi
+if [ ! -f "frontend/package.json" ]; then
+    MISSING_FILES+=("frontend/package.json")
+fi
 
-  # Open the frontend in the browser
-  log "🌍 Opening the frontend in the browser..."
-  open "http://127.0.0.1:3000" && log "✅ Frontend opened in browser" || log "⚠️ Failed to open browser"
+# ✅ Log missing files but continue running
+if [ ${#MISSING_FILES[@]} -ne 0 ]; then
+    log "⚠️ Missing critical files:"
+    for file in "${MISSING_FILES[@]}"; do
+        log "   - $file"
+    done
+fi
 
-  # Attach to the tmux session
-  log "✅ Clairity is now running in tmux. Use 'tmux attach -t $TMUX_SESSION' to view."
-  tmux attach -t $TMUX_SESSION
-} | tee -a "$LOG_FILE"
+# ✅ **Step 2: Stop Only Relevant Processes**
+log "🔄 Checking for existing Clairity processes..."
+pkill -f "uvicorn backend.main:app" && log "✅ Stopped backend" || log "⚠️ Backend not running"
+pkill -f "npm run dev" && log "✅ Stopped frontend" || log "⚠️ Frontend not running"
+
+# ✅ **Step 3: Ensure Backend Virtual Environment Exists**
+if [ ! -d "venv" ]; then
+    log "⚠️ Backend virtual environment not found. You need to create it."
+    log "👉 Run: python3 -m venv venv && source venv/bin/activate && pip install -r backend/requirements.txt"
+    exit 1
+fi
+
+# ✅ **Step 4: Ensure Frontend Dependencies Exist**
+if [ ! -d "frontend/node_modules" ]; then
+    log "⚠️ Node modules missing. Running npm install..."
+    cd frontend && npm install && cd ..
+fi
+
+# ✅ **Step 5: Ensure macOS Terminal is Running**
+osascript -e 'tell application "Terminal" to activate'
+
+# ✅ **Step 6: Open Terminal Windows for Each Process**
+log "🖥️ Opening separate terminal windows for backend, frontend, logs, and an extra manual terminal..."
+
+osascript <<EOF
+tell application "Terminal"
+    do script "cd $(pwd)/backend && source ../venv/bin/activate && uvicorn main:app --host 127.0.0.1 --port 8000 --reload 2>&1 | tee -a $LOG_FILE"
+    delay 1
+    do script "cd $(pwd)/frontend && npm run dev 2>&1 | tee -a $LOG_FILE"
+    delay 1
+    do script "tail -f $LOG_FILE"
+    delay 1
+    do script "echo '✅ This is your manual testing window. Use it for commands.'"
+end tell
+EOF
+
+# ✅ **Step 7: Open All Required Browser Tabs in Safari**
+log "🌍 Opening necessary browser tabs in Safari..."
+
+osascript <<EOF
+tell application "Safari"
+    make new document
+    set URL of document 1 to "http://127.0.0.1:3000"
+    tell window 1
+        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/docs"})
+        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/api/news"})
+    end tell
+end tell
+EOF
+
+# ✅ **Step 8: Confirm Startup Success**
+log "✅ Verifying services are running..."
+sleep 5  # Give servers time to start
+
+if curl --output /dev/null --silent --head --fail "http://127.0.0.1:8000/docs"; then
+    log "✅ Backend is running at http://127.0.0.1:8000"
+else
+    log "❌ Backend failed to start. Check logs for errors."
+fi
+
+if curl --output /dev/null --silent --head --fail "http://127.0.0.1:3000"; then
+    log "✅ Frontend is running at http://127.0.0.1:3000"
+else
+    log "❌ Frontend failed to start. Check logs for errors."
+fi
+
+log "✅ Startup complete! Backend, frontend, logs, and manual terminal are all open."
+log "🚀 Happy coding! 🎉"
