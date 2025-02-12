@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-api.endpoints.news import router as news_router
-api.endpoints.articles import router as articles_router  # ✅ Updated import  # ✅ Add this
+from api.endpoints.news import router as news_router
+from api.endpoints.articles import router as articles_router  # ✅ Correct import
 
 app = FastAPI()
 
 app.include_router(news_router, prefix="/api")  # ✅ Ensures `/api/news/` works
-app.include_router(articles_router, prefix="/api")  # ✅ Ensures `/api/articles/` works
+app.include_router(articles_router, prefix="")  # ✅ Fixes `/api/api/articles` issue
