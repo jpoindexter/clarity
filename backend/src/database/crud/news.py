@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.article import Article  # ✅ Correct import for database models
-from schemas.articles import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
-from database.db_connection import get_db  # ✅ Fixed import
+    from src.models.article import Article  # ✅ Correct import for database models
+from src.schemas.articles import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
+from src.database.db_connection import get_db  # ✅ Fixed import
 
 class NewsCRUD:
     def create_news(self, db: Session, news_data: ArticleCreate):

@@ -1,4 +1,4 @@
-from database.db_connection_connection_helper import get_rss_feeds  # ✅ Corrected import
+from src.database.db_connection_connection_helper import get_rss_feeds  # ✅ Corrected import
 
 def fetch_rss_feeds():
     """Fetch the latest RSS feeds from the database"""
