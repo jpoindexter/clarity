@@ -2,10 +2,13 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from src.models.article import Article  # ✅ Correct import for database models
+    from src.models.article import Article  # ✅ Fixed import for database models
+
 from src.schemas.articles import ArticleCreate, Article as ArticleSchema  # ✅ Correct import for schemas
 from src.database.db_connection import get_db  # ✅ Fixed import
+from src.models.article import Article  # ✅ Ensure the model is properly imported
 
 class NewsCRUD:
     def create_news(self, db: Session, news_data: ArticleCreate):
