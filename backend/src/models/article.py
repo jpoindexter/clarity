@@ -1,24 +1,16 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text
-from sqlalchemy.orm import declarative_base
-import datetime
-from typing import TYPE_CHECKING
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-if TYPE_CHECKING:
-    from schemas.articles import ArticleSchema  # Forward declaration to avoid circular imports
-
 class Article(Base):
-    """Database model for news articles."""
     __tablename__ = "articles"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), nullable=False)
-    content = Column(Text, nullable=False)
-    source = Column(String(255), nullable=True)
-    published_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-    def to_schema(self):
-        """Converts the SQLAlchemy model instance into a Pydantic schema."""
-        from schemas.articles import ArticleSchema  # Import inside the function to avoid circular import
-        return ArticleSchema.from_orm(self)
+    title = Column(String, nullable=False)
+    summary = Column(Text)
+    content = Column(Text)
+    source = Column(String, nullable=False)
+    url = Column(String, unique=True, nullable=False)
+    published_at = Column(DateTime, default=func.now())
+    category = Column(String, nullable=True)

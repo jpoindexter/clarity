@@ -34,8 +34,8 @@ if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
 fi
 
 # ✅ Check if backend and frontend files exist
-if [ ! -f "backend/main.py" ]; then
-    MISSING_FILES+=("backend/main.py")
+if [ ! -f "backend/src/main.py" ]; then
+    MISSING_FILES+=("backend/src/main.py")
 fi
 if [ ! -f "frontend/src/app/page.tsx" ]; then
     MISSING_FILES+=("frontend/src/app/page.tsx")
@@ -87,7 +87,7 @@ log "🖥️ Opening separate terminal windows for backend, frontend, logs, and 
 
 osascript <<EOF
 tell application "Terminal"
-    do script "cd $(pwd)/backend && source ../venv/bin/activate && uvicorn main:app --host 127.0.0.1 --port 8000 --reload 2>&1 | tee -a $LOG_FILE"
+    do script "cd $(pwd)/backend && source ../venv/bin/activate && uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload 2>&1 | tee -a $LOG_FILE"
     delay 1
     do script "cd $(pwd)/frontend && npm run dev 2>&1 | tee -a $LOG_FILE"
     delay 1
@@ -97,17 +97,33 @@ tell application "Terminal"
 end tell
 EOF
 
-# ✅ **Step 7: Open All Required Browser Tabs in Safari**
-log "🌍 Opening necessary browser tabs in Safari..."
+# ✅ **Step 7: Open All Required Browser Tabs in Safari (Without Duplicating Windows)**
+log "🌍 Managing Safari browser tabs..."
 
 osascript <<EOF
 tell application "Safari"
-    make new document
-    set URL of document 1 to "http://127.0.0.1:3000"
-    tell window 1
-        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/docs"})
-        set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/api/news"})
-    end tell
+    if (count of windows) = 0 then
+        make new document
+        set URL of document 1 to "http://127.0.0.1:3000"
+        tell window 1
+            set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/docs"})
+            set current tab to (make new tab with properties {URL:"http://127.0.0.1:8000/api/news"})
+        end tell
+    else
+        # If Safari is already open, just refresh the tabs
+        tell window 1
+            set current tab to tab 1
+            set URL of current tab to "http://127.0.0.1:3000"
+            repeat with t in tabs
+                if URL of t contains "127.0.0.1:8000/docs" then
+                    set URL of t to "http://127.0.0.1:8000/docs"
+                end if
+                if URL of t contains "127.0.0.1:8000/api/news" then
+                    set URL of t to "http://127.0.0.1:8000/api/news"
+                end if
+            end repeat
+        end tell
+    end if
 end tell
 EOF
 
