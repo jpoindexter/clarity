@@ -2,9 +2,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.database.crud.news import news as crud  # ✅ Correct import for database interactions
-from src.database.db_connection import get_db  # ✅ Corrected import for database session
-from src.schemas.news import NewsCreate, NewsUpdate, News  # ✅ Correct import for schemas
+from crud.news import news as crud  # ✅ Correct import for database interactions
+from database.db_connection import get_db  # ✅ Corrected import for database session
+from schemas.news import NewsCreate, NewsUpdate, News  # ✅ Correct import for schemas
 
 router = APIRouter(prefix="/news", tags=["news"])  # ✅ Fix: Ensures correct API path
 

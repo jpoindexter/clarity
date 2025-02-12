@@ -2,10 +2,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from src.models.article import Article
-from src.schemas.articles import ArticleCreate, Article as ArticleSchema
-from src.database.db_connection import get_db
+
+# ✅ Always import these at runtime to avoid missing module errors
+from models.article import Article
+from schemas.articles import ArticleCreate, Article as ArticleSchema
+from database.db_connection import get_db
 
 router = APIRouter()
 

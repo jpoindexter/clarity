@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
-from src.database.models.article import Article  # Ensure this import is correct
-from src.utils.db_helper import get_articles_by_query  # Ensure this import is correct
+database.models.article import Article  # Ensure this import is correct
+utils.db_helper import get_articles_by_query  # Ensure this import is correct
 
 router = APIRouter()
 

@@ -1,5 +1,5 @@
-from src.database.db_connection import SessionLocal, engine, Base
-from src.database.models.article import Article
+database.db_connection import SessionLocal, engine, Base
+database.models.article import Article
 
 # Ensure all tables are created
 Base.metadata.create_all(bind=engine)
