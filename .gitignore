@@ -17,16 +17,20 @@ pnpm-debug.log*
 .env
 .env.local
 .env.development.local
-.env.production.local
-.env.test.local
+
+# 🗄 Python Cache & Compiled Files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# 🚀 Git & LFS Cleanup
-.git/lfs/
-.gitattributes
-frontend/node_modules/
-venv/
+# 📂 Logs
 logs/
+backend/src/logs/
+
+# ⚙️ Database & Virtual Environment Artifacts
+*.sqlite3
+*.db
+backend/scripts/*.sql
+backend/scripts/*.sqlite
+
