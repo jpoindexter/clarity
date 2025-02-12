@@ -1,92 +1,37 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+
+type NewsArticle = {
+  id: number;
+  title: string;
+  summary: string;
+};
 
 export default function Home() {
+  const [news, setNews] = useState<NewsArticle[]>([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/news")
+      .then((response) => response.json())
+      .then((data) => setNews(data))
+      .catch((error) => console.error("Error fetching news:", error));
+  }, []);
+
   return (
     <div>
       <main style={{ textAlign: "center", padding: "20px" }}>
-        <Image
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol style={{ listStyleType: "none", padding: 0 }}>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div>
-          <a
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              margin: "10px",
-              backgroundColor: "#0070f3",
-              color: "#ffffff",
-              textDecoration: "none",
-              borderRadius: "5px",
-            }}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              margin: "10px",
-              backgroundColor: "#eaeaea",
-              textDecoration: "none",
-              borderRadius: "5px",
-            }}
-          >
-            Read our docs
-          </a>
-        </div>
+        <h1>Clairity News</h1>
+        <p>Latest news articles:</p>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {news.map((article) => (
+            <li key={article.id} style={{ marginBottom: "20px" }}>
+              <h3>{article.title}</h3>
+              <p>{article.summary}</p>
+            </li>
+          ))}
+        </ul>
       </main>
-      <footer style={{ textAlign: "center", padding: "20px" }}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ margin: "10px" }}
-        >
-          <Image src="/file.svg" alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ margin: "10px" }}
-        >
-          <Image src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ margin: "10px" }}
-        >
-          <Image src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

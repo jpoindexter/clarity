@@ -1,32 +1,28 @@
-# ======= Core Backend Dependencies =======
-fastapi==0.109.0
-uvicorn==0.27.0
-httpx==0.26.0
-pydantic==2.6.1
-SQLAlchemy==2.0.27
-psycopg2-binary==2.9.9  # PostgreSQL adapter
-alembic==1.13.1  # Database migrations
+Yes! This setup is now a fully reusable template for any new app idea.
 
-# ======= AI & NLP Processing =======
-ollama  # Local AI model processing
-langchain==0.1.7  # AI processing framework
-nltk==3.8.1  # Natural Language Toolkit
-spacy==3.7.2  # NLP processing
-textblob==0.17.1  # Simple text analysis
+When you want to create another app, just:
+1️⃣ Unzip the project
 
-# ======= RSS & News Fetching =======
-feedparser==6.0.10  # RSS feed parsing
-newspaper3k==0.2.8  # Web scraping & article extraction
-beautifulsoup4==4.12.3  # HTML parsing
-requests==2.31.0  # HTTP requests
+unzip clairity_backup.zip -d new_project
+cd new_project
 
-# ======= Utility Libraries =======
-python-dotenv==1.0.1  # Load environment variables
-loguru==0.7.2  # Enhanced logging
-tqdm==4.66.2  # Progress bars for scripts
+2️⃣ Update the project name & description
 
-# ======= Testing & Debugging =======
-pytest==8.0.0
-pytest-asyncio==0.23.5
-pytest-mock==3.12.0
-httpx==0.26.0
+    Modify README.md
+    Change repository name (if using GitHub)
+
+3️⃣ Reset & Install Dependencies
+
+rm -rf frontend/node_modules backend/__pycache__ logs/*
+./setup/install_backend.sh
+./setup/install_frontend.sh
+./setup/setup_env.sh
+
+4️⃣ Modify the app code
+
+    Backend: Edit backend/main.py and API routes
+    Frontend: Update frontend/src/app/page.tsx and components
+
+5️⃣ Start the project
+
+./scripts/workflow/start.sh
