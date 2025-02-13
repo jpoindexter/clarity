@@ -3,49 +3,52 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # ✅ Correct Imports
-from src.schemas.news import NewsCreate, NewsUpdate, News as NewsSchema  # ✅ Correct schema import
-from src.database.db_connection import get_db  # ✅ Fixed DB import
-from src.models.news import News  # ✅ Corrected model import
+from ..schemas.news import NewsCreate, NewsUpdate, News as NewsSchema  # ✅ Fixed schema import
+from ..database.db_connection import get_db  # ✅ Fixed DB import
+from ..models.news import News  # ✅ Corrected model import
 
 if TYPE_CHECKING:
-    pass  # ✅ Keeps block valid while allowing future type hints
+    from ..database.db_connection import SessionLocal  # ✅ Allows future type hints
 
 class NewsCRUD:
-    def create_news(self, db: Session, news_data: NewsCreate):
+    def create(self, db: Session, obj_in: NewsCreate):
         """Create a new news item in the database."""
-        new_news = News(**news_data.model_dump())  # ✅ Fixed for Pydantic V2
+        new_news = News(**obj_in.model_dump())  # ✅ Fixed for Pydantic V2
         db.add(new_news)
         db.commit()
         db.refresh(new_news)
         return new_news
 
-    def get_news(self, db: Session, news_id: int):
+    def get(self, db: Session, news_id: int):
         """Retrieve a single news item by ID."""
-        return db.query(News).filter(News.id == news_id).first()
+        news_item = db.query(News).filter(News.id == news_id).first()
+        if not news_item:
+            raise HTTPException(status_code=404, detail="News item not found")
+        return news_item
 
-    def get_news_list(self, db: Session, skip=0, limit=100):
+    def get_list(self, db: Session, skip=0, limit=100):
         """Retrieve a list of news items with pagination."""
         return db.query(News).offset(skip).limit(limit).all()
 
-    def update_news(self, db: Session, news_id: int, news_data: NewsUpdate):
+    def update(self, db: Session, news_id: int, obj_in: NewsUpdate):
         """Update an existing news item."""
         db_news = db.query(News).filter(News.id == news_id).first()
         if not db_news:
-            return None
-        for key, value in news_data.model_dump().items():
+            raise HTTPException(status_code=404, detail="News item not found")
+        for key, value in obj_in.model_dump(exclude_unset=True).items():
             setattr(db_news, key, value)
         db.commit()
         db.refresh(db_news)
         return db_news
 
-    def delete_news(self, db: Session, news_id: int):
+    def remove(self, db: Session, news_id: int):
         """Delete a news item."""
         db_news = db.query(News).filter(News.id == news_id).first()
         if not db_news:
-            return None
+            raise HTTPException(status_code=404, detail="News item not found")
         db.delete(db_news)
         db.commit()
         return db_news
 
-# ✅ Define `news` instance for imports
-news = NewsCRUD()
+# ✅ Instance for proper importing
+news_crud = NewsCRUD()

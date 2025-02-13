@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.api.endpoints.news import router as news_router  # ✅ Corrected import
-from src.api.endpoints.articles import router as articles_router  # ✅ Corrected import
+from .endpoints.news import router as news_router  # ✅ Corrected import
+from .endpoints.articles import router as articles_router  # ✅ Corrected import
 
 app = FastAPI()
 

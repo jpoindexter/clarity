@@ -6,7 +6,7 @@ This module loads environment variables and defines application-wide settings.
 
 import os
 from dotenv import load_dotenv
-from rss.rss_feeds import RSS_FEEDS  # ✅ Ensure correct path
+from ..rss.rss_feeds import RSS_FEEDS  # ✅ Corrected import path
 
 # ✅ Load environment variables from .env file (if present)
 load_dotenv()
@@ -32,7 +32,7 @@ class Config:
     # ✅ RSS Feeds Configuration (Safe Fallback)
     try:
         RSS_FEEDS = RSS_FEEDS  # ✅ Load from `rss_feeds.py`
-    except (ImportError, ValueError) as e:  # ✅ More specific
+    except (ImportError, ValueError) as e:  # ✅ More specific error handling
         print(f"⚠️ Warning: Failed to load RSS feeds. Error: {e}")
         RSS_FEEDS = []  # Fallback to empty list
 
