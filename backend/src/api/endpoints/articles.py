@@ -1,24 +1,21 @@
 # filepath: backend/src/api/endpoints/articles.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import TYPE_CHECKING
 
-# ✅ Always import these at runtime to avoid missing module errors
-from models.article import Article
-from schemas.articles import ArticleCreate, Article as ArticleSchema
-from database.db_connection import get_db
+from src.models.article import Article  # ✅ Corrected import path
+from src.schemas.content import ArticleCreate, Article as ArticleSchema  # ✅ Fixed schema path
+from src.database.db_connection import get_db  # ✅ Fixed database session import
 
-# ✅ FIXED: Remove `/api/` from the endpoint paths, handled by `main.py`
-router = APIRouter()
+router = APIRouter(prefix="/articles", tags=["articles"])  # ✅ Added `prefix="/articles"` for proper API structure
 
-@router.get("/articles", response_model=list[ArticleSchema], summary="Retrieve all articles")
+@router.get("/", response_model=list[ArticleSchema], summary="Retrieve all articles")
 def get_articles(db: Session = Depends(get_db)):
     """
     Retrieve a list of all articles from the database.
     """
     return db.query(Article).all()
 
-@router.post("/articles", response_model=ArticleSchema, summary="Create a new article")
+@router.post("/", response_model=ArticleSchema, summary="Create a new article")
 def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     """
     Create a new article in the database.
