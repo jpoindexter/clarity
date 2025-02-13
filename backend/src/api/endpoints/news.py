@@ -57,7 +57,7 @@ def read_news_list(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
         raise HTTPException(status_code=500, detail="Database error in fetching news list")
 
 @router.put("/{news_id}", response_model=News, summary="Update an existing news article")
-def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
+def NewsUpdate(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
     """Update an existing news item."""
     try:
         db_news = crud.get_news(db, news_id=news_id)
@@ -65,7 +65,7 @@ def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
             print(f"⚠️ News ID {news_id} not found.")
             raise HTTPException(status_code=404, detail="News not found")
         
-        updated_news = crud.update_news(db=db, news_id=news_id, news=news)
+        updated_news = crud.NewsUpdate(db=db, news_id=news_id, news=news)
         print(f"✅ Updated News ID {news_id}: {updated_news}")
         return updated_news
     except SQLAlchemyError as e:
