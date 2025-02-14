@@ -41,3 +41,4 @@ before_snapshot.bcss
 .pytest_cache/
 logs/
 .DS_Store
+.env
