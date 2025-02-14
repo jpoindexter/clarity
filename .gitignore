@@ -33,3 +33,8 @@ backend/scripts/*.sql
 backend/scripts/*.sqlite
 backend/*.sqlite3
 backend/*.db
+
+# Backups
+
+before_snapshot.bcss
+before_snapshot.bcss
