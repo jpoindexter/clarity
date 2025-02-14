@@ -38,3 +38,5 @@ backend/*.db
 
 before_snapshot.bcss
 before_snapshot.bcss
+.pytest_cache/
+logs/
