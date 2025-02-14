@@ -42,3 +42,4 @@ before_snapshot.bcss
 logs/
 .DS_Store
 .env
+.env
