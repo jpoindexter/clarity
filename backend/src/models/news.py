@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
-from ..database.db_connection import Base  # ✅ Correct import path
+from backend.src.database.db_connection import Base  # ✅ Correct import path
 import datetime
 
 class News(Base):

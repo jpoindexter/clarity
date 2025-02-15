@@ -5,12 +5,13 @@ Defines the SQLAlchemy model for storing article data in the database.
 """
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, func
-from ..database.db_connection import Base  # ✅ Correct import path
+from backend.src.database.db_connection import Base  # ✅ Correct import path
 
 class Article(Base):
     """Database model for storing articles."""
 
     __tablename__ = "articles"
+    __table_args__ = {"extend_existing": True}  # ✅ Prevents duplicate table definition
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)  # ✅ Limit title length
