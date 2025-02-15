@@ -6,7 +6,7 @@ import pytest
 from backend.src.database.db_connection import get_db
 from backend.src.crud.articles import fetch_articles  # ✅ Correct import
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def test_db():
     """Provides a test database session."""
     db = next(get_db())  # ✅ Correctly fetch a session
