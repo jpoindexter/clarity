@@ -2,7 +2,7 @@
 This module contains a test for the DATABASE_URL configuration.
 """
 
-from config.config import settings
+from backend.src.config import settings
 
 def test_database_url():
     """

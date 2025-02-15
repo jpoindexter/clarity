@@ -1,17 +1,29 @@
+"""
+Database connection setup and helper functions.
+"""
+
 import os
+import pytest  # ✅ Make sure pytest is imported for fixture
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 
 # ✅ Load environment variables
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_clarity")
 
-# ✅ Ensure database URL is set
-if not DATABASE_URL:
-    raise ValueError("❌ DATABASE_URL is not set. Check your environment variables.")
+# ✅ Ensure database URLs are set
+if not DATABASE_URL or not TEST_DATABASE_URL:
+    raise ValueError("❌ DATABASE_URL or TEST_DATABASE_URL is not set. Check your environment variables.")
 
-# ✅ Create database engine
+# ✅ Create database engines
 engine = create_engine(DATABASE_URL)
+test_engine = create_engine(TEST_DATABASE_URL)
+
+# ✅ Standard Session for Main Application
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# ✅ Scoped Session for Testing
+TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=test_engine))
 
 # ✅ Define Base model
 Base = declarative_base()
@@ -25,13 +37,19 @@ def get_db():
     finally:
         db.close()
 
-# ✅ Function to fetch RSS feeds from DB
-def get_rss_feeds():
-    """Fetch RSS feeds from the database (placeholder, replace with actual query)."""
+# ✅ Dependency for Test DB session (for pytest)
+def get_test_db():
+    """Create a new test database session for testing."""
+    db = TestingSessionLocal()
     try:
-        with SessionLocal() as db:
-            # Replace with actual SQLAlchemy query (example: db.query(RSSFeed).all())
-            return []  # Return empty list as fallback
-    except Exception as e:
-        print(f"⚠️ Database error in get_rss_feeds: {e}")
-        return []  # Ensure function returns something even if DB fails
+        yield db
+    finally:
+        db.close()
+
+# ✅ Pytest fixture to ensure test DB session works
+@pytest.fixture
+def test_db():
+    """Provides a test database session."""
+    db = next(get_test_db())  # ✅ Use the test DB function
+    yield db
+    db.close()

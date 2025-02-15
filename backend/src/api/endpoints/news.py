@@ -4,9 +4,9 @@ API Endpoints for managing news data.
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ...crud.news import news as news_crud
-from ...database.db_connection import get_db
-from ...schemas.news import NewsCreate, NewsUpdate, News as NewsSchema
+from backend.src.crud.news import news_crud  # ✅ Fixing incorrect import
+from backend.src.database.db_connection import get_db
+from backend.src.schemas.news import NewsCreate, NewsUpdate, News as NewsSchema
 
 router = APIRouter()
 

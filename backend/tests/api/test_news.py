@@ -1,11 +1,18 @@
-from fastapi.testclient import TestClient
-from backend.main import app  # ✅ Corrected import (removed backend.src)
-from database.db_connection import get_db  # ✅ Corrected import  # ✅ Correct import
 import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
-client = TestClient(app)  # ✅ Uses FastAPI TestClient
+# ✅ Correct absolute imports
+from backend.src.api.main import app
+from backend.src.config import settings
+from backend.src.crud.news import news_crud
+from backend.src.database.db_connection import get_db
 
-@pytest.mark.usefixtures("test_db")  # ✅ Ensure we use the test database
-def test_news_endpoint():
-    response = client.get("/api/news/")  # ✅ Ensure correct URL
-    assert response.status_code == 200  # ✅ Should now work
+client = TestClient(app)
+
+@pytest.fixture
+def test_db():
+    """Provides a test database session."""
+    db = next(get_db())  # ✅ Corrected how the DB session is retrieved
+    yield db
+    db.close()

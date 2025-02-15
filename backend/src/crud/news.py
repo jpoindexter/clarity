@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # ✅ Correct Imports
-from ..schemas.news import NewsCreate, NewsUpdate, News as NewsSchema  # ✅ Fixed schema import
+from backend.src.schemas.news import NewsCreate, NewsUpdate, News as NewsSchema  # ✅ Fixed schema import
 from ..database.db_connection import get_db  # ✅ Fixed DB import
 from ..models.news import News  # ✅ Corrected model import
 

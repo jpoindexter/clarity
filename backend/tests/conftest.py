@@ -1,57 +1,30 @@
 import os
-import sys
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# ✅ Ensure the `src` folder is added to the import path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+# ✅ Load environment variables
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_clarity")
 
-from backend.src.database.db_connection import get_db
-from backend.src.models.article import Base  # ✅ Ensure Base is imported for table creation
+# ✅ Ensure database URL is set
+if not TEST_DATABASE_URL:
+    raise ValueError("❌ TEST_DATABASE_URL is not set. Check your environment variables.")
 
-# ✅ Load test database URL
-TEST_DATABASE_URL = os.getenv(
-    "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_db"
-)
+# ✅ Create test database engine
+test_engine = create_engine(TEST_DATABASE_URL)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
 
+# ✅ Define Base model
+Base = declarative_base()
 
+# ✅ Import from db_connection.py
+from backend.src.database.db_connection import get_test_db  # ✅ Ensure function exists
+
+# ✅ Pytest fixture for test DB session
 @pytest.fixture(scope="session")
-def test_engine():
-    """Creates a test database engine."""
-    engine = create_engine(TEST_DATABASE_URL)
-    Base.metadata.create_all(bind=engine)  # ✅ Create tables
-    yield engine
-    Base.metadata.drop_all(bind=engine)  # ✅ Cleanup
-
-
-@pytest.fixture(scope="session")
-def test_db(test_engine):
-    """Creates a test database session."""
-    TestingSessionLocal = scoped_session(
-        sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    )
-
-    def override_get_db():
-        """Dependency override for using the test database."""
-        db = TestingSessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    yield override_get_db  # ✅ Yield the test DB session
-    TestingSessionLocal.remove()  # ✅ Cleanup session
-
-
-@pytest.fixture(scope="module")
-def db_session(test_db):
-    """Provides a clean test database session for each test module."""
-    yield from test_db()
-
-
-@pytest.fixture(autouse=True)
-def reset_database(test_engine):
-    """Ensure the database is reset between test runs."""
-    Base.metadata.drop_all(bind=test_engine)
-    Base.metadata.create_all(bind=test_engine)
+def test_db():
+    """Provides a test database session."""
+    db = next(get_test_db())  # ✅ Use the correct test DB function
+    yield db
+    db.close()
