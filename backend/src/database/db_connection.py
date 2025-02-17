@@ -3,7 +3,7 @@ Database connection setup and helper functions.
 """
 
 import os
-import pytest  # ✅ Make sure pytest is imported for fixture
+import pytest  # ✅ Ensure pytest is imported for fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 
@@ -27,6 +27,9 @@ TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=Fa
 
 # ✅ Define Base model
 Base = declarative_base()
+
+# ✅ Import models to ensure they are registered before migrations
+from backend.src.models import news, article  # Ensure all models are loaded
 
 # ✅ Dependency for DB session
 def get_db():
