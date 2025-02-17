@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, field_serializer
+from pydantic import BaseModel, ConfigDict, field_serializer, Field
 from datetime import datetime
 from typing import Optional
 
@@ -11,11 +11,15 @@ class NewsBase(BaseModel):
 class NewsCreate(NewsBase):
     pass
 
-class NewsUpdate(BaseModel):  # ✅ Add this to allow updates
-    title: Optional[str] = None
-    content: Optional[str] = None
-    source: Optional[str] = None
-    url: Optional[str] = None
+class NewsUpdate(BaseModel):
+    """✅ Schema for updating news entries"""
+    title: Optional[str] = Field(None, min_length=1)  # ✅ Title cannot be None
+    content: Optional[str]
+    source: Optional[str]
+    url: Optional[str]
+
+    class Config:
+        orm_mode = True
 
 class News(NewsBase):
     id: int

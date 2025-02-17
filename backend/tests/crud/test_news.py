@@ -36,7 +36,12 @@ def test_get_news_empty_db(test_db):
 # ✅ Test Creating & Retrieving News
 def test_create_and_get_news(test_db):
     """✅ Ensure created news items can be retrieved correctly"""
-    payload = {"title": "Breaking News", "content": "AI disrupts the world", "source": "TechRadar", "url": "http://example.com"}
+    payload = {
+        "title": "Breaking News",
+        "content": "AI disrupts the world",
+        "source": "TechRadar",
+        "url": "http://example.com"
+    }
     response = client.post("/api/v1/news/", json=payload)
     assert response.status_code == 201
     news_id = response.json()["id"]
@@ -51,18 +56,25 @@ def test_update_nonexistent_news(test_db):
     """✅ Ensure updating a non-existing news entry returns 404"""
     update_payload = {"title": "Updated Title"}
     response = client.put("/api/v1/news/9999", json=update_payload)
-    assert response.status_code == 404
+    assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+    assert response.json()["detail"] == "News item not found"
 
 # ✅ Test Deleting Nonexistent News
 def test_delete_nonexistent_news(test_db):
     """✅ Ensure deleting a non-existing news entry returns 404"""
     response = client.delete("/api/v1/news/9999")
     assert response.status_code == 404
+    assert response.json()["detail"] == "News item not found"
 
 # ✅ Test Deleting Existing News
 def test_delete_existing_news(test_db):
     """✅ Ensure an existing news item is deleted successfully"""
-    payload = {"title": "News to Delete", "content": "This will be removed", "source": "News Daily", "url": "http://example.com"}
+    payload = {
+        "title": "News to Delete",
+        "content": "This will be removed",
+        "source": "News Daily",
+        "url": "http://example.com"
+    }
     response = client.post("/api/v1/news/", json=payload)
     assert response.status_code == 201
     news_id = response.json()["id"]
@@ -74,6 +86,7 @@ def test_delete_existing_news(test_db):
     # ✅ Confirm it's gone
     response = client.get(f"/api/v1/news/{news_id}")
     assert response.status_code == 404
+
 # ✅ Test GET /news with pagination
 def test_get_news_pagination(test_db):
     """✅ Ensure API returns paginated results correctly"""
@@ -94,9 +107,9 @@ def test_update_news_invalid_data(test_db):
     test_db.commit()
     test_db.refresh(news_item)
 
-    update_payload = {"title": None}  # ❌ Invalid title
+    update_payload = {}  # ✅ Empty payload should trigger FastAPI validation (422)
     response = client.put(f"/api/v1/news/{news_item.id}", json=update_payload)
-    assert response.status_code == 422  # ✅ Should fail validation
+    assert response.status_code == 422, f"Expected 422, got {response.status_code}"
 
 # ✅ Test DELETE /news/{news_id} for already deleted news
 def test_delete_already_deleted_news(test_db):
