@@ -4,7 +4,7 @@ API Endpoints for managing news data.
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.src.crud.news import news_crud  # ✅ Fixing incorrect import
+from backend.src.crud.news import news_crud  
 from backend.src.database.db_connection import get_db
 from backend.src.schemas.news import NewsCreate, NewsUpdate, News as NewsSchema
 
@@ -20,10 +20,16 @@ def create_news(news_data: NewsCreate, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Database error") from e
 
+@router.get("/", response_model=dict)
+def get_all_news(db: Session = Depends(get_db)):
+    """✅ Wraps response in a dictionary under `articles` to match test expectations."""
+    news_list = news_crud.get_all_news(db)
+    return {"articles": [NewsSchema.model_validate(news) for news in news_list]}  # ✅ Fix structure
+
 @router.get("/{news_id}", response_model=NewsSchema)
 def get_news(news_id: int, db: Session = Depends(get_db)):
     """
-    Retrieves a news entry by ID.
+    Retrieves a single news entry by ID.
     """
     news_item = news_crud.get(db, id=news_id)
     if not news_item:

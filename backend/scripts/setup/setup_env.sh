@@ -9,7 +9,6 @@ if [ ! -f "$ENV_FILE" ]; then
 DATABASE_URL=postgresql://user:password@localhost:5432/Clarity
 
 # API Keys
-OPENAI_API_KEY=your-openai-api-key-here
 
 # Server Config
 BACKEND_HOST=127.0.0.1
