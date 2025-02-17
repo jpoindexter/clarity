@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ContentSchema(BaseModel):  # ✅ Add this missing schema
     title: str
@@ -17,5 +17,5 @@ class Article(BaseModel):
     source: str
     url: str  
 
-    class Config:
-        from_attributes = True
+    class YourModel(BaseModel):
+        model_config = ConfigDict(arbitrary_types_allowed=True)

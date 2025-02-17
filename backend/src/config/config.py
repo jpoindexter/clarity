@@ -6,6 +6,9 @@ This module loads environment variables and defines application-wide settings.
 
 import os
 from dotenv import load_dotenv
+from typing import ClassVar, List
+from isort import Config
+from pydantic import BaseModel, ConfigDict
 
 # ✅ Load environment variables from .env file (if present)
 load_dotenv()
@@ -18,7 +21,15 @@ except ImportError as e:
     RSS_FEEDS = []  # ✅ Fallback to empty list
 
 
-class Config:
+class Config(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    RSS_FEEDS: ClassVar[List[str]] = []
+    ALLOWED_ORIGINS_RAW: ClassVar[str] = "http://127.0.0.1:3000,http://localhost:3000"
+
+    # ✅ Correct PostgreSQL Connection String
+    DATABASE_URL: str = "postgresql://jpoindexter:dontforgetmed@localhost:5432/clarity_db"
+
     """Global Configuration Settings."""
 
     # ✅ Database Configuration
