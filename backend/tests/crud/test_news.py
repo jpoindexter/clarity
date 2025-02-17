@@ -27,12 +27,11 @@ def test_create_news_missing_fields(test_db):
     response = client.post("/api/v1/news/", json=payload)
     assert response.status_code == 422  # ✅ Expect validation error
 
-# ✅ Test Retrieving News from Empty Database
 def test_get_news_empty_db(test_db):
     """✅ Ensure API returns an empty list when no news exist"""
     response = client.get("/api/v1/news/")
     assert response.status_code == 200
-    assert response.json() == []  # ✅ Adjust assertion to match API response
+    assert response.json()["articles"] == []  # ✅ Adjust assertion to match API response
 
 # ✅ Test Creating & Retrieving News
 def test_create_and_get_news(test_db):

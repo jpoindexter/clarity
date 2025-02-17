@@ -28,7 +28,7 @@ def test_get_news_empty_db(test_db):
     """✅ Ensure API returns an empty list when no news exist"""
     response = client.get("/api/v1/news/")
     assert response.status_code == 200
-    assert response.json() == []  # ✅ FIXED: Match actual API response
+    assert response.json()["articles"] == []  # ✅ FIXED: Match actual API response
 
 # ✅ Test Updating Nonexistent News
 def test_update_nonexistent_news(test_db):
