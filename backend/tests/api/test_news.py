@@ -42,3 +42,18 @@ def test_delete_nonexistent_news(test_db):
     """✅ Ensure deleting a non-existing news entry returns 404"""
     response = client.delete("/api/v1/news/9999")
     assert response.status_code == 404
+
+    # ✅ Test GET /news/{news_id} for a non-existing entry
+def test_get_nonexistent_news(test_db):
+    """✅ Ensure API returns 404 for non-existing news item"""
+    response = client.get("/api/v1/news/9999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "News item not found"
+
+# ✅ Test PUT /news/{news_id} with a missing entry
+def test_update_nonexistent_news(test_db):
+    """✅ Ensure updating a non-existing news entry returns 404"""
+    update_payload = {"title": "Updated Title"}
+    response = client.put("/api/v1/news/9999", json=update_payload)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "News item not found"
