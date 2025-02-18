@@ -22,8 +22,12 @@ def create_app():
     try:
         from backend.src.api.endpoints.news import router as news_router
         from backend.src.api.endpoints.articles import router as articles_router
+        from backend.src.api.endpoints.search import router as search_router  # ✅ Added search route
+
         app.include_router(news_router, prefix="/api/v1/news", tags=["news"])
         app.include_router(articles_router, prefix="/api/v1/articles", tags=["articles"])
+        app.include_router(search_router, prefix="/api/v1", tags=["search"])  # ✅ Registered search route
+
     except ImportError as e:
         raise RuntimeError(f"❌ ERROR: Failed to import API routers - {e}") from e  # ✅ Prevents silent errors
 
