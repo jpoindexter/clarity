@@ -42,7 +42,7 @@ def setup_test_db():
 
     # ✅ Drop schema after tests
     with test_engine.connect() as conn:
-        conn.execute(text("PRAGMA foreign_keys=ON;"))  # Re-enable foreign key checks
+        conn.execute(text("SET session_replication_role = 'origin';"))  # ✅ PostgreSQL equivalent
         conn.commit()
 
 @pytest.fixture(scope="function")
