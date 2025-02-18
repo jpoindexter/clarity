@@ -1,5 +1,5 @@
-database.db_connection import SessionLocal, engine, Base
-database.models.article import Article
+from backend.src.database.db_connection import SessionLocal, engine, Base
+from backend.src.models.article import Article
 
 # Ensure all tables are created
 Base.metadata.create_all(bind=engine)
