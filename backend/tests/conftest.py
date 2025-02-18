@@ -1,30 +1,56 @@
 import os
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker, scoped_session
+from alembic.config import Config
+from alembic import command
 
-# ✅ Load environment variables
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_clarity")
+# ✅ Load test database environment variable
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///test_clarity.db")
 
-# ✅ Ensure database URL is set
+# ✅ Ensure TEST_DATABASE_URL is set
 if not TEST_DATABASE_URL:
     raise ValueError("❌ TEST_DATABASE_URL is not set. Check your environment variables.")
 
 # ✅ Create test database engine
-test_engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+if TEST_DATABASE_URL.startswith("sqlite"):
+    test_engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    test_engine = create_engine(TEST_DATABASE_URL)
+TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=test_engine))
 
-# ✅ Define Base model
-Base = declarative_base()
+from backend.src.database.db_connection import Base, get_test_db
 
-# ✅ Import from db_connection.py
-from backend.src.database.db_connection import get_test_db  # ✅ Ensure function exists
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db():
+    """✅ Ensure test database is created & migrations are applied before running tests."""
+    
+    # ✅ Ensure database file exists
+    if not os.path.exists("test_clarity.db"):
+        open("test_clarity.db", "w").close()  # Create empty DB file
 
-# ✅ Pytest fixture for test DB session
-@pytest.fixture(scope="session")
+    with test_engine.connect() as conn:
+        conn.execute(text("PRAGMA foreign_keys=OFF;"))  # Disable foreign key checks temporarily
+        conn.commit()
+
+    # ✅ Apply Alembic migrations to create tables
+    alembic_cfg = Config("alembic.ini")
+    alembic_cfg.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
+    command.upgrade(alembic_cfg, "head")  # ✅ Apply all migrations
+
+    yield  # ✅ Run tests
+
+    # ✅ Drop schema after tests
+    with test_engine.connect() as conn:
+        conn.execute(text("PRAGMA foreign_keys=ON;"))  # Re-enable foreign key checks
+        conn.commit()
+
+@pytest.fixture(scope="function")
 def test_db():
-    """Provides a test database session."""
-    db = next(get_test_db())  # ✅ Use the correct test DB function
-    yield db
-    db.close()
+    """✅ Provides a clean database session for each test."""
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.rollback()  # ✅ Rollback changes after each test
+        session.close()

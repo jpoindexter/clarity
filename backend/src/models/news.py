@@ -1,11 +1,12 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
-from backend.src.database.db_connection import Base
+from backend.src.database.db_connection import Base  # ✅ Fixed import
 from datetime import datetime, timezone
 
 class News(Base):
     """✅ Database model for storing news articles."""
     
     __tablename__ = "news"
+    __table_args__ = {"extend_existing": True}  # ✅ Fixes duplicate table error
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)

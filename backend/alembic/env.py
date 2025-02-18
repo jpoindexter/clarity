@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 # ✅ Ensure the database connection and models are imported
-from backend.src.database.db_connection import Base  
+from backend.src.database.db_connection import Base 
 from backend.src.models.news import News  # ✅ Make sure this is imported
 from backend.src.models.article import Article  # ✅ Make sure this is imported
 

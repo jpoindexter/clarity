@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 # ✅ Correct Imports
 from backend.src.schemas.news import NewsCreate, NewsUpdate, News as NewsSchema  
-from backend.src.models.news import News  
+from models.news import News  
 
 if TYPE_CHECKING:
     from backend.src.database.db_connection import SessionLocal  

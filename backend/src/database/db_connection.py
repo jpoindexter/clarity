@@ -7,9 +7,9 @@ import pytest  # ✅ Ensure pytest is imported for fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 
-# ✅ Load environment variables
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/test_clarity")
+# ✅ Load environment variables (DO NOT HARDCODE CREDENTIALS)
+DATABASE_URL = os.getenv("DATABASE_URL")
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
 # ✅ Ensure database URLs are set
 if not DATABASE_URL or not TEST_DATABASE_URL:
@@ -28,8 +28,10 @@ TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=Fa
 # ✅ Define Base model
 Base = declarative_base()
 
-# ✅ Import models to ensure they are registered before migrations
-from backend.src.models import news, article  # Ensure all models are loaded
+# ✅ Dynamically import models to avoid circular imports
+import importlib
+for model in ["backend.src.models.news", "models.article"]:
+    importlib.import_module(model)
 
 # ✅ Dependency for DB session
 def get_db():
@@ -56,3 +58,4 @@ def test_db():
     db = next(get_test_db())  # ✅ Use the test DB function
     yield db
     db.close()
+    TestingSessionLocal.remove()  # ✅ Dispose of scoped session after tests

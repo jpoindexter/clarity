@@ -2,25 +2,25 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# ✅ Import database connection & models
-from backend.src.database.db_connection import Base
-import backend.src.models.news  # ✅ Register News model
-import backend.src.models.article  # ✅ Register Article model
+# ✅ Import Base metadata so Alembic can detect models
+from backend.src.database.db_connection import Base  
 
+# This is the Alembic Config object, which provides access to the .ini file values.
 config = context.config
 
+# Interpret the config file for Python logging.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# ✅ Fix: Set target_metadata to detect tables
-target_metadata = Base.metadata
+# ✅ Provide Alembic with the MetaData object
+target_metadata = Base.metadata  # <-- This must be set!
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
-        target_metadata=target_metadata,
+        target_metadata=target_metadata,  # ✅ Pass metadata here
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
