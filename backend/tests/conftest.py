@@ -30,11 +30,11 @@ def setup_test_db():
         open("test_clarity.db", "w").close()  # Create empty DB file
 
     with test_engine.connect() as conn:
-        conn.execute(text("PRAGMA foreign_keys=OFF;"))  # Disable foreign key checks temporarily
+        conn.execute(text("SET session_replication_role = 'replica';"))  # ✅ PostgreSQL alternative 
         conn.commit()
 
     # ✅ Apply Alembic migrations to create tables
-    alembic_cfg = Config("alembic.ini")
+    alembic_cfg = Config("backend/alembic.ini")  # ✅ Fix path
     alembic_cfg.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
     command.upgrade(alembic_cfg, "head")  # ✅ Apply all migrations
 
