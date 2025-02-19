@@ -1,12 +1,12 @@
 import feedparser
-from datetime import datetime
-from backend.src.database.db_connection import SessionLocal
-from backend.src.models.article import Article
+import requests
+import logging
 
-"""
-RSS Feed Ingestion & Parsing.
-"""
+# ✅ Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# ✅ RSS Feed Sources
 RSS_FEEDS = [
     "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
     "https://www.theguardian.com/world/rss",
@@ -15,32 +15,37 @@ RSS_FEEDS = [
     "https://news.google.com/rss"
 ]
 
-def fetch_rss_articles():
-    """Fetch and parse articles from RSS feeds."""
-    session = SessionLocal()
-    articles_added = 0
-    
-    for feed_url in RSS_FEEDS:
-        feed = feedparser.parse(feed_url)
-        
-        for entry in feed.entries:
-            existing_article = session.query(Article).filter_by(title=entry.title).first()
-            
-            if not existing_article:
-                new_article = Article(
-                    title=entry.title,
-                    summary=entry.summary if hasattr(entry, 'summary') else "",
-                    content=entry.content[0].value if hasattr(entry, 'content') else "",
-                    source=feed.feed.title,
-                    url=entry.link,
-                    published_at=datetime(*entry.published_parsed[:6]) if hasattr(entry, 'published_parsed') else datetime.utcnow()
-                )
-                session.add(new_article)
-                articles_added += 1
-    
-    session.commit()
-    session.close()
-    print(f"✅ Fetched & Stored {articles_added} new articles from RSS feeds.")
+def fetch_rss_feed(url):
+    """Fetch an RSS feed with SSL error handling."""
+    try:
+        # ✅ First attempt: Normal request
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()  # Raise error for HTTP issues
+        parsed_feed = feedparser.parse(response.text)
 
-if __name__ == "__main__":
-    fetch_rss_articles()
+        if parsed_feed.bozo == 1:
+            raise Exception(f"Invalid RSS format: {url}")
+
+        logger.info(f"✅ Successfully fetched RSS feed: {url}")
+        return parsed_feed
+
+    except requests.exceptions.SSLError:
+        logger.warning(f"⚠️ SSL Error on {url}. Retrying without SSL verification...")
+        try:
+            response = requests.get(url, verify=False, timeout=5)  # ✅ Retry without SSL
+            response.raise_for_status()
+            parsed_feed = feedparser.parse(response.text)
+
+            if parsed_feed.bozo == 1:
+                raise Exception(f"Invalid RSS format: {url}")
+
+            logger.info(f"✅ Successfully fetched RSS feed (no SSL): {url}")
+            return parsed_feed
+
+        except Exception as e:
+            logger.error(f"❌ Failed to fetch RSS feed {url}: {e}")
+            return None  # ✅ Return None instead of crashing
+
+def fetch_all_feeds():
+    """Fetch all RSS feeds and return valid ones."""
+    return [fetch_rss_feed(url) for url in RSS_FEEDS if fetch_rss_feed(url) is not None]
