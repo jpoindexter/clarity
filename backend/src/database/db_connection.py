@@ -2,11 +2,12 @@
 Database connection setup and helper functions.
 """
 
-import os
-import pytest  # ✅ Ensure pytest is imported for fixture
 import importlib
+import os
+
+import pytest  # ✅ Ensure pytest is imported for fixture
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
+from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
 
 # ✅ Load environment variables (DO NOT HARDCODE CREDENTIALS)
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -14,7 +15,9 @@ TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
 # ✅ Ensure database URLs are set
 if not DATABASE_URL or not TEST_DATABASE_URL:
-    raise ValueError("❌ DATABASE_URL or TEST_DATABASE_URL is not set. Check your environment variables.")
+    raise ValueError(
+        "❌ DATABASE_URL or TEST_DATABASE_URL is not set. Check your environment variables."
+    )
 
 # ✅ Create database engines
 engine = create_engine(DATABASE_URL)
@@ -24,7 +27,9 @@ test_engine = create_engine(TEST_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # ✅ Scoped Session for Testing
-TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=test_engine))
+TestingSessionLocal = scoped_session(
+    sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+)
 
 # ✅ Define Base model
 Base = declarative_base()
@@ -40,6 +45,7 @@ for model in MODELS:
     except ModuleNotFoundError as e:
         print(f"❌ Model Import Failed: {module_path} - {e}")
 
+
 # ✅ Dependency for DB session
 def get_db():
     """Create a new database session for each request."""
@@ -49,6 +55,7 @@ def get_db():
     finally:
         db.close()
 
+
 # ✅ Dependency for Test DB session (for pytest)
 def get_test_db():
     """Create a new test database session for testing."""
@@ -57,6 +64,7 @@ def get_test_db():
         yield db
     finally:
         db.close()
+
 
 # ✅ Pytest fixture to ensure test DB session works
 @pytest.fixture

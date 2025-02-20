@@ -3,8 +3,10 @@ Test database connection and queries.
 """
 
 import pytest
-from backend.src.database.db_connection import get_db
+
 from backend.src.crud.articles import fetch_articles  # ✅ Correct import
+from backend.src.database.db_connection import get_db
+
 
 @pytest.fixture(scope="module")
 def test_db():
@@ -13,9 +15,11 @@ def test_db():
     yield db
     db.close()
 
+
 def test_db_connection(test_db):
     """Ensure that the database connection is established properly."""
     assert test_db is not None, "Database connection failed"
+
 
 def test_fetch_articles(test_db):
     """Test if querying articles returns a list."""

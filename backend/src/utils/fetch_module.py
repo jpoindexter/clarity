@@ -1,5 +1,6 @@
 import requests
 
+
 def fetch_news():
     """Fetches news from an external API (Mock Example)"""
     try:

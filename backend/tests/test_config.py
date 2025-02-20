@@ -4,6 +4,7 @@ This module contains a test for the DATABASE_URL configuration.
 
 from backend.src.config import settings
 
+
 def test_database_url():
     """
     Test to ensure that the DATABASE_URL setting is not None.

@@ -1,10 +1,13 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text
-from backend.src.database.db_connection import Base  # ✅ Fixed import
 from datetime import datetime, timezone
+
+from sqlalchemy import Column, DateTime, Integer, String, Text
+
+from backend.src.database.db_connection import Base  # ✅ Fixed import
+
 
 class Article(Base):
     """✅ Database model for storing articles."""
-    
+
     __tablename__ = "articles"
     __table_args__ = {"extend_existing": True}  # ✅ Fixes duplicate table error
 
@@ -14,7 +17,9 @@ class Article(Base):
     content = Column(Text, nullable=False)
     source = Column(String(255), nullable=False)
     url = Column(String(2083), nullable=False, unique=True)
-    published_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    published_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
 
     def __repr__(self):
         return f"<Article(id={self.id}, title={self.title}, source={self.source}, published_at={self.published_at})>"

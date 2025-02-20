@@ -2,6 +2,7 @@
 
 import time
 
+
 class Timer:
     """A simple timer for measuring execution time."""
 
@@ -17,6 +18,7 @@ class Timer:
         elapsed_time = time.time() - self.start_time
         self.start_time = None
         return elapsed_time
+
 
 # Example usage:
 # timer = Timer()

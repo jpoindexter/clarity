@@ -1,6 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-import feedparser
-from unittest.mock import patch, MagicMock
+
 
 @pytest.fixture
 def mock_fetch_rss_feed():
@@ -17,8 +18,11 @@ def mock_fetch_rss_feed():
     ]
 
     with patch("feedparser.parse", return_value=mock_data):
-        with patch("backend.src.utils.summarizer.summarize_text", side_effect=lambda x: x):  # ✅ Mock summarization
+        with patch(
+            "backend.src.utils.summarizer.summarize_text", side_effect=lambda x: x
+        ):  # ✅ Mock summarization
             yield mock_data
+
 
 def test_fetch_rss_success(mock_fetch_rss_feed):
     """✅ Ensure RSS fetching works correctly with five mocked articles."""
@@ -36,6 +40,8 @@ def test_fetch_rss_success(mock_fetch_rss_feed):
             "url": f"https://example.com/test-article-{i+1}",
             "summary": f"Mocked Test Description {i+1}",  # ✅ Matches the mocked summary
         }
-        assert article == expected_article, f"❌ Incorrect article data (Got: {article})"
+        assert (
+            article == expected_article
+        ), f"❌ Incorrect article data (Got: {article})"
 
     print(f"🔥 DEBUG: Test Passed - Fetched {len(articles)} articles correctly.")

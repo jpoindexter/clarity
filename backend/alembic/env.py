@@ -1,12 +1,10 @@
-import logging
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config, pool
+
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 # ✅ Ensure the database connection and models are imported
-from backend.src.database.db_connection import Base 
-from backend.src.models.news import News  # ✅ Make sure this is imported
-from backend.src.models.article import Article  # ✅ Make sure this is imported
+from backend.src.database.db_connection import Base
 
 # Alembic Config object, which provides access to alembic.ini values
 config = context.config
@@ -17,6 +15,7 @@ if config.config_file_name is not None:
 
 # ✅ Ensure Alembic detects models
 target_metadata = Base.metadata  # ✅ This must be set correctly!
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
@@ -31,6 +30,7 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
     connectable = engine_from_config(
@@ -42,11 +42,12 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
-            target_metadata=target_metadata  # ✅ Ensure metadata is passed
+            target_metadata=target_metadata,  # ✅ Ensure metadata is passed
         )
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

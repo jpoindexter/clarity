@@ -1,5 +1,7 @@
-import requests
 import json
+
+import requests
+
 
 def summarize_text(text: str, model: str = "mistral") -> str:
     """Summarizes input text using Ollama's AI model."""
@@ -9,13 +11,16 @@ def summarize_text(text: str, model: str = "mistral") -> str:
     try:
         response = requests.post(
             "http://127.0.0.1:11434/api/generate",
-            json={"model": model, "prompt": f"Summarize in ONE short sentence: {text}"},  # 🔥 Force brevity
-            stream=True  
+            json={
+                "model": model,
+                "prompt": f"Summarize in ONE short sentence: {text}",
+            },  # 🔥 Force brevity
+            stream=True,
         )
         response.raise_for_status()
 
         summary = []
-        
+
         for chunk in response.iter_lines():
             if chunk:
                 try:
@@ -23,12 +28,13 @@ def summarize_text(text: str, model: str = "mistral") -> str:
                     if "response" in data:
                         summary.append(data["response"])
                 except json.JSONDecodeError:
-                    continue  
+                    continue
 
         return " ".join(summary).strip() if summary else "⚠️ Error: No summary returned."
 
     except requests.exceptions.RequestException as e:
         return f"⚠️ Error: Ollama service unavailable - {e}"
+
 
 if __name__ == "__main__":
     print(summarize_text("Test input"))

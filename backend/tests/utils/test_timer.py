@@ -1,5 +1,6 @@
 from backend.src.utils.summary import summarize_text
 
+
 def test_summarize_text():
     """✅ Ensure text summarization returns a string"""
     text = "AI-powered tools are transforming industries by automating complex tasks."

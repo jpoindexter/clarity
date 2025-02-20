@@ -1,8 +1,9 @@
-from backend.src.database.db_connection import SessionLocal, engine, Base
+from backend.src.database.db_connection import Base, SessionLocal, engine
 from backend.src.models.article import Article
 
 # Ensure all tables are created
 Base.metadata.create_all(bind=engine)
+
 
 def seed_database():
     """Seed the database with test articles."""
@@ -29,11 +30,13 @@ def seed_database():
                 "content": "The global political climate is changing.",
                 "source": "Politics",
                 "url": "https://example.com/world-politics",
-            }
+            },
         ]
 
         for article in test_articles:
-            existing = db.query(Article).filter(Article.title == article["title"]).first()
+            existing = (
+                db.query(Article).filter(Article.title == article["title"]).first()
+            )
             if not existing:
                 db.add(Article(**article))
 

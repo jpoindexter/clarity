@@ -1,8 +1,9 @@
-import pytest
 from fastapi.testclient import TestClient
+
 from backend.src.api.main import app
 
 client = TestClient(app)
+
 
 def test_search_articles():
     """Test the search API endpoint."""

@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+
+from backend.src.api.endpoints.articles import (
+    router as articles_router,
+)  # ✅ Correct import
 from backend.src.api.endpoints.news import router as news_router
-from backend.src.api.endpoints.articles import router as articles_router  # ✅ Correct import
 
 app = FastAPI()
 

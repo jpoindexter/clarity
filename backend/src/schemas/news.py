@@ -1,6 +1,8 @@
-from pydantic import BaseModel, ConfigDict, field_serializer, Field
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
+
 
 class NewsBase(BaseModel):
     title: str
@@ -8,11 +10,14 @@ class NewsBase(BaseModel):
     source: str
     url: str
 
+
 class NewsCreate(NewsBase):
     pass
 
+
 class NewsUpdate(BaseModel):
     """✅ Schema for updating news entries"""
+
     title: Optional[str] = Field(None, min_length=1)  # ✅ Title cannot be None
     content: Optional[str]
     source: Optional[str]
@@ -21,13 +26,14 @@ class NewsUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+
 class News(NewsBase):
     id: int
     created_at: datetime  # ✅ Store as datetime, Pydantic will serialize it
 
     @field_serializer("created_at")
     def serialize_created_at(self, value: datetime) -> str:
-        """ Convert datetime to string automatically in responses. """
+        """Convert datetime to string automatically in responses."""
         return value.isoformat()
 
     model_config = ConfigDict(from_attributes=True)  # ✅ Ensures correct ORM parsing

@@ -14,9 +14,18 @@ app.add_middleware(
 
 # ✅ Fake news data (temporary placeholder)
 fake_news = [
-    {"id": 1, "title": "Breaking: AI Advances Rapidly", "summary": "Researchers make a breakthrough in AI technology."},
-    {"id": 2, "title": "Tech Industry Booming", "summary": "Stock prices for major tech companies are soaring."}
+    {
+        "id": 1,
+        "title": "Breaking: AI Advances Rapidly",
+        "summary": "Researchers make a breakthrough in AI technology.",
+    },
+    {
+        "id": 2,
+        "title": "Tech Industry Booming",
+        "summary": "Stock prices for major tech companies are soaring.",
+    },
 ]
+
 
 @app.get("/api/news/")
 async def get_news():
