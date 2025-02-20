@@ -17,6 +17,7 @@ if TEST_DATABASE_URL.startswith("sqlite"):
     test_engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
 else:
     test_engine = create_engine(TEST_DATABASE_URL)
+
 TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=test_engine))
 
 from backend.src.database.db_connection import Base, get_test_db
@@ -54,3 +55,6 @@ def test_db():
     finally:
         session.rollback()  # ✅ Rollback changes after each test
         session.close()
+
+# ✅ Force import of analyze.py so pytest-cov can detect it
+import backend.src.api.endpoints.analyze
