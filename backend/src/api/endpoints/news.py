@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 
 from backend.src.crud.news import news_crud
 from backend.src.database.db_connection import get_db
-from backend.src.schemas.news import News as NewsSchema
-from backend.src.schemas.news import NewsCreate
+from backend.src.schemas.news import News as NewsSchema, NewsCreate, NewsUpdate
 
 router = APIRouter()
 
@@ -20,11 +19,10 @@ def create_news(news_data: NewsCreate, db: Session = Depends(get_db)):
     return news
 
 
-@router.get("/", response_model=dict)
+@router.get("/", response_model=list[NewsSchema])
 def get_all_news(db: Session = Depends(get_db)):
     """✅ Retrieves all news entries."""
-    news_list = news_crud.get_all_news(db)
-    return {"articles": news_list}
+    return news_crud.get_all_news(db)  # ✅ Now directly returns serialized objects
 
 
 @router.get("/{news_id}", response_model=NewsSchema)
@@ -39,27 +37,14 @@ def get_news(news_id: int, db: Session = Depends(get_db)):
 @router.put("/{news_id}", response_model=NewsSchema)
 def update_news(
     news_id: int,
-    title: Optional[str] = None,
-    content: Optional[str] = None,
-    source: Optional[str] = None,
-    url: Optional[str] = None,
+    update_data: NewsUpdate,
     db: Session = Depends(get_db),
 ):
-    """✅ Update an existing news item"""
+    """✅ Update an existing news item."""
     existing_news = news_crud.get(db, news_id)
 
     if not existing_news:
         raise HTTPException(status_code=404, detail="News item not found")
-
-    if not any([title, content, source, url]):
-        raise HTTPException(status_code=422, detail="Update payload cannot be empty")
-
-    update_data = {
-        "title": title or existing_news.title,
-        "content": content or existing_news.content,
-        "source": source or existing_news.source,
-        "url": url or existing_news.url,
-    }
 
     updated_news = news_crud.update(db, db_obj=existing_news, obj_in=update_data)
     return updated_news

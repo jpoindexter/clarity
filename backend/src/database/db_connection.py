@@ -3,11 +3,16 @@ Database connection setup and helper functions.
 """
 
 import importlib
+import logging
 import os
 
 import pytest  # ✅ Ensure pytest is imported for fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
+
+# ✅ Enable Query Logging (Useful for Debugging & Optimization)
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 # ✅ Load environment variables (DO NOT HARDCODE CREDENTIALS)
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -20,9 +25,16 @@ if not DATABASE_URL or not TEST_DATABASE_URL:
         "   ➜ Check your environment variables."
     )
 
-# ✅ Create database engines
-engine = create_engine(DATABASE_URL)
-test_engine = create_engine(TEST_DATABASE_URL)
+# ✅ Create database engines with connection pooling
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=10,  # ✅ Allow up to 10 connections
+    max_overflow=20,  # ✅ Allow 20 additional connections in bursts
+    pool_timeout=30,  # ✅ Wait 30s before giving up
+    pool_recycle=1800,  # ✅ Recycle connections every 30 minutes
+)
+
+test_engine = create_engine(TEST_DATABASE_URL, echo=True)  # ✅ Enable logging for tests
 
 # ✅ Standard Session for Main Application
 SessionLocal = sessionmaker(
@@ -52,8 +64,7 @@ for model in MODELS:
         print(f"🔍 Importing model: {module_path}")
         importlib.import_module(module_path)
     except ModuleNotFoundError as e:
-        print(f"❌ Model Import Failed: {module_path}\n" f"   ➜ Error: {e}")
-
+        print(f"❌ Model Import Failed: {module_path}\n   ➜ Error: {e}")
 
 # ✅ Dependency for DB session
 def get_db():
@@ -64,7 +75,6 @@ def get_db():
     finally:
         db.close()
 
-
 # ✅ Dependency for Test DB session (for pytest)
 def get_test_db():
     """Create a new test database session for testing."""
@@ -73,7 +83,6 @@ def get_test_db():
         yield db
     finally:
         db.close()
-
 
 # ✅ Pytest fixture to ensure test DB session works
 @pytest.fixture

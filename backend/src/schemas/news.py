@@ -5,6 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 
 class NewsBase(BaseModel):
+    """✅ Shared schema for News (used in multiple places)."""
+
     title: str
     content: str
     source: str
@@ -12,22 +14,23 @@ class NewsBase(BaseModel):
 
 
 class NewsCreate(NewsBase):
-    pass
+    """✅ Schema for creating a new news entry."""
 
 
 class NewsUpdate(BaseModel):
-    """✅ Schema for updating news entries"""
+    """✅ Schema for updating news entries."""
 
-    title: Optional[str] = Field(None, min_length=1)  # ✅ Title cannot be None
+    title: Optional[str] = Field(None, min_length=1)  # ✅ Title cannot be empty
     content: Optional[str]
     source: Optional[str]
     url: Optional[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class News(NewsBase):
+    """✅ Schema for returning news entries (includes ID & timestamp)."""
+
     id: int
     created_at: datetime  # ✅ Store as datetime, Pydantic will serialize it
 
