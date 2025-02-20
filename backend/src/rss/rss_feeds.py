@@ -11,22 +11,22 @@ RSS_FEEDS = [
     "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
     "https://www.theguardian.com/world/rss",
     "https://feeds.bbci.co.uk/news/rss.xml",
-    "https://rss.cnn.com/rss/edition.rss",
-    "https://news.google.com/rss"
+    "https://news.google.com/rss",
+    "https://www.aljazeera.com/xml/rss/all.xml"
 ]
 
 def fetch_rss_feed(url):
     """Fetch an RSS feed with SSL error handling."""
     try:
-        # ✅ First attempt: Normal request
         response = requests.get(url, timeout=5)
-        response.raise_for_status()  # Raise error for HTTP issues
+        response.raise_for_status()  # ✅ Raise error for HTTP issues
         parsed_feed = feedparser.parse(response.text)
 
-        if parsed_feed.bozo == 1:
+        if parsed_feed.bozo:
             raise Exception(f"Invalid RSS format: {url}")
 
-        logger.info(f"✅ Successfully fetched RSS feed: {url}")
+        feed_title = parsed_feed.feed.get("title", "Unknown Feed")
+        logger.info(f"✅ Successfully fetched RSS feed: {feed_title} ({url})")
         return parsed_feed
 
     except requests.exceptions.SSLError:
@@ -36,10 +36,11 @@ def fetch_rss_feed(url):
             response.raise_for_status()
             parsed_feed = feedparser.parse(response.text)
 
-            if parsed_feed.bozo == 1:
+            if parsed_feed.bozo:
                 raise Exception(f"Invalid RSS format: {url}")
 
-            logger.info(f"✅ Successfully fetched RSS feed (no SSL): {url}")
+            feed_title = parsed_feed.feed.get("title", "Unknown Feed")
+            logger.info(f"✅ Successfully fetched RSS feed (no SSL): {feed_title} ({url})")
             return parsed_feed
 
         except Exception as e:
@@ -48,4 +49,14 @@ def fetch_rss_feed(url):
 
 def fetch_all_feeds():
     """Fetch all RSS feeds and return valid ones."""
-    return [fetch_rss_feed(url) for url in RSS_FEEDS if fetch_rss_feed(url) is not None]
+    valid_feeds = []
+    
+    for url in RSS_FEEDS:
+        parsed_feed = fetch_rss_feed(url)
+        if parsed_feed:
+            valid_feeds.append(parsed_feed)
+        else:
+            logger.error(f"❌ Skipping broken feed: {url}")
+
+    logger.info(f"🔥 Successfully fetched {len(valid_feeds)} valid feeds.")
+    return valid_feeds
