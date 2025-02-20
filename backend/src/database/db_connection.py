@@ -4,6 +4,7 @@ Database connection setup and helper functions.
 
 import os
 import pytest  # ✅ Ensure pytest is imported for fixture
+import importlib
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 
@@ -29,9 +30,15 @@ TestingSessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=Fa
 Base = declarative_base()
 
 # ✅ Dynamically import models to avoid circular imports
-import importlib
-for model in ["backend.src.models.news", "models.article"]:
-    importlib.import_module(model)
+MODELS = ["news", "article"]  # ✅ Only valid models, no "backend" nonsense
+
+for model in MODELS:
+    module_path = f"backend.src.models.{model}"
+    try:
+        print(f"🔍 Importing model: {module_path}")
+        importlib.import_module(module_path)
+    except ModuleNotFoundError as e:
+        print(f"❌ Model Import Failed: {module_path} - {e}")
 
 # ✅ Dependency for DB session
 def get_db():
