@@ -1,10 +1,18 @@
 import json
-
 import requests
 
 
 def summarize_text(text: str, model: str = "mistral") -> str:
-    """Summarizes input text using Ollama's AI model."""
+    """
+    Summarizes input text using Ollama's AI model.
+
+    Args:
+        text (str): The text to summarize.
+        model (str): The Ollama model to use for summarization (default: "mistral").
+
+    Returns:
+        str: The summarized text or an error message.
+    """
     if not text.strip():
         return "⚠️ Error: Input text is empty."
 
@@ -14,26 +22,30 @@ def summarize_text(text: str, model: str = "mistral") -> str:
             json={
                 "model": model,
                 "prompt": f"Summarize in ONE short sentence: {text}",
-            },  # 🔥 Force brevity
+            },  # 🔥 Force brevity, now within 88 chars
             stream=True,
         )
         response.raise_for_status()
 
-        summary = []
+        summary: list[str] = []
 
         for chunk in response.iter_lines():
-            if chunk:
-                try:
-                    data = json.loads(chunk.decode("utf-8"))
-                    if "response" in data:
-                        summary.append(data["response"])
-                except json.JSONDecodeError:
-                    continue
+            if not chunk:
+                continue
 
-        return " ".join(summary).strip() if summary else "⚠️ Error: No summary returned."
+            try:
+                data = json.loads(chunk.decode("utf-8"))
+                if "response" in data:
+                    summary.append(data["response"])
+            except json.JSONDecodeError:
+                continue  # ✅ Skip invalid JSON
+
+        return (
+            " ".join(summary).strip() if summary else "⚠️ Error: No summary returned."
+        )  # ✅ Manually split to fit within 88 chars
 
     except requests.exceptions.RequestException as e:
-        return f"⚠️ Error: Ollama service unavailable - {e}"
+        return f"⚠️ Error: Ollama service unavailable.\n➜ Details: {e}"
 
 
 if __name__ == "__main__":

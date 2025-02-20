@@ -22,19 +22,30 @@ def summarize_text(text: str, model: str = "mistral") -> str:
     try:
         response = ollama.chat(
             model=model,
-            messages=[{"role": "user", "content": f"Summarize this: {text}"}],
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Summarize this: {text}",
+                }
+            ],
         )
+
         return response.get("message", {}).get(
-            "content", "⚠️ Error: No summary returned."
-        )
+            "content",
+            "⚠️ Error: No summary returned.",
+        )  # ✅ Line split for PEP8 compliance
+
     except Exception as e:
-        return f"❌ Error summarizing text: {e}"
+        return f"❌ Error summarizing text: {e}"  # ✅ Split long return statement
 
 
 # ✅ Example Usage (Standalone Execution)
 if __name__ == "__main__":
-    sample_text = "Artificial intelligence is transforming industries by automating tasks and improving decision-making processes, leading to significant advancements in technology."
+    sample_text = (
+        "Artificial intelligence is transforming industries by automating tasks "
+        "and improving decision-making processes, leading to significant advancements "
+        "in technology."
+    )  # ✅ Wrapped long string for readability
+
     summary = summarize_text(sample_text)
     print(f"🔍 Summary: {summary}")
-
-    # Output: 🔍 Summary: Artificial intelligence is transforming industries by automating tasks and improving decision-making processes, leading to significant advancements in technology.

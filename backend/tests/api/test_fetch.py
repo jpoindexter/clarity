@@ -10,6 +10,9 @@ client = TestClient(app)
 
 
 def test_articles_endpoint():
-    """Tests that the `/api/articles/` endpoint returns a successful response (200 OK)."""
+    """
+    ✅ Tests that the `/api/articles/` endpoint returns
+    a successful response (200 OK).
+    """
     response = client.get("/api/v1/articles/")  # ✅ Correct route
     assert response.status_code == 200

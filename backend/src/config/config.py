@@ -6,6 +6,7 @@ This module loads environment variables and defines application-wide settings.
 
 import os
 from typing import ClassVar, List
+
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict
 

@@ -5,7 +5,10 @@ import pytest
 
 @pytest.fixture
 def mock_fetch_rss_feed():
-    """✅ Mock `feedparser.parse()` & `summarize_text()` to return controlled test data."""
+    """
+    ✅ Mock `feedparser.parse()` & `summarize_text()`
+    to return controlled test data.
+    """
     mock_data = MagicMock()
     mock_data.bozo = 0  # ✅ Simulate successful RSS parse (No errors)
     mock_data.entries = [
@@ -19,8 +22,9 @@ def mock_fetch_rss_feed():
 
     with patch("feedparser.parse", return_value=mock_data):
         with patch(
-            "backend.src.utils.summarizer.summarize_text", side_effect=lambda x: x
-        ):  # ✅ Mock summarization
+            "backend.src.utils.summarizer.summarize_text",
+            side_effect=lambda x: x,  # ✅ Mock summarization
+        ):
             yield mock_data
 
 
@@ -38,7 +42,7 @@ def test_fetch_rss_success(mock_fetch_rss_feed):
         expected_article = {
             "title": f"Test Article {i+1}",
             "url": f"https://example.com/test-article-{i+1}",
-            "summary": f"Mocked Test Description {i+1}",  # ✅ Matches the mocked summary
+            "summary": f"Mocked Test Description {i+1}",  # ✅ Matches mock summary
         }
         assert (
             article == expected_article

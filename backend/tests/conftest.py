@@ -12,25 +12,33 @@ TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///test_clarity.db")
 # ✅ Ensure TEST_DATABASE_URL is set
 if not TEST_DATABASE_URL:
     raise ValueError(
-        "❌ TEST_DATABASE_URL is not set. Check your environment variables."
+        "❌ TEST_DATABASE_URL is not set.\n" "   ➜ Check your environment variables."
     )
 
 # ✅ Create test database engine
 if TEST_DATABASE_URL.startswith("sqlite"):
     test_engine = create_engine(
-        TEST_DATABASE_URL, connect_args={"check_same_thread": False}
+        TEST_DATABASE_URL,
+        connect_args={"check_same_thread": False},  # ✅ Formatted for PEP8
     )
 else:
     test_engine = create_engine(TEST_DATABASE_URL)
 
 TestingSessionLocal = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=test_engine,
+    )
 )
 
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_db():
-    """✅ Ensure test database is created & migrations are applied before running tests."""
+    """
+    ✅ Ensure test database is created & migrations are
+    applied before running tests.
+    """
     with test_engine.connect() as conn:
         if TEST_DATABASE_URL.startswith("sqlite"):
             conn.execute(text("PRAGMA foreign_keys = ON;"))

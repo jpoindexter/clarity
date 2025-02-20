@@ -1,4 +1,5 @@
 import feedparser
+
 from backend.src.rss.rss_feeds import RSS_FEEDS
 from backend.src.utils.summarizer import summarize_text
 

@@ -16,7 +16,10 @@ from backend.src.rss.rss_feeds import RSS_FEEDS
 
 @pytest.mark.parametrize("rss_url", RSS_FEEDS)
 def test_rss_feed_fetching(rss_url):
-    """✅ Ensure RSS feeds are accessible, retry on SSL issues, and return valid entries."""
+    """
+    ✅ Ensure RSS feeds are accessible, retry on SSL issues,
+    and return valid entries.
+    """
 
     parsed_feed = None  # ✅ Ensure `parsed_feed` is initialized
 
@@ -30,7 +33,8 @@ def test_rss_feed_fetching(rss_url):
         # ✅ Check for invalid RSS format
         if getattr(parsed_feed, "bozo", 0):
             pytest.xfail(
-                f"❌ Invalid RSS format: {rss_url} ({parsed_feed.bozo_exception})"
+                f"❌ Invalid RSS format: {rss_url}\n"
+                f"   ➜ {parsed_feed.bozo_exception}"
             )
             return  # ✅ Exit early
 
@@ -65,5 +69,6 @@ def test_rss_feed_fetching(rss_url):
     ), f"❌ Missing title or link in first article of {rss_url}"
 
     print(
-        f"✅ RSS feed fetched successfully: {rss_url} ({len(parsed_feed.entries)} articles)"
+        f"✅ RSS feed fetched successfully: {rss_url}\n"
+        f"   ➜ {len(parsed_feed.entries)} articles retrieved."
     )

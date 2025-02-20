@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+
 from backend.src.api.main import app
 from backend.src.database.db_connection import get_db
 from backend.src.models.news import News

@@ -16,7 +16,8 @@ TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 # ✅ Ensure database URLs are set
 if not DATABASE_URL or not TEST_DATABASE_URL:
     raise ValueError(
-        "❌ DATABASE_URL or TEST_DATABASE_URL is not set. Check your environment variables."
+        "❌ DATABASE_URL or TEST_DATABASE_URL is not set.\n"
+        "   ➜ Check your environment variables."
     )
 
 # ✅ Create database engines
@@ -24,11 +25,19 @@ engine = create_engine(DATABASE_URL)
 test_engine = create_engine(TEST_DATABASE_URL)
 
 # ✅ Standard Session for Main Application
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 # ✅ Scoped Session for Testing
 TestingSessionLocal = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=test_engine,
+    )
 )
 
 # ✅ Define Base model
@@ -43,7 +52,7 @@ for model in MODELS:
         print(f"🔍 Importing model: {module_path}")
         importlib.import_module(module_path)
     except ModuleNotFoundError as e:
-        print(f"❌ Model Import Failed: {module_path} - {e}")
+        print(f"❌ Model Import Failed: {module_path}\n" f"   ➜ Error: {e}")
 
 
 # ✅ Dependency for DB session

@@ -1,5 +1,7 @@
 from typing import Optional
+
 from sqlalchemy.orm import Session
+
 from backend.src.models.news import News
 from backend.src.schemas.news import News as NewsSchema
 

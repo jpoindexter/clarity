@@ -17,8 +17,14 @@ class News(Base):
     source = Column(String(255), nullable=False)
     url = Column(String(2083), nullable=False, unique=True)
     created_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
-    )
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )  # ✅ Line split for PEP8 compliance
 
     def __repr__(self):
-        return f"<News(id={self.id}, title={self.title}, source={self.source}, created_at={self.created_at})>"
+        return (
+            f"<News(id={self.id}, title={self.title}, "
+            f"source={self.source}, "
+            f"created_at={self.created_at})>"
+        )  # ✅ Line split for PEP8 compliance
