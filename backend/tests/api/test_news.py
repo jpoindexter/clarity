@@ -56,3 +56,57 @@ def test_get_nonexistent_news(test_db):
     response = client.get("/api/v1/news/9999")
     assert response.status_code == 404
     assert response.json()["detail"] == "News item not found"
+
+
+# ✅ Test Creating News Successfully
+def test_create_news_success(test_db):
+    """✅ Ensure API creates news successfully"""
+    payload = {"title": "New Article", "content": "This is a new article."}
+    response = client.post("/api/v1/news/", json=payload)
+    assert response.status_code == 201
+    assert response.json()["title"] == "New Article"
+    assert response.json()["content"] == "This is a new article."
+
+
+# ✅ Test Retrieving News List
+def test_get_news_list(test_db):
+    """✅ Ensure API returns a list of news"""
+    news_item = News(title="Existing Article", content="This is an existing article.")
+    test_db.add(news_item)
+    test_db.commit()
+
+    response = client.get("/api/v1/news/")
+    assert response.status_code == 200
+    assert len(response.json()["articles"]) == 1
+    assert response.json()["articles"][0]["title"] == "Existing Article"
+    assert response.json()["articles"][0]["content"] == "This is an existing article."
+
+
+# ✅ Test Updating Existing News
+def test_update_existing_news(test_db):
+    """✅ Ensure updating an existing news entry works"""
+    news_item = News(title="Old Title", content="Old content.")
+    test_db.add(news_item)
+    test_db.commit()
+
+    update_payload = {"title": "Updated Title", "content": "Updated content."}
+    response = client.put(f"/api/v1/news/{news_item.id}", json=update_payload)
+    assert response.status_code == 200
+    assert response.json()["title"] == "Updated Title"
+    assert response.json()["content"] == "Updated content."
+
+
+# ✅ Test Deleting Existing News
+def test_delete_existing_news(test_db):
+    """✅ Ensure deleting an existing news entry works"""
+    news_item = News(title="Article to Delete", content="This article will be deleted.")
+    test_db.add(news_item)
+    test_db.commit()
+
+    response = client.delete(f"/api/v1/news/{news_item.id}")
+    assert response.status_code == 204
+
+    # Verify the news item is deleted
+    response = client.get(f"/api/v1/news/{news_item.id}")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "News item not found"

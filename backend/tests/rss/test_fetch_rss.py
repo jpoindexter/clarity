@@ -49,3 +49,54 @@ def test_fetch_rss_success(mock_fetch_rss_feed):
         ), f"❌ Incorrect article data (Got: {article})"
 
     print(f"🔥 DEBUG: Test Passed - Fetched {len(articles)} articles correctly.")
+
+
+@patch("feedparser.parse")
+@patch("backend.src.utils.summarizer.summarize_text")
+def test_fetch_rss_partial_entries(mock_summarize_text, mock_parse):
+    """✅ Ensure it handles partial RSS entries."""
+    mock_data = MagicMock()
+    mock_data.bozo = 0
+    mock_data.entries = [
+        {
+            "title": "Test Article 1",
+            "link": "https://example.com/test-article-1",
+            "content": [{"value": "Mocked Test Description 1"}],
+        },
+        {
+            "title": "Test Article 2",
+            "link": "https://example.com/test-article-2",
+            # Missing content
+        },
+    ]
+    mock_parse.return_value = mock_data
+
+    from backend.src.rss.fetch_rss import fetch_and_process_rss
+
+    articles = fetch_and_process_rss()
+
+    assert isinstance(articles, list), "❌ Expected a list of articles"
+    assert len(articles) == 1, f"❌ Expected 1 article, got {len(articles)}"
+
+    expected_article = {
+        "title": "Test Article 1",
+        "url": "https://example.com/test-article-1",
+        "summary": "Mocked Test Description 1",
+    }
+    assert articles[0] == expected_article, f"❌ Incorrect article data (Got: {articles[0]})"
+
+
+@patch("feedparser.parse")
+@patch("backend.src.utils.summarizer.summarize_text")
+def test_fetch_rss_parse_error(mock_summarize_text, mock_parse):
+    """✅ Ensure it handles RSS parse errors gracefully."""
+    mock_data = MagicMock()
+    mock_data.bozo = 1  # Simulate parse error
+    mock_parse.return_value = mock_data
+
+    from backend.src.rss.fetch_rss import fetch_and_process_rss
+
+    articles = fetch_and_process_rss()
+
+    assert isinstance(articles, list), "❌ Expected a list of articles"
+    assert len(articles) == 0, f"❌ Expected 0 articles, got {len(articles)}"

@@ -1,16 +1,20 @@
-def test_articles():
-    from backend.src.crud.articles import Article
+from backend.src.models.article import Article
 
+def test_articles(test_db):
+    """✅ Ensure Article model works correctly"""
     article = Article(title="Test Title", content="Test Content")
+    test_db.add(article)
+    test_db.commit()
+    test_db.refresh(article)
+    
     assert article.title == "Test Title"
     assert article.content == "Test Content"
-
-    article.save()
     assert article.id is not None
 
-    fetched_article = Article.get(article.id)
+    fetched_article = test_db.query(Article).get(article.id)
     assert fetched_article.title == "Test Title"
     assert fetched_article.content == "Test Content"
 
-    article.delete()
-    assert Article.get(article.id) is None
+    test_db.delete(article)
+    test_db.commit()
+    assert test_db.query(Article).get(article.id) is None

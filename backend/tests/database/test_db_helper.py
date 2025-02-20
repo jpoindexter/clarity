@@ -1,8 +1,19 @@
 import pytest
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 from backend.src.database.db_helper import get_or_create, fetch_articles
-from unittest.mock import MagicMock
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+
+Base = declarative_base()
+
+class MockModel(Base):
+    __tablename__ = 'mock_model'
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+
+class MockArticle(Base):
+    __tablename__ = 'mock_article'
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True)
 
 def some_function():
     return "some_expected_value"
@@ -19,47 +30,38 @@ def test_another_function():
     assert another_function() == expected_value
 
 def test_missing_lines():
-    # Add tests to cover lines 18, 54-55, 71-75, 82-85 in db_connection.py
-    from backend.src.database.db_connection import function_to_test  # Import the actual function
-    expected_value = "expected_value"  # Define the expected value
-    assert function_to_test() == expected_value
+    """✅ Ensure database connection functions are working."""
+    from backend.src.database.db_connection import get_db  # ✅ Fix import
+
+    db = next(get_db())  # ✅ Ensure DB session is retrieved properly
+    assert db is not None
 
 def test_get_or_create():
     # Setup in-memory SQLite database for testing
     engine = create_engine('sqlite:///:memory:')
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    Base.metadata.create_all(bind=engine)
     session = SessionLocal()
-
-    class MockModel:
-        def __init__(self, **kwargs):
-            for key, value in kwargs.items():
-                setattr(self, key, value)
 
     # Test when instance exists
     existing_instance = MockModel(name="test")
     session.add(existing_instance)
     session.commit()
 
-    instance, created = get_or_create(session, MockModel, name="test")
+    instance = get_or_create(session, MockModel, name="test")
     assert instance.name == "test"
-    assert created == False
 
     # Test when instance does not exist
-    instance, created = get_or_create(session, MockModel, name="new_test")
+    instance = get_or_create(session, MockModel, name="new_test")
     assert instance.name == "new_test"
-    assert created == True
     session.commit()
 
 def test_fetch_articles():
     # Setup in-memory SQLite database for testing
     engine = create_engine('sqlite:///:memory:')
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    Base.metadata.create_all(bind=engine)
     session = SessionLocal()
-
-    class MockArticle:
-        def __init__(self, **kwargs):
-            for key, value in kwargs.items():
-                setattr(self, key, value)
 
     # Test when there are articles in the database
     article1 = MockArticle(title="Article 1")

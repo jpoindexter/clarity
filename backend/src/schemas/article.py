@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-
-class ArticleCreate(BaseModel):
+class Article(BaseModel):
+    id: int
     title: str
     content: str
     source: str
