@@ -1,17 +1,20 @@
 import feedparser
 
-def fetch_rss_feed(feed_url):
-    """
-    Fetches RSS feed and returns parsed entries.
-    """
-    feed = feedparser.parse(feed_url)
-    if not feed.entries:
-        print(f"⚠️ No entries found for {feed_url}")
-        return []
-    return feed.entries
+def parse_feed(feed_data):
+    """✅ Parses RSS feed data into structured articles."""
+    articles = []
+    for entry in feed_data.entries:
+        article = {
+            "title": entry.get("title", "No Title"),
+            "url": entry.get("link", None),
+        }
 
-if __name__ == "__main__":
-    test_url = "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-    articles = fetch_rss_feed(test_url)
-    for article in articles[:5]:  # Show first 5 articles for testing
-        print(f"📰 {article.title} - {article.link}")
+        # Only add fields if they exist in the feed
+        if "summary" in entry:
+            article["summary"] = entry["summary"]
+        if "published" in entry:
+            article["published_at"] = entry["published"]
+
+        articles.append(article)
+
+    return articles
