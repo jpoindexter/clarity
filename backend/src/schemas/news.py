@@ -1,42 +1,17 @@
+from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer
-
-
-class NewsBase(BaseModel):
-    """✅ Shared schema for News (used in multiple places)."""
-
+class NewsCreate(BaseModel):
     title: str
     content: str
-    source: str
+    source: str = Field(..., description="Source is required")  # ✅ REQUIRED
+    url: str = Field(..., description="URL is required")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ArticleCreate(BaseModel):
+    title: str
+    summary: str = Field(..., description="Summary is required")  # ✅ REQUIRED
+    content: str
+    source: str = Field(..., description="Source is required")
     url: str
-
-
-class NewsCreate(NewsBase):
-    """✅ Schema for creating a new news entry."""
-
-
-class NewsUpdate(BaseModel):
-    """✅ Schema for updating news entries."""
-
-    title: Optional[str] = Field(None, min_length=1)  # ✅ Title cannot be empty
-    content: Optional[str]
-    source: Optional[str]
-    url: Optional[str]
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class News(NewsBase):
-    """✅ Schema for returning news entries (includes ID & timestamp)."""
-
-    id: int
-    created_at: datetime  # ✅ Store as datetime, Pydantic will serialize it
-
-    @field_serializer("created_at")
-    def serialize_created_at(self, value: datetime) -> str:
-        """Convert datetime to string automatically in responses."""
-        return value.isoformat()
-
-    model_config = ConfigDict(from_attributes=True)  # ✅ Ensures correct ORM parsing
+    published_at: datetime = Field(default_factory=datetime.utcnow)

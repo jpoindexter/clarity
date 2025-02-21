@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -10,13 +11,19 @@ from backend.src.schemas.news import News as NewsSchema, NewsCreate, NewsUpdate
 router = APIRouter()
 
 
-@router.post("/", response_model=NewsSchema, status_code=201)
-def create_news(news_data: NewsCreate, db: Session = Depends(get_db)):
-    """✅ Creates a new news entry."""
-    news = news_crud.create(db=db, obj_in=news_data)
-    if not news:
-        raise HTTPException(status_code=400, detail="Failed to create news")
-    return news
+@router.post("/", response_model=NewsCreate)
+def create_news(news: NewsCreate, db: Session = Depends(get_db)):
+    new_news = news(
+        title=news.title,
+        content=news.content,
+        source=news.source,
+        url=news.url,
+        created_at=news.created_at or datetime()
+    )
+    db.add(new_news)
+    db.commit()
+    db.refresh(new_news)
+    return new_news
 
 
 @router.get("/", response_model=list[NewsSchema])

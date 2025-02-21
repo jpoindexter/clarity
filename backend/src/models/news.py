@@ -1,30 +1,23 @@
-from datetime import datetime, timezone
+from sqlalchemy import Column, String, Integer, Text, DateTime
+from sqlalchemy.orm import declarative_base
 
-from sqlalchemy import Column, DateTime, Integer, String, Text
-
-from backend.src.database.db_connection import Base  # ✅ Fixed import
-
+Base = declarative_base()
 
 class News(Base):
-    """✅ Database model for storing news articles."""
-
     __tablename__ = "news"
-    __table_args__ = {"extend_existing": True}  # ✅ Fixes duplicate table error
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String, nullable=False)
     content = Column(Text, nullable=False)
-    source = Column(String(255), nullable=False)
-    url = Column(String(2083), nullable=False, unique=True)
-    created_at = Column(
-        DateTime,
-        default=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )  # ✅ Line split for PEP8 compliance
+    source = Column(String, nullable=False)  # ✅ NOW REQUIRED
+    url = Column(String, nullable=False)  # ✅ NOW REQUIRED
+    created_at = Column(DateTime, nullable=False)
 
-    def __repr__(self):
-        return (
-            f"<News(id={self.id}, title={self.title}, "
-            f"source={self.source}, "
-            f"created_at={self.created_at})>"
-        )  # ✅ Line split for PEP8 compliance
+class Article(Base):
+    __tablename__ = "articles"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String, nullable=False)
+    summary = Column(Text, nullable=False)  # ✅ NOW REQUIRED
+    content = Column(Text, nullable=False)
+    source = Column(String, nullable=False)  # ✅ NOW REQUIRED
+    url = Column(String, nullable=False)
+    published_at = Column(DateTime, nullable=False)
