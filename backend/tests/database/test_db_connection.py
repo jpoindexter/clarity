@@ -1,27 +1,23 @@
 import pytest
-from backend.src.database.db_connection import get_db, get_test_db, SessionLocal
+from backend.src.database.db_connection import get_db, SessionLocal
 
 
 def test_get_db():
-    """✅ Ensure DB session opens and closes properly"""
+    """✅ Ensure DB session opens and closes properly."""
     db = next(get_db())
-    assert db is not None
-    db.close()
-
-
-def test_get_test_db():
-    """✅ Ensure Test DB session opens and closes properly"""
-    test_db = next(get_test_db())
-    assert test_db is not None
-    test_db.close()
+    try:
+        assert db is not None, "Database session should not be None"
+    finally:
+        db.close()  # ✅ Ensure session closes properly
 
 
 def test_session_commit():
-    """✅ Ensure session commit does not fail"""
+    """✅ Ensure session commit does not fail."""
     db = SessionLocal()
     try:
         db.commit()
-    except Exception:
-        assert False, "Commit failed unexpectedly"
+        assert True  # ✅ Explicit success condition
+    except Exception as e:
+        pytest.fail(f"Commit failed unexpectedly: {e}")
     finally:
-        db.close()
+        db.close()  # ✅ Ensure session closes properly

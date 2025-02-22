@@ -47,7 +47,35 @@ def summarize(text: str, model: str = "mistral") -> str:
     except requests.exceptions.RequestException as e:
         return f"⚠️ Error: Ollama service unavailable. ➜ Details: {str(e)}"
 
+def summarize_text(text: str, max_length: int = 100) -> str:
+    """
+    Summarizes the given text to a specified length.
+
+    Args:
+        text (str): The input text to summarize.
+        max_length (int): The maximum length of the summary.
+
+    Returns:
+        str: The summarized text.
+    """
+    if not text.strip():
+        return "⚠️ Error: Input text is empty."
+
+    sentences = text.split(". ")
+    summary = []
+    total_length = 0
+
+    for sentence in sentences:
+        if total_length + len(sentence) <= max_length:
+            summary.append(sentence)
+            total_length += len(sentence)
+        else:
+            break
+
+    return ". ".join(summary) + "." if summary else "⚠️ Error: Unable to generate summary."
+
 # ✅ Standalone test mode
 if __name__ == "__main__":
-    test_text = "Artificial intelligence is transforming the world."
+    test_text = "Artificial intelligence is transforming the world. It is changing industries and impacting society significantly."
     print(summarize(test_text))
+    print(summarize_text(test_text, max_length=50))

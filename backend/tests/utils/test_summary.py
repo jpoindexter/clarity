@@ -1,5 +1,5 @@
 import pytest
-from backend.src.utils.summary import summarize_text
+from backend.src.utils.summary_generator import summarize_text
 
 def test_summary_basic():
     """✅ Ensure text summarization works"""

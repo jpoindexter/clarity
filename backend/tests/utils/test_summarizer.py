@@ -1,7 +1,7 @@
 import json
 from unittest.mock import patch
 import pytest
-from backend.src.utils.summarizer import summarize_text
+from backend.src.utils.text_summarizer import summarize_text
 
 
 @pytest.fixture
