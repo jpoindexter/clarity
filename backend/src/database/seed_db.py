@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from backend.src.database.db_connection import Base, SessionLocal, engine
 from backend.src.models.article import Article
 
@@ -16,6 +17,7 @@ def seed_database():
                 "content": "Breaking news content.",
                 "source": "News",
                 "url": "https://example.com/breaking-news",
+                "published_at": datetime.now(timezone.utc),  # ✅ Ensures timestamp
             },
             {
                 "title": "Tech Advances",
@@ -23,6 +25,7 @@ def seed_database():
                 "content": "AI technology is evolving rapidly.",
                 "source": "Tech",
                 "url": "https://example.com/tech-advances",
+                "published_at": datetime.now(timezone.utc),
             },
             {
                 "title": "World Politics",
@@ -30,13 +33,12 @@ def seed_database():
                 "content": "The global political climate is changing.",
                 "source": "Politics",
                 "url": "https://example.com/world-politics",
+                "published_at": datetime.now(timezone.utc),
             },
         ]
 
         for article in test_articles:
-            existing = (
-                db.query(Article).filter(Article.title == article["title"]).first()
-            )
+            existing = db.query(Article).filter(Article.title == article["title"]).first()
             if not existing:
                 db.add(Article(**article))
 
@@ -47,3 +49,7 @@ def seed_database():
         print(f"❌ Database seeding failed: {e}")
     finally:
         db.close()
+
+
+if __name__ == "__main__":
+    seed_database()

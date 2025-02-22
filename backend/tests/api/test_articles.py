@@ -6,8 +6,8 @@ from datetime import datetime
 from backend.src.main import app
 from backend.src.database.db_connection import get_db
 from backend.src.crud.news import news_crud
-from backend.src.utils.misinformation_analysis import detect_misinformation  # ✅ Fixed import
-from backend.src.utils.text_summarizer import summarize  # ✅ Updated import
+from backend.src.utils.detect_misinfiromation import detect_misinformation  # ✅ Fixed import
+from backend.src.utils.summarizer import summarize  # ✅ Updated import
 from backend.src.schemas.news import NewsCreate
 
 # ✅ Create a test client for API testing
