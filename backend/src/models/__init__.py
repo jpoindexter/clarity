@@ -1,6 +1,8 @@
-# ✅ Import all models so Alembic can detect them
-from backend.src.database.db_connection import Base
-from backend.src.models.article import Article
-from backend.src.models.news import News
+from sqlalchemy.orm import declarative_base
 
-__all__ = ["News", "Article", "Base"]
+Base = declarative_base()  # ✅ No circular import
+
+# ✅ Import models AFTER defining Base
+import backend.src.models.article
+import backend.src.models.news
+import backend.src.database.db_connection as db_conn

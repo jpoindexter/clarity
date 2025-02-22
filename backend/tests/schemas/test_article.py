@@ -1,34 +1,31 @@
 import pytest
+from backend.src.schemas.article import Article, ArticleCreate  
 from pydantic import ValidationError
-from backend.src.schemas.article import Article as ArticleSchema
-
+from datetime import datetime, timezone
 
 def test_article_schema():
     """✅ Ensure Article schema validation works."""
-    from backend.src.schemas.article import Article  # ✅ Fix import
 
-    article = Article(title="Test Article", content="Some content", source="News", url="https://example.com")
+    article = Article(
+        id=1,
+        title="Test Article",
+        summary="This is a test summary.",
+        content="Some content",
+        source="News",
+        url="https://example.com",
+        published_at=datetime(2023, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+    )
+
     assert article.title == "Test Article"
 
-    valid_data = {
-        "title": "Sample Article",
-        "content": "This is a sample article content.",
-        "author": "Author Name",
-        "published_date": "2023-01-01"
-    }
-
-    schema = ArticleSchema(**valid_data)
-    assert schema.title == valid_data["title"]
-    assert schema.content == valid_data["content"]
-    assert schema.author == valid_data["author"]
-    assert schema.published_date == valid_data["published_date"]
-
     invalid_data = {
-        "title": "",
+        "title": "",  # ❌ Invalid title (empty)
+        "summary": "A sample summary.",
         "content": "This is a sample article content.",
-        "author": "Author Name",
-        "published_date": "2023-01-01"
+        "source": "Author Name",
+        "url": "https://example.com",
+        "published_at": "2023-01-01T00:00:00+00:00"
     }
 
     with pytest.raises(ValidationError):
-        ArticleSchema(**invalid_data)
+        ArticleCreate(**invalid_data)

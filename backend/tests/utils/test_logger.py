@@ -1,4 +1,4 @@
-from utils.logger import setup_logger
+from backend.src.utils.logger import setup_logger
 
 
 def test_setup_logger():

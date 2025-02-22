@@ -1,4 +1,5 @@
-from backend.src.schemas.content import ContentSchema
-from backend.src.schemas.news import News, NewsCreate, NewsUpdate
+# ✅ Use Lazy Import to Avoid Circular Dependencies
+import backend.src.schemas.article as article_schema
+import backend.src.schemas.news as news_schema
 
-__all__ = ["NewsCreate", "NewsUpdate", "News", "ContentSchema"]
+__all__ = ["article_schema", "news_schema"]

@@ -1,17 +1,27 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
+from typing import Optional
 
-class NewsCreate(BaseModel):
+class NewsBase(BaseModel):
+    """Base schema for all fetched news articles."""
     title: str
     content: str
-    source: str = Field(..., description="Source is required")  # ✅ REQUIRED
-    url: str = Field(..., description="URL is required")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-
-class ArticleCreate(BaseModel):
-    title: str
-    summary: str = Field(..., description="Summary is required")  # ✅ REQUIRED
-    content: str
-    source: str = Field(..., description="Source is required")
+    source: str
     url: str
-    published_at: datetime = Field(default_factory=datetime.utcnow)
+    published_at: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc))  # ✅ Fix: Optional
+
+class News(NewsBase):
+    """Schema for a stored news entry."""
+    id: int
+
+class NewsCreate(NewsBase):
+    """Schema for creating new news articles."""
+    pass
+
+class NewsUpdate(BaseModel):
+    """Schema for updating a news record."""
+    title: Optional[str] = None
+    content: Optional[str] = None
+    source: Optional[str] = None
+    url: Optional[str] = None
+    published_at: Optional[datetime] = None

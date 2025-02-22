@@ -1,11 +1,18 @@
 from fastapi import FastAPI
+from backend.src.api.main import include_routers
 
-from backend.src.api.endpoints.articles import (
-    router as articles_router,
-)  # ✅ Correct import
-from backend.src.api.endpoints.news import router as news_router
+# ✅ Initialize FastAPI application
+app = FastAPI(title="Clarity AI")
 
-app = FastAPI()
+# ✅ Include all API routes
+include_routers(app)
 
-app.include_router(news_router, prefix="/api")  # ✅ Ensures `/api/news/` works
-app.include_router(articles_router, prefix="")  # ✅ Fixes `/api/api/articles` issue
+# ✅ Root route for testing
+@app.get("/")
+def root():
+    return {"message": "Welcome to Clarity AI"}
+
+# ✅ Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

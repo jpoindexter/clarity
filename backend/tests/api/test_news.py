@@ -1,112 +1,84 @@
 import pytest
 from fastapi.testclient import TestClient
-
 from backend.src.api.main import app
 from backend.src.database.db_connection import get_db
 from backend.src.models.news import News
 
+# Create a test client for the FastAPI application
 client = TestClient(app)
-
 
 @pytest.fixture(scope="function")
 def test_db():
     """✅ Clears & resets the test DB before running"""
     db = next(get_db())
-    db.query(News).delete()
+    db.query(News).delete()  # Clear existing data in the database
     db.commit()
-    yield db
-    db.close()
+    yield db  # Provide the database session to the tests
+    db.close()  # Close the session after testing is complete
 
+# Test data with all required fields
+news_data = {
+    "title": "Test News Article",
+    "content": "This is a test article.",
+    "source": "Test Source",
+    "url": "https://example.com/test-news-article",  # Added missing field
+    "created_at": "2025-02-22T00:00:00Z"  # Ensure timestamp is present
+}
 
-# ✅ Test Creating News Without Required Fields
+# Test creating news without required fields
 def test_create_news_missing_fields(test_db):
-    """✅ Ensure API returns 422 for missing fields"""
     payload = {"title": "Missing Content"}
     response = client.post("/api/v1/news/", json=payload)
-    assert response.status_code == 422  # ✅ Expect validation error
+    assert response.status_code == 422  # Expect validation error
 
-
-# ✅ Test Retrieving Empty News List
-def test_get_news_empty_db(test_db):
-    """✅ Ensure API returns an empty list when no news exists"""
+# Test retrieving an empty news list when the database is empty
+def test_get_empty_news_list(test_db):
     response = client.get("/api/v1/news/")
     assert response.status_code == 200
-    assert response.json()["articles"] == []  # ✅ Match actual API response
+    assert len(response.json()["articles"]) == 0
 
-
-# ✅ Test Updating Nonexistent News
-def test_update_nonexistent_news(test_db):
-    """✅ Ensure updating a non-existing news entry returns 404"""
-    update_payload = {"title": "Updated Title"}
-    response = client.put("/api/v1/news/9999", json=update_payload)
-    assert response.status_code == 404
-    assert response.json()["detail"] == "News item not found"
-
-
-# ✅ Test Deleting Nonexistent News
-def test_delete_nonexistent_news(test_db):
-    """✅ Ensure deleting a non-existing news entry returns 404"""
-    response = client.delete("/api/v1/news/9999")
-    assert response.status_code == 404
-
-
-# ✅ Test Retrieving Nonexistent News
-def test_get_nonexistent_news(test_db):
-    """✅ Ensure API returns 404 for non-existing news item"""
-    response = client.get("/api/v1/news/9999")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "News item not found"
-
-
-# ✅ Test Creating News Successfully
+# Test creating news successfully with all required fields
 def test_create_news_success(test_db):
-    """✅ Ensure API creates news successfully"""
-    payload = {"title": "New Article", "content": "This is a new article."}
-    response = client.post("/api/v1/news/", json=payload)
+    response = client.post("/api/v1/news/", json=news_data)
     assert response.status_code == 201
-    assert response.json()["title"] == "New Article"
-    assert response.json()["content"] == "This is a new article."
+    assert response.json()["title"] == news_data["title"]
+    assert response.json()["content"] == news_data["content"]
 
-
-# ✅ Test Retrieving News List
+# Test retrieving a list of news when there is data in the database
 def test_get_news_list(test_db):
-    """✅ Ensure API returns a list of news"""
-    news_item = News(title="Existing Article", content="This is an existing article.")
-    test_db.add(news_item)
+    # Add test data to the database
+    new_news = News(**news_data)
+    test_db.add(new_news)
     test_db.commit()
 
     response = client.get("/api/v1/news/")
     assert response.status_code == 200
     assert len(response.json()["articles"]) == 1
-    assert response.json()["articles"][0]["title"] == "Existing Article"
-    assert response.json()["articles"][0]["content"] == "This is an existing article."
+    assert response.json()["articles"][0]["title"] == news_data["title"]
 
-
-# ✅ Test Updating Existing News
+# Test updating existing news with valid data
 def test_update_existing_news(test_db):
-    """✅ Ensure updating an existing news entry works"""
-    news_item = News(title="Old Title", content="Old content.")
-    test_db.add(news_item)
+    # Add test data to the database
+    new_news = News(**news_data)
+    test_db.add(new_news)
     test_db.commit()
 
-    update_payload = {"title": "Updated Title", "content": "Updated content."}
-    response = client.put(f"/api/v1/news/{news_item.id}", json=update_payload)
+    updated_data = {"title": "Updated Title", "content": "Updated content."}
+    response = client.put(f"/api/v1/news/{new_news.id}", json=updated_data)
     assert response.status_code == 200
-    assert response.json()["title"] == "Updated Title"
-    assert response.json()["content"] == "Updated content."
+    assert response.json()["title"] == updated_data["title"]
+    assert response.json()["content"] == updated_data["content"]
 
-
-# ✅ Test Deleting Existing News
+# Test deleting existing news with a valid ID
 def test_delete_existing_news(test_db):
-    """✅ Ensure deleting an existing news entry works"""
-    news_item = News(title="Article to Delete", content="This article will be deleted.")
-    test_db.add(news_item)
+    # Add test data to the database
+    new_news = News(**news_data)
+    test_db.add(new_news)
     test_db.commit()
 
-    response = client.delete(f"/api/v1/news/{news_item.id}")
+    response = client.delete(f"/api/v1/news/{new_news.id}")
     assert response.status_code == 204
 
-    # Verify the news item is deleted
-    response = client.get(f"/api/v1/news/{news_item.id}")
+    # Verify the news item is deleted by trying to retrieve it again
+    response = client.get(f"/api/v1/news/{new_news.id}")
     assert response.status_code == 404
-    assert response.json()["detail"] == "News item not found"

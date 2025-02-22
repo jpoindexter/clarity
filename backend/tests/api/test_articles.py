@@ -1,33 +1,55 @@
-def test_articles_endpoint():
-    from backend.src.api.endpoints.articles import some_function  # Replace with actual function to test
-    assert some_function() == expected_value  # Replace with actual expected value
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+from datetime import datetime
 
-def test_articles_crud():
-    from backend.src.crud.articles import create_article  # Replace with actual function to test
-    assert create_article(data) == expected_result  # Replace with actual data and expected result
+from backend.src.main import app
+from backend.src.database.db_connection import get_db
+from backend.src.crud.news import news_crud
+from backend.src.utils.misinformation_analysis import detect_misinformation  # ✅ Fixed import
+from backend.src.utils.text_summarizer import summarize  # ✅ Updated import
+from backend.src.schemas.news import NewsCreate
 
-def test_db_connection():
-    from backend.src.database.db_connection import connect  # Replace with actual function to test
-    assert connect() is not None  # Replace with actual expected behavior
+# ✅ Create a test client for API testing
+client = TestClient(app)
 
-def test_rss_feeds():
-    from backend.src.rss.rss_feeds import fetch_feeds  # Replace with actual function to test
-    assert fetch_feeds() == expected_feeds  # Replace with actual expected feeds
+# ✅ Setup a test database session
+@pytest.fixture(scope="module")
+def db():
+    """Provide a test database session."""
+    test_db = next(get_db())  # ✅ Get a fresh test DB session
+    yield test_db
+    test_db.close()  # ✅ Ensure session closes properly
 
-def test_article_schema():
-    from backend.src.schemas.article import validate_article  # Replace with actual function to test
-    assert validate_article(article_data) == True  # Replace with actual article data
+# ✅ Test misinformation detection function
+def test_detect_misinformation():
+    """✅ Test AI-powered misinformation detection."""
+    result = detect_misinformation("This is fake news.")
+    assert isinstance(result, dict), "Result should be a dictionary."
+    assert "misinformation_score" in result, "Missing 'misinformation_score' key in response."
 
-def test_summarizer():
-    from backend.src.utils.summarizer import summarize  # Replace with actual function to test
-    assert summarize(text) == expected_summary  # Replace with actual text and expected summary
+# ✅ Test the analyze_news endpoint
+def test_analyze_news(db: Session):
+    """✅ Ensure AI analysis works on news articles."""
+    news_data = {
+        "title": "Test News Article",
+        "content": "This is a test article.",
+        "source": "Test Source",
+        "url": "https://example.com/test-news",
+        "published_at": datetime.utcnow(),  # ✅ Ensure valid timestamp
+    }
+    created_news = news_crud.create(db, obj_in=NewsCreate(**news_data))
 
-def test_summary():
-    from backend.src.utils.summary import generate_summary  # Replace with actual function to test
-    assert generate_summary(data) == expected_summary  # Replace with actual data and expected summary
+    response = client.get(f"/news/analyze/{created_news.id}")
+    assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
+    data = response.json()
+    assert "misinformation_analysis" in data, "Missing 'misinformation_analysis' in response."
 
-def test_timer():
-    from backend.src.utils.timer import Timer  # Replace with actual class to test
-    timer = Timer()
-    timer.start()
-    assert timer.elapsed_time() >= 0  # Replace with actual expected behavior
+# ✅ Test summarization function
+def test_summarization():
+    """✅ Ensure text summarization works correctly."""
+    text = "This is a long article that needs summarization."
+    summary = summarize(text)
+    
+    assert isinstance(summary, str), "Summary should be a string."
+    assert len(summary) > 0, "Summary should not be empty."
