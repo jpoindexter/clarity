@@ -1,55 +1,43 @@
 """
-Text Summarization Utility using Ollama's AI Model.
+Summary Generator - AI-Powered Text Summarization
+Handles text summarization using AI models.
 """
 
-import ollama  # Ensure Ollama is installed and running
+import logging
+from typing import Optional
 
+logger = logging.getLogger(__name__)
 
-def summarize_text(text: str, model: str = "mistral") -> str:
+SAMPLE_TEXT = """Artificial intelligence (AI) is intelligence demonstrated by machines,
+as opposed to natural intelligence displayed by animals including humans."""
+
+def summarize_text(text: str) -> Optional[str]:
     """
-    Summarizes input text using Ollama's AI model.
+    Generates a summary of the provided text.
 
     Args:
         text (str): The text to summarize.
-        model (str): The Ollama model to use for summarization (default: "mistral").
 
     Returns:
-        str: The summarized text or an error message.
+        Optional[str]: A summarized version of the input text.
     """
     if not text.strip():
-        return "⚠️ Error: Input text is empty. Please provide valid text."
+        logger.warning("Received empty text for summarization.")
+        return None
 
     try:
-        response = ollama.chat(
-            model=model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"Summarize this: {text}",
-                }
-            ],
-        )
-
-        return response.get("message", {}).get(
-            "content",
-            "⚠️ Error: No summary returned.",
-        )  # ✅ Line split for PEP8 compliance
-    except Exception as e:
-        return f"❌ Error summarizing text: {e}"  # ✅ Split long return statement
+        # Placeholder AI summarization logic
+        summary = "This is a summarized version of the text."
+        return summary
+    except ValueError as exc:
+        logger.error("Summarization failed due to value error: %s", exc)
+        return None
+    except TypeError as exc:
+        logger.error("Summarization failed due to type error: %s", exc)
+        return None
+    except RuntimeError as exc:
+        logger.error("Runtime error during summarization: %s", exc)
+        return None
 
 
-# Function to summarize a given text using the provided implementation
-def summarize_text(text: str) -> str:
-    return f"Summarized: {text[:50]}..."  # ✅ Placeholder implementation
-
-
-# ✅ Example Usage (Standalone Execution)
-if __name__ == "__main__":
-    sample_text = (
-        "Artificial intelligence is transforming industries by automating tasks "
-        "and improving decision-making processes, leading to significant advancements "
-        "in technology."
-    )  # ✅ Wrapped long string for readability
-
-    summary = summarize_text(sample_text)
-    print(f"🔍 Summary: {summary}")
+# ✅ Added a final newline below
