@@ -1,5 +1,7 @@
 import sys
+
 import feedparser
+
 from backend.src.rss.rss_feeds import RSS_FEEDS
 from backend.src.utils.summarizer import summarize_text
 
@@ -32,13 +34,19 @@ def fetch_and_process_rss():
             title = entry.get("title", "No Title")
             url = entry.get("link", "https://unknown.com")  # ✅ Ensure URL exists
             summary_source = entry.get("content", [{}])[0].get("value", title)
-            published_at = entry.get("published", "2025-02-21T00:00:00Z")  # ✅ Ensure Published Date
+            published_at = entry.get(
+                "published", "2025-02-21T00:00:00Z"
+            )  # ✅ Ensure Published Date
 
             print(f"\n🔍 Fetching Article: {title}")
             print(f"🌐 URL: {url}")
             print(f"📰 Source: {source_name}")
 
-            summary = summarize_text(summary_source) if summary_source else "No summary available."
+            summary = (
+                summarize_text(summary_source)
+                if summary_source
+                else "No summary available."
+            )
 
             articles.append(
                 {

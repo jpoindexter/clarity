@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict
+from datetime import datetime, timezone
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ContentSchema(BaseModel):  # ✅ Add this missing schema

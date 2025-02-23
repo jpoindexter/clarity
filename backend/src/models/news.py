@@ -1,8 +1,10 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime
-from sqlalchemy.orm import declarative_base
 from datetime import datetime, timezone
 
+from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.orm import declarative_base
+
 Base = declarative_base()
+
 
 class News(Base):
     __tablename__ = "news"
@@ -11,8 +13,12 @@ class News(Base):
     content = Column(Text, nullable=False)
     source = Column(String, nullable=False)  # ✅ Required
     url = Column(String, nullable=False)  # ✅ Required
-    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
-    published_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))  # ✅ Ensure this is added!
+    created_at = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+    published_at = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )  # ✅ Ensure this is added!
 
 
 class Article(Base):
@@ -23,4 +29,6 @@ class Article(Base):
     content = Column(Text, nullable=False)
     source = Column(String, nullable=False)  # ✅ Required
     url = Column(String, nullable=False)
-    published_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))  # ✅ Ensure default is set!
+    published_at = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )  # ✅ Ensure default is set!

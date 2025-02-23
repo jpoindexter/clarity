@@ -1,5 +1,11 @@
+from datetime import datetime, timezone
+
+from pydantic import BaseModel, Field
+
+
 class Summary(BaseModel):
     """Schema for AI-generated article summaries."""
+
     article_id: int
     summary: str
     keywords: list[str]

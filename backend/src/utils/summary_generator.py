@@ -4,6 +4,7 @@ Text Summarization Utility using Ollama's AI Model.
 
 import ollama  # Ensure Ollama is installed and running
 
+
 def summarize_text(text: str, model: str = "mistral") -> str:
     """
     Summarizes input text using Ollama's AI model.
@@ -36,9 +37,11 @@ def summarize_text(text: str, model: str = "mistral") -> str:
     except Exception as e:
         return f"❌ Error summarizing text: {e}"  # ✅ Split long return statement
 
+
 # Function to summarize a given text using the provided implementation
 def summarize_text(text: str) -> str:
     return f"Summarized: {text[:50]}..."  # ✅ Placeholder implementation
+
 
 # ✅ Example Usage (Standalone Execution)
 if __name__ == "__main__":

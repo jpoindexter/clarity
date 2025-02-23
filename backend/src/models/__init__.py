@@ -1,8 +1,12 @@
+# ✅ backend/src/models/__init__.py
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()  # ✅ No circular import
+# ✅ Define Base FIRST to avoid circular imports
+Base = declarative_base()
 
-# ✅ Import models AFTER defining Base
+# ✅ Import models AFTER defining Base to prevent circular imports
 import backend.src.models.article
 import backend.src.models.news
-import backend.src.database.db_connection as db_conn
+
+# ✅ Ensure Base is available globally
+__all__ = ["Base"]

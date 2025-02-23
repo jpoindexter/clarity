@@ -1,5 +1,7 @@
 import json
+
 import requests
+
 
 def summarize(text: str, model: str = "mistral") -> str:
     """
@@ -47,6 +49,7 @@ def summarize(text: str, model: str = "mistral") -> str:
     except requests.exceptions.RequestException as e:
         return f"⚠️ Error: Ollama service unavailable. ➜ Details: {str(e)}"
 
+
 def summarize_text(text: str, max_length: int = 100) -> str:
     """
     Summarizes the given text to a specified length.
@@ -72,7 +75,10 @@ def summarize_text(text: str, max_length: int = 100) -> str:
         else:
             break
 
-    return ". ".join(summary) + "." if summary else "⚠️ Error: Unable to generate summary."
+    return (
+        ". ".join(summary) + "." if summary else "⚠️ Error: Unable to generate summary."
+    )
+
 
 # ✅ Standalone test mode
 if __name__ == "__main__":

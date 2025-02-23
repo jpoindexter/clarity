@@ -1,10 +1,16 @@
-from typing import Optional
-from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Optional, List
+
+from sqlalchemy.orm import Session
+
 from backend.src.models.news import News
-from backend.src.schemas.news import News as NewsSchema, NewsCreate, NewsUpdate  # ✅ Fixed import
+from backend.src.schemas.news import News as NewsSchema  # ✅ Fixed import
+from backend.src.schemas.news import NewsCreate, NewsUpdate
+
 
 class NewsCRUD:
+    """✅ CRUD operations for news items."""
+
     def create(self, db: Session, obj_in: NewsCreate) -> NewsSchema:
         """✅ Create a new news item."""
         new_news = News(
@@ -12,7 +18,7 @@ class NewsCRUD:
             content=obj_in.content,
             source=obj_in.source,
             url=obj_in.url,
-            published_at=obj_in.published_at if obj_in.published_at else datetime.utcnow()  # ✅ Ensure it exists
+            published_at=obj_in.published_at or datetime.utcnow(),  # ✅ Ensure timestamp exists
         )
         db.add(new_news)
         db.commit()
@@ -24,9 +30,10 @@ class NewsCRUD:
         news_item = db.query(News).filter(News.id == news_id).first()
         return NewsSchema.model_validate(news_item) if news_item else None
 
-    def get_all_news(self, db: Session) -> list[NewsSchema]:
+    def get_all_news(self, db: Session) -> List[NewsSchema]:
         """✅ Retrieve all news items."""
-        return [NewsSchema.model_validate(news) for news in db.query(News).all()]
+        news_list = db.query(News).all()
+        return [NewsSchema.model_validate(news) for news in news_list]
 
     def update(self, db: Session, news_id: int, obj_in: NewsUpdate) -> Optional[NewsSchema]:
         """✅ Update an existing news item."""
@@ -34,7 +41,7 @@ class NewsCRUD:
         if not db_news:
             return None
 
-        update_data = obj_in.dict(exclude_unset=True)  # ✅ Ensures only provided fields are updated
+        update_data = obj_in.model_dump(exclude_unset=True)  # ✅ Correct way to update selectively
         for key, value in update_data.items():
             setattr(db_news, key, value)
 
@@ -53,5 +60,5 @@ class NewsCRUD:
         return NewsSchema.model_validate(db_news)
 
 
-# ✅ Create an instance of NewsCRUD
+# ✅ Singleton instance for usage in API endpoints
 news_crud = NewsCRUD()

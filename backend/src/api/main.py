@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+
 def create_app():
     """Lazy-loads the app to prevent circular imports"""
-    
+
     app = FastAPI(
         title="Clairity API",
         description="AI-powered news aggregation and analysis platform",
@@ -18,32 +19,42 @@ def create_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     return app
+
 
 def include_routers(app):
     """Includes routers to the FastAPI application"""
 
-    # Lazy Import Routers
     try:
-        from backend.src.api.endpoints.articles import router as articles_router
+        # ✅ Updated import paths to match new structure
+        from backend.src.api.endpoints.articles import \
+            router as articles_router
         from backend.src.api.endpoints.news import router as news_router
         from backend.src.api.endpoints.search import router as search_router
 
         app.include_router(news_router, prefix="/api/v1/news", tags=["news"])
-        app.include_router(articles_router, prefix="/api/v1/articles", tags=["articles"])
-        app.include_router(search_router, prefix="/api/v1", tags=["search"])
+        app.include_router(
+            articles_router, prefix="/api/v1/articles", tags=["articles"]
+        )
+        app.include_router(search_router, prefix="/api/v1/search", tags=["search"])
+
     except ImportError as e:
-        raise HTTPException(status_code=500, detail=f"Failed to import API routers - {e}") from e   # Prevents silent errors
-    
+        raise HTTPException(
+            status_code=500, detail=f"🚨 Failed to import API routers: {str(e)}"
+        ) from e  # ✅ Prevents silent errors
+
     return app
 
-app = create_app()  # Initialize app only after everything is loaded
-include_routers(app)  # Include routers
 
-# Health Check Endpoint
+# ✅ Initialize the App
+app = create_app()
+include_routers(app)  # ✅ Ensure all routers are loaded
+
+
+# ✅ Health Check Endpoint
 @app.get("/", tags=["health"], summary="API Health Check")
 def health_check():
     """Simple health check endpoint to verify API is running."""
-    
-    return {"status": "ok", "message": "Clairity API is running smoothly 🚀"}
+
+    return {"status": "ok", "message": "🚀 Clairity API is running smoothly!"}

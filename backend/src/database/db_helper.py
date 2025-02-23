@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from backend.src.models.article import Article
 from backend.src.models.news import News
 

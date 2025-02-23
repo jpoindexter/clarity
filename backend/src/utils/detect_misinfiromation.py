@@ -1,6 +1,8 @@
 # backend/src/utils/ai_analysis.py
-import requests
 import json
+
+import requests
+
 
 def detect_misinformation(text: str) -> dict:
     """
@@ -18,7 +20,7 @@ def detect_misinformation(text: str) -> dict:
     try:
         response = requests.post(
             "http://127.0.0.1:11434/api/analyze",  # Change URL if different
-            json={"text": text}
+            json={"text": text},
         )
         response.raise_for_status()
 

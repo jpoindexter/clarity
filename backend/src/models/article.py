@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime
+from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
+
 
 class News(Base):
     __tablename__ = "news"
@@ -11,6 +12,7 @@ class News(Base):
     source = Column(String, nullable=False)  # ✅ NOW REQUIRED
     url = Column(String, nullable=False)  # ✅ NOW REQUIRED
     created_at = Column(DateTime, nullable=False)
+
 
 class Article(Base):
     __tablename__ = "articles"
