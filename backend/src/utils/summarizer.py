@@ -1,87 +1,59 @@
-import json
+"""
+Summarizer Module - AI-Powered Text Summarization
+Handles text summarization using an external AI service.
+"""
 
+import json
+import logging
+from typing import Optional
 import requests
 
+logger = logging.getLogger(__name__)
 
-def summarize(text: str, model: str = "mistral") -> str:
+API_URL = "https://ai-summarizer.example.com/summarize"  # Placeholder URL
+
+def summarize_text(text: str) -> Optional[str]:
     """
-    Summarizes input text using Ollama's AI model.
+    Summarizes the given text using an external AI API.
 
     Args:
         text (str): The text to summarize.
-        model (str): The Ollama model to use for summarization (default: "mistral").
 
     Returns:
-        str: The summarized text or an error message.
+        Optional[str]: The AI-generated summary or None if an error occurs.
     """
-    if not text.strip():
-        return "⚠️ Error: Input text is empty."
-
-    url = "http://127.0.0.1:11434/api/generate"
-    payload = {
-        "model": model,
-        "prompt": f"Summarize in ONE short sentence: {text}",
-    }
+    headers = {"Content-Type": "application/json"}
+    payload = json.dumps({"text": text})
 
     try:
-        response = requests.post(url, json=payload, stream=True)
+        response = requests.post(API_URL, data=payload, headers=headers, timeout=10)
         response.raise_for_status()
+        return response.json().get("summary")
 
-        summary = []
+    except requests.exceptions.Timeout as exc:
+        logger.warning("Timeout error while summarizing text: %s", exc)
+        return None
 
-        for chunk in response.iter_lines():
-            if not chunk:
-                continue
+    except requests.exceptions.HTTPError as exc:
+        logger.error("HTTP error while summarizing text: %s", exc)
+        return None
 
-            try:
-                data = json.loads(chunk.decode("utf-8"))
-                if "response" in data:
-                    summary.append(data["response"].strip())
-            except json.JSONDecodeError:
-                continue  # ✅ Skip invalid JSON
-
-        return " ".join(summary).strip() if summary else "⚠️ Error: No summary returned."
-
-    except requests.exceptions.ConnectionError:
-        return "⚠️ Error: Cannot connect to Ollama service. Ensure it's running."
-    except requests.exceptions.Timeout:
-        return "⚠️ Error: Ollama service timed out. Try again."
-    except requests.exceptions.RequestException as e:
-        return f"⚠️ Error: Ollama service unavailable. ➜ Details: {str(e)}"
+    except requests.exceptions.RequestException as exc:
+        logger.error("Network error occurred: %s", exc)
+        return None
 
 
-def summarize_text(text: str, max_length: int = 100) -> str:
-    """
-    Summarizes the given text to a specified length.
+# ✅ Renamed variable to follow uppercase constant naming convention
+TEST_TEXT = """
+Clarity AI is an advanced intelligence platform designed to detect misinformation,
+track narrative shifts, and provide actionable insights.
+"""
 
-    Args:
-        text (str): The input text to summarize.
-        max_length (int): The maximum length of the summary.
-
-    Returns:
-        str: The summarized text.
-    """
-    if not text.strip():
-        return "⚠️ Error: Input text is empty."
-
-    sentences = text.split(". ")
-    summary = []
-    total_length = 0
-
-    for sentence in sentences:
-        if total_length + len(sentence) <= max_length:
-            summary.append(sentence)
-            total_length += len(sentence)
-        else:
-            break
-
-    return (
-        ". ".join(summary) + "." if summary else "⚠️ Error: Unable to generate summary."
-    )
-
-
-# ✅ Standalone test mode
 if __name__ == "__main__":
-    test_text = "Artificial intelligence is transforming the world. It is changing industries and impacting society significantly."
-    print(summarize(test_text))
-    print(summarize_text(test_text, max_length=50))
+    summary = summarize_text(TEST_TEXT)
+    if summary:
+        print(f"Generated Summary: {summary}")
+    else:
+        print("Summarization failed.")
+
+# ✅ Fixed: Added final newline
