@@ -3,15 +3,14 @@ Detect Misinformation - AI-Powered Analysis Module
 Handles misinformation detection using external AI services.
 """
 
-import json
 import logging
 from typing import Optional
-
-import requests
+from backend.src.utils.request_utils import send_post_request
 
 logger = logging.getLogger(__name__)
 
 API_URL = "https://misinfo-detection.example.com/analyze"  # Placeholder URL
+
 
 def detect_misinformation(text: str) -> Optional[dict]:
     """
@@ -23,22 +22,4 @@ def detect_misinformation(text: str) -> Optional[dict]:
     Returns:
         Optional[dict]: The response from the AI API containing misinformation indicators.
     """
-    headers = {"Content-Type": "application/json"}
-    payload = json.dumps({"text": text})
-
-    try:
-        response = requests.post(API_URL, data=payload, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.json()
-
-    except requests.exceptions.Timeout as exc:
-        logger.warning("Timeout error while analyzing misinformation: %s", exc)
-        return None
-
-    except requests.exceptions.HTTPError as exc:
-        logger.error("HTTP error while analyzing misinformation: %s", exc)
-        return None
-
-    except requests.exceptions.RequestException as exc:
-        logger.error("Network error occurred: %s", exc)
-        return None
+    return send_post_request(API_URL, text)

@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 SAMPLE_TEXT = """Artificial intelligence (AI) is intelligence demonstrated by machines,
 as opposed to natural intelligence displayed by animals including humans."""
 
+
 def summarize_text(text: str) -> Optional[str]:
     """
     Generates a summary of the provided text.

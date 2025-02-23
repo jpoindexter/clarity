@@ -3,14 +3,14 @@ Summarizer Module - AI-Powered Text Summarization
 Handles text summarization using an external AI service.
 """
 
-import json
 import logging
 from typing import Optional
-import requests
+from backend.src.utils.request_utils import send_post_request
 
 logger = logging.getLogger(__name__)
 
 API_URL = "https://ai-summarizer.example.com/summarize"  # Placeholder URL
+
 
 def summarize_text(text: str) -> Optional[str]:
     """
@@ -22,25 +22,8 @@ def summarize_text(text: str) -> Optional[str]:
     Returns:
         Optional[str]: The AI-generated summary or None if an error occurs.
     """
-    headers = {"Content-Type": "application/json"}
-    payload = json.dumps({"text": text})
-
-    try:
-        response = requests.post(API_URL, data=payload, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.json().get("summary")
-
-    except requests.exceptions.Timeout as exc:
-        logger.warning("Timeout error while summarizing text: %s", exc)
-        return None
-
-    except requests.exceptions.HTTPError as exc:
-        logger.error("HTTP error while summarizing text: %s", exc)
-        return None
-
-    except requests.exceptions.RequestException as exc:
-        logger.error("Network error occurred: %s", exc)
-        return None
+    response = send_post_request(API_URL, text)
+    return response.get("summary") if response else None
 
 
 # ✅ Renamed variable to follow uppercase constant naming convention
@@ -51,9 +34,6 @@ track narrative shifts, and provide actionable insights.
 
 if __name__ == "__main__":
     summary = summarize_text(TEST_TEXT)
-    if summary:
-        print(f"Generated Summary: {summary}")
-    else:
-        print("Summarization failed.")
+    print(f"Generated Summary: {summary}" if summary else "Summarization failed.")
 
 # ✅ Fixed: Added final newline

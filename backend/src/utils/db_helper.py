@@ -1,6 +1,13 @@
-def get_articles_by_query(query: str):
+"""
+Database Helper Module
+Provides utility functions for database operations.
+"""
+
+
+def execute_query(_query: str):
     """
-    Query the database for articles matching the given query.
-    Replace this stub with your actual DB logic.
+    Executes a given database query.
     """
-    return []  # Return a list of articles matching the query
+
+
+raise NotImplementedError("Database query execution is not yet implemented.")

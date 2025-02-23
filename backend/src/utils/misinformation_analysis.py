@@ -58,7 +58,9 @@ def score_credibility(text: str) -> Optional[float]:
         return None
 
 
-def fact_check_article(article_text: str, related_text: str) -> Optional[Dict[str, str]]:
+def fact_check_article(
+    article_text: str, related_text: str
+) -> Optional[Dict[str, str]]:
     """
     ✅ Compare an article's claims against known facts.
 
