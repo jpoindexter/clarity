@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 API_URL = "https://misinfo-detection.example.com/analyze"  # Placeholder URL
 
-
 def detect_misinformation(text: str) -> Optional[dict]:
     """
     Analyze text for misinformation signals using an external AI model.
@@ -43,6 +42,3 @@ def detect_misinformation(text: str) -> Optional[dict]:
     except requests.exceptions.RequestException as exc:
         logger.error("Network error occurred: %s", exc)
         return None
-
-
-# ✅ SINGLE BLANK LINE AT EOF (fixes C0304)
