@@ -1,35 +1,48 @@
-# backend/src/utils/ai_analysis.py
+"""
+Detect Misinformation - AI-Powered Analysis Module
+Handles misinformation detection using external AI services.
+"""
+
 import json
+import logging
+from typing import Optional
 
 import requests
 
+logger = logging.getLogger(__name__)
 
-def detect_misinformation(text: str) -> dict:
+API_URL = "https://misinfo-detection.example.com/analyze"  # Placeholder URL
+
+
+def detect_misinformation(text: str) -> Optional[dict]:
     """
-    Analyzes text for misinformation patterns using AI.
+    Analyze text for misinformation signals using an external AI model.
 
     Args:
-        text (str): The text to analyze.
+        text (str): The text content to analyze.
 
     Returns:
-        dict: Misinformation analysis results (e.g., credibility score, detected biases).
+        Optional[dict]: The response from the AI API containing misinformation indicators.
     """
-    if not text.strip():
-        return {"error": "Input text is empty."}
+    headers = {"Content-Type": "application/json"}
+    payload = json.dumps({"text": text})
 
     try:
-        response = requests.post(
-            "http://127.0.0.1:11434/api/analyze",  # Change URL if different
-            json={"text": text},
-        )
+        response = requests.post(API_URL, data=payload, headers=headers, timeout=10)
         response.raise_for_status()
+        return response.json()
 
-        raw_data = response.text  # Capture raw response
-        print(f"🔍 AI Response: {raw_data}")  # Debugging print
+    except requests.exceptions.Timeout as exc:
+        logger.warning("Timeout error while analyzing misinformation: %s", exc)
+        return None
 
-        return json.loads(raw_data)
+    except requests.exceptions.HTTPError as exc:
+        logger.error("HTTP error while analyzing misinformation: %s", exc)
+        return None
 
-    except requests.exceptions.RequestException as e:
-        return {"error": f"AI service unavailable. Details: {e}"}
-    except json.JSONDecodeError:
-        return {"error": "Invalid JSON response from AI service."}
+    except requests.exceptions.RequestException as exc:
+        logger.error("Network error occurred: %s", exc)
+        return None
+
+
+# ✅ SINGLE BLANK LINE AT EOF (fixes C0304)
