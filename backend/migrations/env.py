@@ -1,37 +1,36 @@
-import os
-from logging.config import fileConfig
-
 from sqlalchemy import create_engine, pool
-from sqlalchemy.dialects import registry
-
-# Fix for "Can't load plugin: sqlalchemy.dialects:driver"
-registry.register("postgresql.psycopg2", "sqlalchemy.dialects.postgresql.psycopg2", "PGDialect_psycopg2")
-
 from sqlalchemy.engine.url import make_url
 from alembic import context
+from backend.src.models import Base  # ✅ Ensure models are imported
 
-# Load Alembic configuration
+
+# ✅ Load Alembic configuration
 config = context.config
 
-# Set up logging
-if config.config_file_name:
-    fileConfig(config.config_file_name)
 
-# Ensure the correct database URL is used
+# ✅ Get the correct database URL from alembic.ini
 DATABASE_URL = config.get_main_option("sqlalchemy.url")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL is not set in alembic.ini")
 
-# Convert to a SQLAlchemy URL object to prevent misconfiguration
+if not DATABASE_URL:
+    raise ValueError("❌ ERROR: DATABASE_URL is not set in alembic.ini")
+
+
+# ✅ Ensure DATABASE_URL is correctly formatted
 DATABASE_URL = str(make_url(DATABASE_URL))
 
-# Import models for auto-migration
-from backend.src.models import Base  # Ensure this matches your actual model import
 
-# Set target metadata for autogeneration
+# ✅ Create an engine with proper pooling
+connectable = create_engine(
+    DATABASE_URL, poolclass=pool.NullPool, echo=True, future=True
+)
+
+
+# ✅ Set target metadata for autogeneration
 target_metadata = Base.metadata
 
-def run_migrations_offline() -> None:
+
+# 🔹 **Offline Mode Migration**
+def run_migrations_offline():
     """Run migrations in 'offline' mode."""
     context.configure(
         url=DATABASE_URL,
@@ -43,26 +42,25 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
-def run_migrations_online() -> None:
+
+# 🔹 **Online Mode Migration**
+def run_migrations_online():
     """Run migrations in 'online' mode."""
-    from sqlalchemy.dialects import registry
+    try:
+        with connectable.connect() as connection:
+            context.configure(connection=connection, target_metadata=target_metadata)
 
-    # Explicitly register the dialect (fixes NoSuchModuleError)
-    registry.register("postgresql.psycopg2", "sqlalchemy.dialects.postgresql.psycopg2", "PGDialect_psycopg2")
+            with context.begin_transaction():
+                context.run_migrations()
 
-    # Ensure the engine is created with proper pooling
-    connectable = create_engine(
-        DATABASE_URL.replace("postgresql+psycopg2", "postgresql"), 
-        poolclass=pool.NullPool, 
-        echo=True
-    )
+    except Exception as e:
+        raise RuntimeError(
+            f"❌ ERROR: Unable to connect to the database. "
+            f"Check database settings.\n\n{e}"
+        )
 
-    with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
 
-        with context.begin_transaction():
-            context.run_migrations()
-
+# ✅ Ensure the correct migration mode is executed
 if context.is_offline_mode():
     run_migrations_offline()
 else:
