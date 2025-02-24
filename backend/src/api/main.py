@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 
+
 # ✅ Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ def create_app():
         CORSMiddleware,
         allow_origins=[
             "http://127.0.0.1:3000",
-            "http://localhost:3000"
+            "http://localhost:3000",
         ],
         allow_credentials=True,
         allow_methods=["*"],
@@ -33,28 +34,20 @@ def create_app():
 def include_routers(app):
     """Includes routers to the FastAPI application"""
     try:
-        # ✅ Updated import paths (no need for `backend.` prefix)
-        from src.api.endpoints.articles import router as articles_router
-        from src.api.endpoints.news import router as news_router
-        from src.api.endpoints.search import router as search_router
-        from src.api.endpoints.contradiction import (
-            router as contradiction_router
+        # ✅ Updated import paths (ensuring correct module resolution)
+        from backend.src.api.endpoints.articles import router as articles_router
+        from backend.src.api.endpoints.news import router as news_router
+        from backend.src.api.endpoints.search import router as search_router
+        from backend.src.api.endpoints.contradiction import (
+            router as contradiction_router,
         )
 
         # ✅ Include API routers
+        app.include_router(news_router, prefix="/api/v1/news", tags=["news"])
+        app.include_router(articles_router, prefix="/api/v1/articles", tags=["articles"])  # noqa: E501
+        app.include_router(search_router, prefix="/api/v1/search", tags=["search"])  # noqa: E501
         app.include_router(
-            news_router, prefix="/api/v1/news", tags=["news"]
-        )
-        app.include_router(
-            articles_router, prefix="/api/v1/articles", tags=["articles"]
-        )
-        app.include_router(
-            search_router, prefix="/api/v1/search", tags=["search"]
-        )
-        app.include_router(
-            contradiction_router,
-            prefix="/api/v1/contradictions",
-            tags=["contradictions"],
+            contradiction_router, prefix="/api/v1/contradictions", tags=["contradictions"]  # noqa: E501
         )
 
     except ImportError as e:
