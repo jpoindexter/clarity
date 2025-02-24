@@ -1,65 +1,38 @@
-"""
-Configuration settings for the FastAPI project.
-
-This module loads environment variables and defines application-wide settings.
-"""
-
 import os
-from typing import ClassVar, List
-
 from dotenv import load_dotenv
-from pydantic import BaseModel, ConfigDict
 
+# ✅ Load environment variables from .env
 load_dotenv()
 
-try:
-    from backend.src.rss.rss_feeds import RSS_FEEDS
-except ImportError as e:
-    print(f"⚠️ Warning: Failed to import RSS feeds. Error: {e}")
-    RSS_FEEDS = []
+# ✅ Database Configuration
+DATABASE_URL = os.getenv("DATABASE_URL")
 
+# ✅ Server Configuration
+BACKEND_HOST = os.getenv("BACKEND_HOST", "127.0.0.1")
+BACKEND_PORT = int(os.getenv("BACKEND_PORT", 8000))
+FRONTEND_HOST = os.getenv("FRONTEND_HOST", "127.0.0.1")
+FRONTEND_PORT = int(os.getenv("FRONTEND_PORT", 3000))
 
-class Config(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+# ✅ AI Processing Configuration
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
+ENABLE_SUMMARIZATION = os.getenv("ENABLE_SUMMARIZATION", "true").lower() == "true"
 
-    RSS_FEEDS: ClassVar[List[str]] = []
-    ALLOWED_ORIGINS_RAW: ClassVar[str] = "http://127.0.0.1:3000,http://localhost:3000"
+# ✅ Security & Authentication
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL",
-        "postgresql://jpoindexter:dontforgetme@localhost:5432/ai_news_db",
-    )
+# ✅ Logging & Debugging
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
 
-    API_TITLE: str = "AI News API"
-    API_VERSION: str = "1.0.0"
-    API_DESCRIPTION: str = "An AI-powered news aggregation and analysis platform."
+# ✅ CORS Configuration
+DEFAULT_ALLOWED_ORIGINS = "http://127.0.0.1:3000,http://localhost:3000"
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")
 
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+# ✅ Fetch Configuration
+FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", 600))
 
-    RSS_FEEDS = RSS_FEEDS
-
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "mistral")
-    ENABLE_SUMMARIZATION: bool = (
-        os.getenv("ENABLE_SUMMARIZATION", "true").lower() == "true"
-    )
-
-    ALLOWED_ORIGINS_RAW = os.getenv("ALLOWED_ORIGINS", "*")
-    ALLOWED_ORIGINS: list[str] = (
-        ALLOWED_ORIGINS_RAW.split(",") if ALLOWED_ORIGINS_RAW else ["*"]
-    )
-
-    DEBUG_MODE: bool = os.getenv("DEBUG_MODE", "false").lower() == "true"
-    FETCH_INTERVAL: int = int(os.getenv("FETCH_INTERVAL", "600"))
-
-    @classmethod
-    def debug(cls):
-        print(f"🔧 Config Loaded: {cls.API_TITLE} v{cls.API_VERSION}")
-        print(f"📡 RSS Feeds Loaded: {len(cls.RSS_FEEDS)} sources")
-        print(f"🌍 Allowed Origins: {cls.ALLOWED_ORIGINS}")
-        print(f"⚡ Debug Mode: {'ON' if cls.DEBUG_MODE else 'OFF'}")
-
-
-settings = Config()
-
-if __name__ == "__main__":
-    settings.debug()
+# ✅ API Keys
+NEWSDATA_API_KEY = os.getenv("NEWSDATA_API_KEY")
+MEDIASTACK_API_KEY = os.getenv("MEDIASTACK_API_KEY")
+GNEWS_API_KEY = os.getenv("GNEWS_API_KEY")

@@ -1,14 +1,5 @@
-"""
-Configuration Initialization.
+# ✅ backend/src/config/__init__.py
+from backend.src.config.config import DATABASE_URL, BACKEND_HOST, BACKEND_PORT
 
-Ensures that settings are properly loaded when importing from `backend.src.config`.
-"""
-
-# ✅ Ensure absolute import from config.py
-from backend.src.config.config import settings
-
-# ✅ Confirm initialization
-print("✅ backend.src.config initialized successfully!")
-
-# ✅ Explicitly define what gets imported when using `from backend.src.config import *`
-__all__ = ["settings"]
+# ✅ Prevent circular imports
+__all__ = ["DATABASE_URL", "BACKEND_HOST", "BACKEND_PORT"]
