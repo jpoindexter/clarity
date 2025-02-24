@@ -1,40 +1,55 @@
 from datetime import datetime
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 # ✅ Database & Models
 from backend.src.database.db_connection import get_db
-from backend.src.models.news import News
+from backend.src.models.article import Article  # ✅ Using Article model
+
 # ✅ Schemas
-from backend.src.schemas.news import News as NewsSchema
-from backend.src.schemas.news import NewsCreate
+from backend.src.schemas.article import Article as ArticleSchema
+from backend.src.schemas.article import ArticleCreate  # ✅ Correct Schema
 
-# ✅ Initialize Router
-router = APIRouter(prefix="/news", tags=["news"])
+# ✅ Initialize Router (REMOVE the prefix here)
+router = APIRouter(
+    tags=["articles"],
+)
 
+# 🔹 **Retrieve All Articles**
+@router.get("/", response_model=list[ArticleSchema])
+def get_articles(db: Session = Depends(get_db)):
+    """
+    Retrieve all stored articles.
 
-# 🔹 **Retrieve All News**
-@router.get("/", response_model=list[NewsSchema])
-def get_news(db: Session = Depends(get_db)):
-    """Retrieve all stored news articles."""
-    news_articles = db.query(News).all()
-    return news_articles if news_articles else []  # ✅ Returns an empty list instead of 404
+    Returns:
+        list[ArticleSchema]: List of stored articles.
+        If no articles exist, returns an empty list.
+    """
+    articles = db.query(Article).all()
+    return articles if articles else []  # ✅ Returns an empty list instead of 404
 
+# 🔹 **Create a New Article Entry**
+@router.post("/", response_model=ArticleSchema)
+def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
+    """
+    Create a new article entry.
 
-# 🔹 **Create a New News Entry**
-@router.post("/", response_model=NewsSchema)
-def create_news(news: NewsCreate, db: Session = Depends(get_db)):
-    """Create a new news entry."""
-    new_news = News(
-        title=news.title,
-        summary=news.summary,
-        content=news.content,
-        source=news.source,
-        url=news.url,
-        published_at=news.published_at or datetime.utcnow(),
+    Args:
+        article (ArticleCreate): Data for the new article.
+        db (Session): Database session.
+
+    Returns:
+        ArticleSchema: The created article.
+    """
+    new_article = Article(
+        title=article.title,
+        summary=article.summary,
+        content=article.content,
+        source=article.source,
+        url=article.url,
+        published_at=article.published_at or datetime.utcnow(),
     )
-    db.add(new_news)
+    db.add(new_article)
     db.commit()
-    db.refresh(new_news)
-    return new_news
+    db.refresh(new_article)
+    return new_article
