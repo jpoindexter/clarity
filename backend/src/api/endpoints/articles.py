@@ -5,60 +5,36 @@ from sqlalchemy.orm import Session
 
 # ✅ Database & Models
 from backend.src.database.db_connection import get_db
-from backend.src.models.article import Article
+from backend.src.models.news import News
 # ✅ Schemas
-from backend.src.schemas.article import Article as ArticleSchema
-from backend.src.schemas.article import ArticleCreate
-# ✅ Import AI-powered functions
-from backend.src.utils.ai_analysis import (detect_bias, fact_check_article,
-                                           find_contradictions,
-                                           score_credibility,
-                                           track_media_influence)
+from backend.src.schemas.news import News as NewsSchema
+from backend.src.schemas.news import NewsCreate
 
 # ✅ Initialize Router
-router = APIRouter(prefix="/articles", tags=["articles"])
+router = APIRouter(prefix="/news", tags=["news"])
 
 
-# 🔹 **Retrieve All Articles**
-@router.get("/", response_model=list[ArticleSchema])
-def get_articles(db: Session = Depends(get_db)):
-    """Retrieve all stored articles."""
-    articles = db.query(Article).all()
-    return articles if articles else []  # ✅ Returns an empty list instead of 404
+# 🔹 **Retrieve All News**
+@router.get("/", response_model=list[NewsSchema])
+def get_news(db: Session = Depends(get_db)):
+    """Retrieve all stored news articles."""
+    news_articles = db.query(News).all()
+    return news_articles if news_articles else []  # ✅ Returns an empty list instead of 404
 
 
-# 🔹 **Create a New Article**
-@router.post("/", response_model=ArticleSchema)
-def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
-    """Create a new article entry."""
-    new_article = Article(
-        title=article.title,
-        summary=article.summary,
-        content=article.content,
-        source=article.source,
-        url=article.url,
-        published_at=article.published_at or datetime.utcnow(),
+# 🔹 **Create a New News Entry**
+@router.post("/", response_model=NewsSchema)
+def create_news(news: NewsCreate, db: Session = Depends(get_db)):
+    """Create a new news entry."""
+    new_news = News(
+        title=news.title,
+        summary=news.summary,
+        content=news.content,
+        source=news.source,
+        url=news.url,
+        published_at=news.published_at or datetime.utcnow(),
     )
-    db.add(new_article)
+    db.add(new_news)
     db.commit()
-    db.refresh(new_article)
-    return new_article
-
-
-# 🔹 **Analyze an Article with AI**
-@router.get("/analyze/{article_id}")
-def analyze_article(article_id: int, db: Session = Depends(get_db)):
-    """Perform AI-powered analysis on an article."""
-    article = db.query(Article).filter(Article.id == article_id).first()
-    if not article:
-        raise HTTPException(status_code=404, detail="Article not found.")
-
-    return {
-        "article_id": article_id,
-        "title": article.title,
-        "bias_analysis": detect_bias(article.content),
-        "credibility_score": score_credibility(article.content),
-        "fact_check": fact_check_article(article.content),
-        "media_influence": track_media_influence(article.content),
-        "contradictions": find_contradictions(article.content),
-    }
+    db.refresh(new_news)
+    return new_news

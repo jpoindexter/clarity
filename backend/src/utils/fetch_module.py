@@ -41,4 +41,4 @@ def fetch_data(url: str, timeout: int = DEFAULT_TIMEOUT) -> dict:
         raise RequestException(f"Network error occurred: {req_err}") from req_err
 
 
-# ✅ Final newline added below
+# ✅ Added final newline for best practices

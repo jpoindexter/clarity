@@ -8,29 +8,9 @@ from backend.src.models.news import News
 # ✅ Schemas
 from backend.src.schemas.news import News as NewsSchema
 from backend.src.schemas.news import NewsCreate, NewsUpdate
-# ✅ Import AI-powered misinformation detection
-from backend.src.utils.ai_analysis import detect_misinformation
 
 # ✅ Initialize Router
 router = APIRouter(prefix="/news", tags=["news"])
-
-
-# 🔹 **Analyze News for Misinformation**
-@router.get("/analyze/{news_id}")
-def analyze_news(news_id: int, db: Session = Depends(get_db)):
-    """Analyze a news article for misinformation."""
-    news_item = db.query(News).filter(News.id == news_id).first()
-    if not news_item:
-        raise HTTPException(status_code=404, detail="News item not found.")
-
-    analysis_result = detect_misinformation(news_item.content)
-
-    return {
-        "news_id": news_id,
-        "title": news_item.title,
-        "source": news_item.source,
-        "misinformation_analysis": analysis_result,
-    }
 
 
 # 🔹 **Retrieve All News Articles**
