@@ -1,7 +1,7 @@
 # ✅ backend/src/api/main.py
 from fastapi import FastAPI
 
-from backend.src.api.main import include_routers
+from backend.src.api.router import include_routers  # Ensure this exists and is correct
 
 # ✅ Initialize FastAPI application
 app = FastAPI(title="Clarity AI")
