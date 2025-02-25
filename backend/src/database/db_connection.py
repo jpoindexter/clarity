@@ -1,15 +1,17 @@
-# ✅ backend/src/database/db_connection.py
 import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from backend.src.models import Base  # ✅ Ensure models are imported correctly
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///backend/src/database/db.sqlite3")
+# ✅ Load DATABASE_URL from environment
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# ✅ Configure engine properly for scalability
+if not DATABASE_URL:
+    raise ValueError("❌ DATABASE_URL is not set. Please define it in the environment.")
+
+# ✅ Configure PostgreSQL engine
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
     pool_size=10,
     max_overflow=20,
     pool_timeout=30,
@@ -31,8 +33,5 @@ def get_db():
         db.close()
 
 
-# 🚀 Move model imports **below function definitions** to prevent circular imports
-from backend.src.models import Base
-
-# ✅ Ensure models are registered correctly (Moved outside function to avoid recursion)
+# ✅ Ensure models are registered correctly
 Base.metadata.create_all(bind=engine)
