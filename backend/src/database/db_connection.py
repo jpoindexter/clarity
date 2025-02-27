@@ -9,14 +9,14 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("❌ DATABASE_URL is not set. Please define it in the environment.")
 
-# ✅ Configure PostgreSQL engine
+# ✅ Configure PostgreSQL engine with efficient pooling
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
-    pool_timeout=30,
-    pool_recycle=1800,
-    echo=True,  # ✅ Enables SQL query logging for debugging
+    pool_size=10,          # ✅ Maintain up to 10 active connections
+    max_overflow=20,       # ✅ Allow 20 additional temporary connections
+    pool_timeout=30,       # ✅ Max time to wait for connection
+    pool_recycle=1800,     # ✅ Prevents stale connections
+    echo=True,             # ✅ Enables SQL query logging for debugging
 )
 
 # ✅ Create session factory

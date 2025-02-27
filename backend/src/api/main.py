@@ -1,57 +1,61 @@
-import logging
+# ✅ backend/src/api/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from starlette.requests import Request
 
-# ✅ Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)  # ✅ Define logger before using it
+from backend.src.api.router import include_routers  # Ensure this exists and is correct
 
-def create_app():
-    """Lazy-loads the app to prevent circular imports"""
-    app = FastAPI(
-        title="Clairity API",
-        description="AI-powered intelligence and analysis platform",
-        version="1.0",
-    )
+# ✅ Initialize FastAPI application
+app = FastAPI(title="Clarity AI")
 
-    # ✅ Enable CORS for frontend access
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# ✅ Enable Cross-Origin Resource Sharing (CORS) if needed
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*"
+    ],  # Adjust this in production (e.g., ["https://yourfrontend.com"])
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    return app
+# ✅ Configure Rate Limiting (Prevents API abuse)
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
-def include_routers(app):
-    """Includes routers to the FastAPI application"""
-    try:
-        # ✅ Import routers
-        from backend.src.api.endpoints.articles import router as articles_router
-        from backend.src.api.endpoints.news import router as news_router
-        from backend.src.api.endpoints.search import router as search_router
-        from backend.src.api.endpoints.contradiction import router as contradiction_router
-
-        # ✅ Register API routes
-        app.include_router(news_router, prefix="/api/v1/news", tags=["news"])
-        app.include_router(articles_router, prefix="/api/v1/articles", tags=["articles"])
-        app.include_router(search_router, prefix="/api/v1/search", tags=["search"])
-        app.include_router(contradiction_router, prefix="/api/v1/contradictions", tags=["contradictions"])
-
-        logger.info("✅ API Routers loaded successfully!")  # ✅ Logger is now defined
-
-    except ImportError as e:
-        logger.error(f"🚨 Failed to import API routers: {e}")  # ✅ Logger is now defined
-        raise RuntimeError(f"🚨 Router Import Error: {str(e)}") from e
-
-# ✅ Initialize the App & Load Routers
-app = create_app()
+# ✅ Include all API routes
 include_routers(app)
 
-# ✅ Health Check Endpoint
-@app.get("/", tags=["health"], summary="API Health Check")
+
+# ✅ Root route for testing
+@app.get("/")
+def root():
+    return {"message": "Welcome to Clarity AI"}
+
+
+# ✅ Health check endpoint
+@app.get("/health")
 def health_check():
-    """Simple health check endpoint to verify API is running."""
-    return {"status": "ok", "message": "🚀 Clairity API is running smoothly!"}
+    return {"status": "ok"}
+
+
+# ✅ API Rate-Limited Endpoint Example
+
+@app.get("/api/v1/articles", tags=["articles"])
+@limiter.limit("1000 per minute")  # Adjust rate as needed
+async def get_articles(request: Request):
+    return {"message": "This is a rate-limited example for fetching articles."}
+
+
+# ✅ Performance Logging Middleware
+@app.middleware("http")
+async def log_request_time(request: Request, call_next):
+    from time import time
+    start_time = time()
+    response = await call_next(request)
+    process_time = time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
