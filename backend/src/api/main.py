@@ -1,5 +1,5 @@
-# ✅ backend/src/api/main.py
 import logging
+import os
 from logging.config import dictConfig
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,20 +7,31 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from starlette.requests import Request
 
-from backend.src.api.router import include_routers  # Ensure this exists and is correct
+from backend.src.api.router import (  # ✅ Ensure this exists and is correct
+    include_routers
+)
+
+# ✅ Ensure log directory exists
+LOG_DIR = "backend/src/logs"
+LOG_FILE = os.path.join(LOG_DIR, "clarity-api.log")
+
+os.makedirs(LOG_DIR, exist_ok=True)  # ✅ Create logs directory if missing
 
 # ✅ Logging Configuration
 logging_config = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "default": {"format": "%(asctime)s - %(levelname)s - %(message)s"},
+        "default": {
+            "format": "%(asctime)s - %(levelname)s - %(message)s"
+        },
     },
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "filename": "backend/src/logs/clarity-api.log",  # ✅ Log file path
+            "filename": LOG_FILE,
             "formatter": "default",
+            "mode": "a",  # ✅ Appends instead of overwriting
         },
         "console": {
             "class": "logging.StreamHandler",
