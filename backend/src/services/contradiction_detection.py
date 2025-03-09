@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer, util
+from transformers import pipeline
 import torch
 import os
 
@@ -22,8 +23,11 @@ print("🚀 System Check: MPS Availability:", torch.backends.mps.is_available())
 print("🚀 System Check: MPS Built:", torch.backends.mps.is_built())
 print("🚀 System Check: Using Device:", torch.device('cpu'))
 
-# ✅ Use a more stable, lightweight model
+# ✅ Use a more stable, lightweight model for contradiction detection
 model = SentenceTransformer("sentence-transformers/paraphrase-MiniLM-L6-v2")
+
+# ✅ Load FinBERT for financial misinformation detection
+finbert = pipeline("text-classification", model="yiyanghkust/finbert-tone", device=-1)
 
 
 def is_contradiction(text1, text2):
@@ -44,19 +48,36 @@ def is_contradiction(text1, text2):
     return similarity < 0.75  # Threshold for contradiction detection
 
 
+def analyze_financial_misinformation(text):
+    """
+    Uses FinBERT to determine whether a financial article is positive, negative,
+    or neutral.
+    """
+    result = finbert(text)
+    return result[0]  # Returns label and confidence score
+
+
 def detect_contradictions(articles):
     """
     Uses NLP to detect contradictions between news articles.
     """
     contradictions = []
+    financial_analysis = {}
+
     for i, article1 in enumerate(articles):
         for j, article2 in enumerate(articles):
-            if i != j and is_contradiction(
-                article1["content"], article2["content"]
-            ):
+            if i != j and is_contradiction(article1["content"], article2["content"]):
                 contradictions.append((
                     article1["headline"],
                     article2["headline"]
                 ))
 
-    return contradictions
+        # ✅ Analyze financial misinformation using FinBERT
+        financial_analysis[article1["headline"]] = analyze_financial_misinformation(
+            article1["content"]
+        )
+
+    return {
+        "contradictions": contradictions,
+        "financial_misinformation": financial_analysis
+    }
