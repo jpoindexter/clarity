@@ -3,6 +3,7 @@ from transformers import pipeline
 import torch
 import os
 from functools import lru_cache
+import time
 
 # ✅ Fully disable MPS (Metal Performance Shaders) for stability
 os.environ["PYTORCH_MPS_HIGH_WATERMARK_RATIO"] = "0.0"
@@ -40,11 +41,14 @@ def analyze_financial_misinformation(text):
     return analysis
 
 
-def detect_contradictions(articles):
+def detect_contradictions(articles, min_similarity_threshold=0.5):
     """
     Uses NLP to detect contradictions and financial misinformation.
     Processes all articles in batches for efficiency.
+    Allows filtering contradictions by minimum similarity threshold.
+    Now includes sentiment-based contradiction detection.
     """
+    start_time = time.time()
     contradictions = []
     financial_analysis = {}
 
@@ -52,28 +56,77 @@ def detect_contradictions(articles):
     article_texts = [article["content"] for article in articles]
     embeddings = contradiction_model.encode(article_texts, convert_to_tensor=True)
 
+    # ✅ Compute FinBERT sentiment analysis for each article
+    for article in articles:
+        financial_analysis[article["headline"]] = analyze_financial_misinformation(
+            article["content"]
+        )
+
     # ✅ Compare all embeddings efficiently
     for i, article1 in enumerate(articles):
         for j, article2 in enumerate(articles):
             if i != j:
                 similarity = util.pytorch_cos_sim(embeddings[i], embeddings[j]).item()
-                if similarity < 0.75:
+
+                # ✅ Log all similarity scores for debugging
+                print(
+                    f"Checking: {article1['headline']} <-> {article2['headline']} "
+                    f"(Similarity: {similarity:.3f})"
+                )
+
+                # ✅ Contradiction detection by similarity (Lowered threshold to 0.55)
+                if similarity < 0.55 and similarity >= min_similarity_threshold:
+                    # Higher strength = stronger contradiction
+                    contradiction_strength = round(1 - similarity, 3)
                     contradictions.append({
                         "headline_1": article1["headline"],
                         "headline_2": article2["headline"],
-                        "similarity_score": round(similarity, 3)
+                        "similarity_score": round(similarity, 3),
+                        "contradiction_strength": contradiction_strength,
+                        "contradiction_type": "semantic"
                     })
                     print(
-                        f"Contradiction Found: {article1['headline']} <-> "
-                        f"{article2['headline']} (Score: {similarity:.3f})"
-                    )  # ✅ Improved logging
+                        f"Contradiction Found (Semantic): {article1['headline']} <-> "
+                        f"{article2['headline']} (Score: {similarity:.3f}, "
+                        f"Strength: {contradiction_strength:.3f})"
+                    )
 
-        # ✅ Use cached FinBERT analysis to speed up financial misinformation detection
-        financial_analysis[article1["headline"]] = analyze_financial_misinformation(
-            article1["content"]
-        )
+                # ✅ Contradiction detection by sentiment
+                sentiment1 = financial_analysis[article1["headline"]]["label"]
+                sentiment2 = financial_analysis[article2["headline"]]["label"]
+
+                if (sentiment1 == "Positive" and sentiment2 == "Negative") or \
+                   (sentiment1 == "Negative" and sentiment2 == "Positive"):
+                    # ✅ Boost contradiction confidence if similarity is
+                    # borderline (0.5+)
+                    boosted_similarity = max(similarity, 0.55)
+                    # Sentiment-based contradictions are considered strong
+                    contradiction_strength = 0.9
+
+                    contradictions.append({
+                        "headline_1": article1["headline"],
+                        "headline_2": article2["headline"],
+                        "similarity_score": round(boosted_similarity, 3),
+                        "contradiction_strength": contradiction_strength,
+                        "contradiction_type": "sentiment",
+                        "sentiment_1": sentiment1,
+                        "sentiment_2": sentiment2
+                    })
+                    print(
+                        f"Contradiction Found (Sentiment): {article1['headline']} "
+                        f"({sentiment1}) <-> {article2['headline']} ({sentiment2})"
+                        f" - Boosted Similarity: {boosted_similarity:.3f}, "
+                        f"Strength: {contradiction_strength:.3f}"
+                    )
+
+    processing_time = round(time.time() - start_time, 3)
 
     return {
         "contradictions": contradictions,
-        "financial_misinformation": financial_analysis
+        "financial_misinformation": financial_analysis,
+        "metadata": {
+            "processing_time": processing_time,
+            "total_articles": len(articles),
+            "total_contradictions": len(contradictions)
+        }
     }
