@@ -2,77 +2,73 @@ from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 import torch
 import os
+from functools import lru_cache
 
-# ✅ Fully disable MPS (Metal Performance Shaders) at execution level
+# ✅ Fully disable MPS (Metal Performance Shaders) for stability
 os.environ["PYTORCH_MPS_HIGH_WATERMARK_RATIO"] = "0.0"
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "0"
 os.environ["PYTORCH_ENABLE_MPS"] = "0"
-os.environ["CUDA_VISIBLE_DEVICES"] = ""  # Ensure no GPU execution
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
-# ✅ Explicitly override MPS availability at runtime
+# ✅ Explicitly override MPS detection
 torch.backends.mps.is_available = lambda: False
 torch.backends.mps.is_built = lambda: False
-
-# ✅ Enforce CPU execution and remove MPS tensors
-torch.set_default_dtype(torch.float32)
-torch.set_default_tensor_type(torch.FloatTensor)
 torch.set_default_device("cpu")
 
-# ✅ Log confirmation that MPS is disabled
-print("🚀 System Check: MPS Availability:", torch.backends.mps.is_available())
-print("🚀 System Check: MPS Built:", torch.backends.mps.is_built())
-print("🚀 System Check: Using Device:", torch.device('cpu'))
-
-# ✅ Use a more stable, lightweight model for contradiction detection
-model = SentenceTransformer("sentence-transformers/paraphrase-MiniLM-L6-v2")
+# ✅ Load contradiction detection model
+contradiction_model = SentenceTransformer(
+    "sentence-transformers/paraphrase-MiniLM-L6-v2"
+)
 
 # ✅ Load FinBERT for financial misinformation detection
 finbert = pipeline("text-classification", model="yiyanghkust/finbert-tone", device=-1)
 
 
-def is_contradiction(text1, text2):
-    """
-    Uses sentence embeddings to determine if two texts contradict each other.
-    """
-    emb1 = model.encode(text1, convert_to_tensor=True)
-    emb2 = model.encode(text2, convert_to_tensor=True)
-
-    similarity = util.pytorch_cos_sim(emb1, emb2).item()  # Cosine similarity
-
-    # ✅ Improved logging for debugging
-    print(
-        f"Comparing: \"{text1[:50]}...\" <-> \"{text2[:50]}...\" | "
-        f"Score: {similarity} | Threshold: 0.75"
-    )
-
-    return similarity < 0.75  # Threshold for contradiction detection
-
-
+@lru_cache(maxsize=500)
 def analyze_financial_misinformation(text):
     """
     Uses FinBERT to determine whether a financial article is positive, negative,
     or neutral.
+    Implements caching to avoid redundant analysis.
     """
     result = finbert(text)
-    return result[0]  # Returns label and confidence score
+    analysis = {
+        "label": result[0]["label"],
+        "score": round(result[0]["score"], 3)  # Rounded for cleaner output
+    }
+    print(f"FinBERT Analysis: {analysis}")  # ✅ Improved logging
+    return analysis
 
 
 def detect_contradictions(articles):
     """
-    Uses NLP to detect contradictions between news articles.
+    Uses NLP to detect contradictions and financial misinformation.
+    Processes all articles in batches for efficiency.
     """
     contradictions = []
     financial_analysis = {}
 
+    # ✅ Batch encode all article content at once
+    article_texts = [article["content"] for article in articles]
+    embeddings = contradiction_model.encode(article_texts, convert_to_tensor=True)
+
+    # ✅ Compare all embeddings efficiently
     for i, article1 in enumerate(articles):
         for j, article2 in enumerate(articles):
-            if i != j and is_contradiction(article1["content"], article2["content"]):
-                contradictions.append((
-                    article1["headline"],
-                    article2["headline"]
-                ))
+            if i != j:
+                similarity = util.pytorch_cos_sim(embeddings[i], embeddings[j]).item()
+                if similarity < 0.75:
+                    contradictions.append({
+                        "headline_1": article1["headline"],
+                        "headline_2": article2["headline"],
+                        "similarity_score": round(similarity, 3)
+                    })
+                    print(
+                        f"Contradiction Found: {article1['headline']} <-> "
+                        f"{article2['headline']} (Score: {similarity:.3f})"
+                    )  # ✅ Improved logging
 
-        # ✅ Analyze financial misinformation using FinBERT
+        # ✅ Use cached FinBERT analysis to speed up financial misinformation detection
         financial_analysis[article1["headline"]] = analyze_financial_misinformation(
             article1["content"]
         )
