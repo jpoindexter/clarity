@@ -81,9 +81,9 @@ def detect_contradictions(articles, min_similarity_threshold=0.5):
                     contradictions.append({
                         "headline_1": article1["headline"],
                         "headline_2": article2["headline"],
-                        "similarity_score": round(similarity, 3),
-                        "contradiction_strength": contradiction_strength,
-                        "contradiction_type": "semantic"
+                        "score": round(similarity, 3),
+                        "strength": contradiction_strength,
+                        "type": "semantic"
                     })
                     print(
                         f"Contradiction Found (Semantic): {article1['headline']} <-> "
@@ -106,9 +106,9 @@ def detect_contradictions(articles, min_similarity_threshold=0.5):
                     contradictions.append({
                         "headline_1": article1["headline"],
                         "headline_2": article2["headline"],
-                        "similarity_score": round(boosted_similarity, 3),
-                        "contradiction_strength": contradiction_strength,
-                        "contradiction_type": "sentiment",
+                        "score": round(boosted_similarity, 3),
+                        "strength": contradiction_strength,
+                        "type": "sentiment",
                         "sentiment_1": sentiment1,
                         "sentiment_2": sentiment2
                     })
@@ -126,7 +126,7 @@ def detect_contradictions(articles, min_similarity_threshold=0.5):
         "financial_misinformation": financial_analysis,
         "metadata": {
             "processing_time": processing_time,
-            "total_articles": len(articles),
+            "articles_analyzed": len(articles),
             "total_contradictions": len(contradictions)
         }
     }

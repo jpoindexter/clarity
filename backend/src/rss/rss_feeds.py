@@ -1,69 +1,54 @@
 import logging
-
+import json
+import asyncio
+import aiohttp
 import feedparser
-import requests
 
 # ✅ Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ✅ RSS Feed Sources
-RSS_FEEDS = [
-    "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-    "https://www.theguardian.com/world/rss",
-    "https://feeds.bbci.co.uk/news/rss.xml",
-    "https://news.google.com/rss",
-    "https://www.aljazeera.com/xml/rss/all.xml",
-]
+# ✅ Load RSS feeds from JSON file
+RSS_FEED_FILE = "backend/src/rss/rss_sources.json"
+
+try:
+    with open(RSS_FEED_FILE, "r") as f:
+        RSS_FEEDS = list(set(json.load(f)["feeds"]))  # ✅ Ensure unique feeds
+except Exception as e:
+    logger.error(f"❌ Failed to load RSS sources from {RSS_FEED_FILE}: {e}")
+    RSS_FEEDS = []
 
 
-def fetch_rss_feed(url):
-    """Fetch an RSS feed with SSL error handling."""
+async def fetch_rss_feed(url, session):
+    """Asynchronously fetch an RSS feed with error handling."""
     try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()  # ✅ Raise error for HTTP issues
-        parsed_feed = feedparser.parse(response.text)
-
-        if parsed_feed.bozo:
-            raise Exception(f"Invalid RSS format: {url}")
-
-        feed_title = parsed_feed.feed.get("title", "Unknown Feed")
-        logger.info(f"✅ Successfully fetched RSS feed: {feed_title} ({url})")
-        return parsed_feed
-
-    except requests.exceptions.SSLError:
-        logger.warning(f"⚠️ SSL Error on {url}. Retrying without SSL verification...")
-        try:
-            response = requests.get(
-                url, verify=False, timeout=5
-            )  # ✅ Retry without SSL
+        async with session.get(url, timeout=5) as response:
             response.raise_for_status()
-            parsed_feed = feedparser.parse(response.text)
+            content = await response.text()
+            parsed_feed = feedparser.parse(content)
 
             if parsed_feed.bozo:
                 raise Exception(f"Invalid RSS format: {url}")
 
             feed_title = parsed_feed.feed.get("title", "Unknown Feed")
-            logger.info(
-                f"✅ Successfully fetched RSS feed (no SSL): {feed_title} ({url})"
-            )
+            logger.info(f"✅ Successfully fetched RSS feed: {feed_title} ({url})")
             return parsed_feed
 
-        except Exception as e:
-            logger.error(f"❌ Failed to fetch RSS feed {url}: {e}")
-            return None  # ✅ Return None instead of crashing
+    except aiohttp.ClientError as e:
+        logger.error(f"❌ Failed to fetch {url}: {e}")
+        return None
 
 
-def fetch_all_feeds():
-    """Fetch all RSS feeds and return valid ones."""
-    valid_feeds = []
+async def fetch_all_feeds():
+    """Asynchronously fetch all RSS feeds and return valid ones."""
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_rss_feed(url, session) for url in RSS_FEEDS]
+        results = await asyncio.gather(*tasks)
 
-    for url in RSS_FEEDS:
-        parsed_feed = fetch_rss_feed(url)
-        if parsed_feed:
-            valid_feeds.append(parsed_feed)
-        else:
-            logger.error(f"❌ Skipping broken feed: {url}")
-
+    valid_feeds = [feed for feed in results if feed is not None]
     logger.info(f"🔥 Successfully fetched {len(valid_feeds)} valid feeds.")
     return valid_feeds
+
+
+if __name__ == "__main__":
+    asyncio.run(fetch_all_feeds())

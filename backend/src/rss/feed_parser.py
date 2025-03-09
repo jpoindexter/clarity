@@ -1,21 +1,37 @@
 def parse_feed(feed_data):
-    """✅ Parses RSS feed data into structured articles."""
+    """
+    ✅ Parses RSS feed data into structured articles, ensuring deduplication
+    & handling errors.
+    """
     articles = []
+    seen_urls = set()  # ✅ Track processed URLs to prevent duplicates
     source_name = feed_data.feed.get("title", "Unknown Source")  # ✅ Extract Source
 
     for entry in feed_data.entries:
-        article = {
-            "title": entry.get("title", "No Title"),
-            "url": entry.get("link", "https://unknown.com"),  # ✅ Ensure URL exists
-            "source": source_name,  # ✅ Include Source
-            "published_at": entry.get(
-                "published", "2025-02-21T00:00:00Z"
-            ),  # ✅ Ensure Published Date
-        }
+        try:
+            url = entry.get("link", "https://unknown.com")
 
-        if "summary" in entry:
-            article["summary"] = entry["summary"]
+            # ✅ Deduplication: Skip if URL already processed
+            if url in seen_urls:
+                continue
+            seen_urls.add(url)
 
-        articles.append(article)
+            article = {
+                "title": entry.get("title", "No Title"),
+                "url": url,
+                "source": source_name,  # ✅ Include Source
+                "published_at": entry.get("published", "2025-02-21T00:00:00Z"),
+            }
+
+            # ✅ Ensure summary exists & is long enough for processing
+            if "summary" in entry:
+                summary = entry["summary"]
+                if len(summary.split()) > 100:  # ✅ Only process long summaries
+                    article["summary"] = summary
+
+            articles.append(article)
+
+        except Exception as e:
+            print(f"❌ Error processing entry from {source_name}: {e}")
 
     return articles
