@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Request, Depends
 import asyncio
-from fastapi.encoders import jsonable_encoder
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -33,8 +32,8 @@ class Article(BaseModel):
 
 async def analyze_financial_misinformation(text: str, finbert):
     loop = asyncio.get_running_loop()
-    result = await loop.run_in_executor(None, lambda: finbert(text))
-    return result[0]
+    result = await loop.run_in_executor(None, finbert, text)
+    return {"label": result[0]["label"], "score": round(result[0]["score"], 3)}
 
 
 async def calculate_contradictions(articles, embeddings, financial_analysis):
@@ -75,25 +74,29 @@ async def detect_contradictions(
 ):
     try:
         body = await request.json()
-        if not isinstance(body, dict) or "articles" not in body or not isinstance(
+        if isinstance(body, dict) and "articles" in body and isinstance(
             body["articles"], list
         ):
+            articles = [Article(**article) for article in body["articles"]]
+        else:
             raise HTTPException(status_code=400, detail="Invalid request format")
-        articles = [Article(**article) for article in body["articles"]]
     except Exception as e:
         logger.error(f"Request parsing failed: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
     start_time = time.time()
     financial_analysis = {}
-    article_texts = [article.content for article in articles]
 
     try:
-        embeddings = await asyncio.to_thread(
-            contradiction_model.encode, article_texts, convert_to_tensor=True
-        )
-    except Exception as e:
-        logger.error(f"Embedding error: {e}")
+        article_texts = [article.content for article in articles]
+        loop = asyncio.get_running_loop()
+
+        def encode_func():
+            return contradiction_model.encode(article_texts, convert_to_tensor=True)
+
+        embeddings = await loop.run_in_executor(None, encode_func)
+    except AttributeError as e:
+        logger.error(f"AttributeError occurred: {e}")
         raise HTTPException(
             status_code=500,
             detail={"error": "Internal Server Error", "message": str(e)},
@@ -101,7 +104,10 @@ async def detect_contradictions(
 
     try:
         for article in articles:
-            financial_analysis[article.headline] = await analyze_financial_misinformation(article.content, finbert)
+            analysis_result = await analyze_financial_misinformation(
+                article.content, finbert
+            )
+            financial_analysis[article.headline] = analysis_result
     except Exception as e:
         logger.error(f"Sentiment analysis failed: {e}")
         raise HTTPException(
@@ -113,7 +119,12 @@ async def detect_contradictions(
         articles, embeddings, financial_analysis
     )
 
+    logger.debug("Final response before returning:")
+    logger.debug(f"Contradictions: {contradictions}")
+    logger.debug(f"Financial Analysis: {financial_analysis}")
+
     processing_time = round(time.time() - start_time, 3)
+
     response = {
         "contradictions": contradictions,
         "financial_misinformation": financial_analysis,
@@ -123,5 +134,5 @@ async def detect_contradictions(
             "total_contradictions": len(contradictions)
         }
     }
-    logger.debug(f"Final API response: {response}")
+    logger.debug(f"Final API response: {response}")  # Ensure JSON structure
     return response
