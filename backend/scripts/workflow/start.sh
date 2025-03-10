@@ -39,7 +39,7 @@ pkill -f "uvicorn" || true
 pkill -f "npm run dev" || true
 
 # ✅ **Step 3: Ensure Required Files Exist**
-REQUIRED_FILES=("backend/src/main.py" "frontend/src/app/page.tsx" "frontend/package.json")
+REQUIRED_FILES=("backend/main.py" "frontend/src/app/page.tsx" "frontend/package.json")
 
 for file in "${REQUIRED_FILES[@]}"; do
     if [ ! -f "$file" ]; then

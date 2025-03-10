@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 # ✅ Explicitly import the module
-import backend.src.api.endpoints.analyze as analyze_module
+import backend.api.endpoints.analyze as analyze_module
 
 # ✅ Ensure FastAPI is properly configured
 app = FastAPI()

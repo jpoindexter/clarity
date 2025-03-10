@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 # ✅ Ensure the database connection and models are imported
-from backend.src.database.db_connection import Base
+from backend.database.db_connection import Base
 
 # Alembic Config object, which provides access to alembic.ini values
 config = context.config

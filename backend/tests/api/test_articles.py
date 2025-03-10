@@ -3,12 +3,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from backend.src.main import app
-from backend.src.database.db_connection import get_db
-from backend.src.crud.news import news_crud
-from backend.src.utils.detect_misinformation import detect_misinformation  # ✅ Fixed import
-from backend.src.utils.summarizer import summarize_text  # ✅ Updated import
-from backend.src.schemas.news import NewsCreate
+from backend.main import app
+from backend.database.db_connection import get_db
+from backend.crud.news import news_crud
+from backend.utils.detect_misinformation import detect_misinformation  # ✅ Fixed import
+from backend.utils.summarizer import summarize_text  # ✅ Updated import
+from backend.schemas.news import NewsCreate
 
 # ✅ Create a test client for API testing
 client = TestClient(app)

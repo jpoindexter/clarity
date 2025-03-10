@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from backend.src.database.db_helper import get_or_create, fetch_articles
+from backend.database.db_helper import get_or_create, fetch_articles
 
 Base = declarative_base()
 
@@ -31,7 +31,7 @@ def test_another_function():
 
 def test_missing_lines():
     """✅ Ensure database connection functions are working."""
-    from backend.src.database.db_connection import get_db  # ✅ Fix import
+    from backend.database.db_connection import get_db  # ✅ Fix import
 
     db = next(get_db())  # ✅ Ensure DB session is retrieved properly
     assert db is not None

@@ -1,32 +1,22 @@
+# ✅ backend/api/main.py
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from backend.api.router import include_routers  # Ensure this exists and is correct
 
-# ✅ Enable CORS so the frontend (http://127.0.0.1:3000) can access the API
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://127.0.0.1:3000"],  # Allow frontend to fetch data
-    allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
-)
+# ✅ Initialize FastAPI application
+app = FastAPI(title="Clarity AI")
 
-# ✅ Fake news data (temporary placeholder)
-fake_news = [
-    {
-        "id": 1,
-        "title": "Breaking: AI Advances Rapidly",
-        "summary": "Researchers make a breakthrough in AI technology.",
-    },
-    {
-        "id": 2,
-        "title": "Tech Industry Booming",
-        "summary": "Stock prices for major tech companies are soaring.",
-    },
-]
+# ✅ Include all API routes
+include_routers(app)
 
 
-@app.get("/api/news/")
-async def get_news():
-    return fake_news
+# ✅ Root route for testing
+@app.get("/")
+def root():
+    return {"message": "Welcome to Clarity AI"}
+
+
+# ✅ Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

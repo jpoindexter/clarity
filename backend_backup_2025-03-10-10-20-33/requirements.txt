@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+psycopg2-binary
+feedparser
+beautifulsoup4
+requests
+ollama  # Local AI Processing (if applicable)
+python-dotenv
+pytest  # Only if testing

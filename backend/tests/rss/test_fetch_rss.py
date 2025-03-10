@@ -22,7 +22,7 @@ def mock_fetch_rss_feed():
 
     with patch("feedparser.parse", return_value=mock_data):
         with patch(
-            "backend.src.utils.summarizer.summarize_text",
+            "backend.utils.summarizer.summarize_text",
             side_effect=lambda x: x,  # ✅ Mock summarization
         ):
             yield mock_data
@@ -31,7 +31,7 @@ def mock_fetch_rss_feed():
 def test_fetch_rss_success(mock_fetch_rss_feed):
     """✅ Ensure RSS fetching works correctly with five mocked articles."""
 
-    from backend.src.rss.fetch_rss import fetch_and_process_rss
+    from backend.rss.fetch_rss import fetch_and_process_rss
 
     articles = fetch_and_process_rss()
 
@@ -52,7 +52,7 @@ def test_fetch_rss_success(mock_fetch_rss_feed):
 
 
 @patch("feedparser.parse")
-@patch("backend.src.utils.summarizer.summarize_text")
+@patch("backend.utils.summarizer.summarize_text")
 def test_fetch_rss_partial_entries(mock_summarize_text, mock_parse):
     """✅ Ensure it handles partial RSS entries."""
     mock_data = MagicMock()
@@ -71,7 +71,7 @@ def test_fetch_rss_partial_entries(mock_summarize_text, mock_parse):
     ]
     mock_parse.return_value = mock_data
 
-    from backend.src.rss.fetch_rss import fetch_and_process_rss
+    from backend.rss.fetch_rss import fetch_and_process_rss
 
     articles = fetch_and_process_rss()
 
@@ -87,14 +87,14 @@ def test_fetch_rss_partial_entries(mock_summarize_text, mock_parse):
 
 
 @patch("feedparser.parse")
-@patch("backend.src.utils.summarizer.summarize_text")
+@patch("backend.utils.summarizer.summarize_text")
 def test_fetch_rss_parse_error(mock_summarize_text, mock_parse):
     """✅ Ensure it handles RSS parse errors gracefully."""
     mock_data = MagicMock()
     mock_data.bozo = 1  # Simulate parse error
     mock_parse.return_value = mock_data
 
-    from backend.src.rss.fetch_rss import fetch_and_process_rss
+    from backend.rss.fetch_rss import fetch_and_process_rss
 
     articles = fetch_and_process_rss()
 
