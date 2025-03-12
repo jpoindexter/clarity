@@ -1,64 +1,58 @@
-from datetime import datetime
-from typing import Optional, List
-
+from typing import List, Optional
 from sqlalchemy.orm import Session
 
-from backend.models.news import News
-from backend.schemas.news import News as NewsSchema  # ✅ Fixed import
-from backend.schemas.news import NewsCreate, NewsUpdate
+from backend.models.news import News as NewsModel
+from backend.schemas.news import NewsCreate, NewsUpdate, NewsSchema
 
 
 class NewsCRUD:
-    """✅ CRUD operations for news items."""
+    """CRUD operations for News."""
 
-    def create(self, db: Session, obj_in: NewsCreate) -> NewsSchema:
-        """✅ Create a new news item."""
-        new_news = News(
-            title=obj_in.title,
-            content=obj_in.content,
-            source=obj_in.source,
-            url=obj_in.url,
-            published_at=obj_in.published_at or datetime.utcnow(),  # ✅ Ensure timestamp exists
-        )
-        db.add(new_news)
-        db.commit()
-        db.refresh(new_news)
-        return NewsSchema.model_validate(new_news)
+    @staticmethod
+    def get_news(db: Session, news_id: int) -> Optional[NewsSchema]:
+        """Retrieve a specific news article by ID."""
+        return db.query(NewsModel).filter(NewsModel.id == news_id).first()
 
-    def get(self, db: Session, news_id: int) -> Optional[NewsSchema]:
-        """✅ Retrieve a single news item."""
-        news_item = db.query(News).filter(News.id == news_id).first()
-        return NewsSchema.model_validate(news_item) if news_item else None
+    @staticmethod
+    def get_all_news(db: Session) -> List[NewsSchema]:
+        """Retrieve all news articles."""
+        return db.query(NewsModel).all()
 
-    def get_all_news(self, db: Session) -> List[NewsSchema]:
-        """✅ Retrieve all news items."""
-        news_list = db.query(News).all()
-        return [NewsSchema.model_validate(news) for news in news_list]
-
-    def update(self, db: Session, news_id: int, obj_in: NewsUpdate) -> Optional[NewsSchema]:
-        """✅ Update an existing news item."""
-        db_news = db.query(News).filter(News.id == news_id).first()
-        if not db_news:
-            return None
-
-        update_data = obj_in.model_dump(exclude_unset=True)  # ✅ Correct way to update selectively
-        for key, value in update_data.items():
-            setattr(db_news, key, value)
-
+    @staticmethod
+    def create_news(db: Session, news: NewsCreate) -> NewsSchema:
+        """Create a new news entry."""
+        db_news = NewsModel(**news.dict())
+        db.add(db_news)
         db.commit()
         db.refresh(db_news)
-        return NewsSchema.model_validate(db_news)
+        return db_news
 
-    def remove(self, db: Session, news_id: int) -> Optional[NewsSchema]:
-        """✅ Delete a news item and return it if successful."""
-        db_news = db.query(News).filter(News.id == news_id).first()
+    @staticmethod
+    def update_news(
+        db: Session, news_id: int, news: NewsUpdate
+    ) -> Optional[NewsSchema]:
+        """Update an existing news entry."""
+        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
         if not db_news:
             return None
+        for key, value in news.dict(exclude_unset=True).items():
+            setattr(db_news, key, value)
+        db.commit()
+        db.refresh(db_news)
+        return db_news
 
+    @staticmethod
+    def delete_news(db: Session, news_id: int) -> bool:
+        """Delete a news entry."""
+        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
+        if not db_news:
+            return False
         db.delete(db_news)
         db.commit()
-        return NewsSchema.model_validate(db_news)
+        return True
 
 
-# ✅ Singleton instance for usage in API endpoints
+# ✅ Define news_crud object for importing
 news_crud = NewsCRUD()
+
+__all__ = ["news_crud", "NewsCRUD"]

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-router = APIRouter()
+router = APIRouter(prefix="/api/analyze")
 
 
 class AnalyzeRequest(BaseModel):
@@ -14,9 +14,17 @@ class AnalyzeMultipleRequest(BaseModel):
 
 @router.post("/")
 def analyze_text(request: AnalyzeRequest):
-    return {"analysis": f"Analysis result for: {request.text}"}
+    return {
+        "analysis": f"Analysis result for input text: {request.text}",
+        "input": request.text
+    }
 
 
 @router.post("/multiple")
 def analyze_multiple_texts(request: AnalyzeMultipleRequest):
-    return {"analyses": [f"Analysis result for: {text}" for text in request.texts]}
+    return {
+        "analyses": [
+            {"input": text, "result": f"Analysis result for: {text}"}
+            for text in request.texts
+        ]
+    }
