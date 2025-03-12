@@ -1,5 +1,3 @@
-from .news import news_crud  # ✅ Industry standard naming
+from .news import news_crud  # ✅ Corrected import
 
 __all__ = ["news_crud"]  # ✅ Explicitly exposing news_crud
-
-from .news import news_crud  # Ensure correct import

@@ -1,15 +1,16 @@
 from fastapi import FastAPI
-from backend.api.router import include_routers
+from backend.api.router import include_routers  # ✅ Ensure correct import
 
-# ✅ Create FastAPI App with a Global Prefix
-app = FastAPI(root_path="/api")  # 👈 This ensures all routes are under /api/
+app = FastAPI()  # ✅ Ensure app is defined before calling include_routers
 
-# ✅ Register Routers
-include_routers(app)
+include_routers(app)  # ✅ Register all routers after app is defined
 
-# ✅ Health Check
+
+@app.get("/")
+def root():
+    return {"message": "Clarity API is running"}
+
+
 @app.get("/health")
-def health_check():
+def health():
     return {"status": "ok"}
-
-include_routers(app)  # Ensure include_routers is properly called

@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from backend.schemas.news import NewsSchema
-from backend.crud.news import get_news
+from backend.crud.news import news_crud
+from backend.database import get_db  # ✅ Corrected import
 
-# ✅ Define the Router for this module (Correct Prefix)
-router = APIRouter(prefix="/news", tags=["news"])
+router = APIRouter(prefix="/api/news", tags=["news"])
 
-# ✅ Define the route
+
 @router.get("/", response_model=list[NewsSchema])
-def fetch_news():
-    return get_news()
+def fetch_news(db: Session = Depends(get_db)):  # ✅ Inject DB dependency
+    return news_crud.get_news(db)
