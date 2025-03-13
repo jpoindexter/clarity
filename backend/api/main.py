@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import logging
 import os
 from logging.config import dictConfig
@@ -65,10 +66,19 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 include_routers(app)
 
 # ✅ Root route for testing
+=======
+from fastapi import FastAPI
+from backend.api.router import include_routers  # ✅ Ensure correct import
+
+app = FastAPI()  # ✅ Ensure app is defined before calling include_routers
+
+include_routers(app)  # ✅ Register all routers after app is defined
+>>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917
 
 
 @app.get("/")
 def root():
+<<<<<<< HEAD
     return {"message": "Welcome to Clarity AI"}
 
 
@@ -94,3 +104,11 @@ async def log_requests(request: Request, call_next):
     )
     response.headers["X-Process-Time"] = str(process_time)
     return response
+=======
+    return {"message": "Clarity API is running"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+>>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # ✅ backend/src/models/__init__.py
+=======
+# ✅ backend/models/__init__.py
+>>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917
 
 from sqlalchemy.orm import declarative_base
 

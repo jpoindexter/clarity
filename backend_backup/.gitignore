@@ -1,0 +1,43 @@
+# ========== General ==========
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+logs/
+logs/*
+backup_junk/
+
+# ========== Python ==========
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+
+# ========== Node.js ==========
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+out/
+dist/
+
+# ========== Environment ==========
+.env
+.env.local
+.env.development
+.env.production
+
+# ========== Docker (if applicable) ==========
+*.dockerfile
+docker-compose.override.yml
+
+# ========== Temporary & System Files ==========
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp

@@ -1,0 +1,89 @@
+backend/src
+├── __init__.py
+├── api
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── endpoints
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── analyze.py
+│   │   ├── articles.py
+│   │   ├── contradiction.py
+│   │   ├── news.py
+│   │   └── search.py
+│   ├── main.py
+│   ├── router.py
+│   └── v1
+│       └── endpoints
+├── config
+│   ├── __init__.py
+│   ├── __pycache__
+│   └── config.py
+├── crud
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── articles.py
+│   └── news.py
+├── database
+│   ├── __init__.py
+│   ├── db_connection.py
+│   ├── db_helper.py
+│   ├── db.sqlite3
+│   ├── migrations
+│   │   ├── __pycache__
+│   │   ├── env.py
+│   │   ├── README
+│   │   ├── script.py.mako
+│   │   └── versions
+│   └── seed_db.py
+├── logs
+│   ├── clarity-api.log
+│   ├── clarity-api.log.0.bz2
+│   └── startup
+│       └── 2025-02-13_10-19-22.log
+├── main.py
+├── models
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── article.py
+│   └── news.py
+├── pages
+│   ├── __init__.py
+│   └── __pycache__
+├── rss
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── feed_parser.py
+│   ├── fetch_rss.py
+│   ├── rss_feeds.py
+│   └── rss_sources.json
+├── schemas
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── article.py
+│   ├── content.py
+│   ├── market_impact.py
+│   ├── metadata.py
+│   ├── news.py
+│   └── summary.py
+├── services
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── contradiction_detection.py
+│   └── contradiction_service.py
+└── utils
+    ├── __init__.py
+    ├── __pycache__
+    ├── ai_analysis.py
+    ├── db_helper.py
+    ├── detect_misinformation.py
+    ├── fetch_module.py
+    ├── helpers.py
+    ├── logger.py
+    ├── misinformation_analysis.py
+    ├── request_utils.py
+    ├── summarizer.py
+    ├── summary_generator.py
+    └── timer.py
+
+29 directories, 58 files

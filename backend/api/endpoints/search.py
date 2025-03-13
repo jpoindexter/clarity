@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # backend/src/api/endpoints/search.py
 from fastapi import APIRouter, Query
 
@@ -18,3 +19,16 @@ async def search_articles(q: str = Query(..., min_length=2, title="Search Query"
             {"id": 2, "title": "Example News", "summary": "Another placeholder result."}
         ],
     }
+=======
+from fastapi import APIRouter, Depends, HTTPException
+from backend.schemas.news import NewsSchema
+from backend.crud.news import news_crud
+
+# ✅ Define the Router for this module (Correct Prefix)
+router = APIRouter(prefix="/search", tags=["search"])
+
+# ✅ Define the route
+@router.get("/", response_model=list[NewsSchema])
+def fetch_news():
+    return get_news()
+>>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917

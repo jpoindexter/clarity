@@ -9,7 +9,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ✅ Load RSS feeds from JSON file
+<<<<<<< HEAD
 RSS_FEED_FILE = "backend/src/rss/rss_sources.json"
+=======
+RSS_FEED_FILE = "backend/rss/rss_sources.json"
+>>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917
 
 try:
     with open(RSS_FEED_FILE, "r") as f:
