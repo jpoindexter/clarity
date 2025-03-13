@@ -1,7 +1,7 @@
 import feedparser
 import pytest
 
-from backend.src.rss.feed_parser import parse_feed
+from backend.rss.feed_parser import parse_feed
 
 
 # ✅ Mock RSS Feeds for Testing

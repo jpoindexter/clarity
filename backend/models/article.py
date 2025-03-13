@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, DateTime, Integer, String, Text
-from backend.src.models import Base  # ✅ Ensure correct Base import
+from backend.models import Base  # ✅ Ensure correct Base import
 
 
 class Article(Base):

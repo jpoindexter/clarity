@@ -1,4 +1,4 @@
-from backend.src.utils.fetch_module import fetch_news
+from backend.utils.fetch_module import fetch_news
 
 
 def test_fetch_news_failure(mocker):

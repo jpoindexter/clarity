@@ -7,12 +7,10 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from starlette.requests import Request
 
-from backend.src.api.router import (  # ✅ Ensure this exists and is correct
-    include_routers
-)
+from backend.api.router import include_routers
 
 # ✅ Ensure log directory exists
-LOG_DIR = "backend/src/logs"
+LOG_DIR = "backend/logs"
 LOG_FILE = os.path.join(LOG_DIR, "clarity-api.log")
 
 os.makedirs(LOG_DIR, exist_ok=True)  # ✅ Create logs directory if missing
@@ -66,8 +64,9 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 # ✅ Include all API routes
 include_routers(app)
 
-
 # ✅ Root route for testing
+
+
 @app.get("/")
 def root():
     return {"message": "Welcome to Clarity AI"}
@@ -78,16 +77,9 @@ def root():
 def health_check():
     return {"status": "ok"}
 
-
-# ✅ API Rate-Limited Endpoint Example
-@app.get("/api/v1/articles", tags=["articles"])
-@limiter.limit("1000 per minute")  # Adjust rate as needed
-async def get_articles(request: Request):
-    logger.info(f"API Call - {request.method} {request.url}")  # ✅ Log request
-    return {"message": "This is a rate-limited example for fetching articles."}
-
-
 # ✅ Performance Logging Middleware
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     from time import time

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
 # ✅ Import models **first** to comply with Flake8 E402
-from backend.src.models import Base
+from backend.models import Base
 
 # ✅ Load DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")

@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-from backend.src.api.main import app
-from backend.src.database.db_connection import get_db
-from backend.src.models.news import News
+from backend.api.main import app
+from backend.database.db_connection import get_db
+from backend.models.news import News
 
 # Create a test client for the FastAPI application
 client = TestClient(app)

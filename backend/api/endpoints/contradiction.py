@@ -3,7 +3,7 @@ from typing import List
 from pydantic import BaseModel
 
 # ✅ Import the contradiction detection service (ensure this function exists)
-from backend.src.services.contradiction_detection import detect_contradictions
+from backend.services.contradiction_detection import detect_contradictions
 
 
 router = APIRouter()

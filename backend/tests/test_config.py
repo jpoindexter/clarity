@@ -2,7 +2,7 @@
 This module contains a test for the DATABASE_URL configuration.
 """
 
-from backend.src.config.config import DATABASE_URL, BACKEND_HOST, BACKEND_PORT
+from backend.config.config import DATABASE_URL, BACKEND_HOST, BACKEND_PORT
 
 
 def test_database_url():

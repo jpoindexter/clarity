@@ -1,7 +1,7 @@
 import os
 import logging
 import feedparser
-from backend.src.rss.rss_feeds import RSS_FEEDS
+from backend.rss.rss_feeds import RSS_FEEDS
 import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 

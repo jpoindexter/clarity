@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 # ✅ Import Base metadata so Alembic can detect models
-from backend.src.database.db_connection import Base
+from backend.database.db_connection import Base
 
 # This is the Alembic Config object, which provides access to the .ini file values.
 config = context.config

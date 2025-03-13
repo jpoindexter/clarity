@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from backend.src.database.db_connection import Base, SessionLocal, engine
-from backend.src.models.article import Article
+from backend.database.db_connection import Base, SessionLocal, engine
+from backend.models.article import Article
 
 # Ensure all tables are created
 Base.metadata.create_all(bind=engine)

@@ -1,5 +1,5 @@
 import pytest
-from backend.src.database.db_connection import get_db, SessionLocal
+from backend.database.db_connection import get_db, SessionLocal
 
 
 def test_get_db():

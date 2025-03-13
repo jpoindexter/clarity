@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from backend.src.models.article import Article
+from backend.models.article import Article
 
 def test_articles(test_db):
     """✅ Ensure Article model works correctly"""

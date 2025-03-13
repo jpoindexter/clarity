@@ -1,5 +1,5 @@
 import pytest
-from backend.src.utils.request_utils import send_post_request
+from backend.utils.request_utils import send_post_request
 
 
 @pytest.fixture

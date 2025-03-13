@@ -1,5 +1,5 @@
 import pytest
-from backend.src.schemas.article import Article, ArticleCreate  
+from backend.schemas.article import Article, ArticleCreate  
 from pydantic import ValidationError
 from datetime import datetime, timezone
 

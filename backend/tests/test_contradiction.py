@@ -1,5 +1,5 @@
 import pytest
-from backend.src.services.contradiction_detection import detect_contradictions
+from backend.services.contradiction_detection import detect_contradictions
 
 def test_contradiction_detection():
     articles = [

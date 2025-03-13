@@ -4,7 +4,7 @@ Tests for the `/api/articles/` endpoint.
 
 from fastapi.testclient import TestClient
 
-from backend.src.api.main import app  # ✅ Fix path to match structure
+from backend.api.main import app  # ✅ Fix path to match structure
 
 client = TestClient(app)
 

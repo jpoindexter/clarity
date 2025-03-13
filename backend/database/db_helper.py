@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
-from backend.src.models.article import Article
-from backend.src.models.news import News
+from backend.models.article import Article
 
 
 def get_or_create(db: Session, model, defaults=None, **kwargs):

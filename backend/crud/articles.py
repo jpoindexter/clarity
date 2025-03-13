@@ -4,8 +4,8 @@ CRUD operations for articles.
 
 from sqlalchemy.orm import Session
 
-from backend.src.models.article import Article  # ✅ Ensure correct import
-from backend.src.schemas.content import ArticleCreate  # ✅ Schema import
+from backend.models.article import Article  # ✅ Ensure correct import
+from backend.schemas.content import ArticleCreate  # ✅ Schema import
 
 
 def fetch_articles(db: Session):

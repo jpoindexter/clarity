@@ -12,7 +12,7 @@ BASE_DIR = os.path.abspath(
 sys.path.insert(0, BASE_DIR)  # ✅ This **must** come **before** importing backend
 
 # ✅ Import AFTER sys.path modification (Fixes `E402`)
-from backend.src.database.db_connection import Base  # ✅ Ensure all models are included
+from backend.database.db_connection import Base  # ✅ Ensure all models are included
 
 # ✅ Load Alembic config
 config = context.config

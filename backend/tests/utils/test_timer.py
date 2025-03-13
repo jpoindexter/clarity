@@ -1,4 +1,4 @@
-from backend.src.utils.summarizer import summarize_text
+from backend.utils.summarizer import summarize_text
 
 def test_summarize_text():
     """✅ Ensure text summarization returns a string"""

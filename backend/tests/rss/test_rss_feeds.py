@@ -11,7 +11,7 @@ from requests.exceptions import (
     Timeout,
 )
 
-from backend.src.rss.rss_feeds import RSS_FEEDS
+from backend.rss.rss_feeds import RSS_FEEDS
 
 
 @pytest.mark.parametrize("rss_url", RSS_FEEDS)

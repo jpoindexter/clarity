@@ -1,4 +1,4 @@
-from backend.src.utils.helpers import clean_text
+from backend.utils.helpers import clean_text
 
 
 def test_clean_text():

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, pool
 from sqlalchemy.engine.url import make_url
 from alembic import context
-from backend.src.models import Base  # ✅ Ensure models are imported
+from backend.models import Base  # ✅ Ensure models are imported
 
 
 # ✅ Load Alembic configuration

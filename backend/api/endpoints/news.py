@@ -2,15 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # ✅ Database & Models
-from backend.src.crud.news import news_crud
-from backend.src.database.db_connection import get_db
-from backend.src.models.news import News
+from backend.crud.news import news_crud
+from backend.database.db_connection import get_db
 # ✅ Schemas
-from backend.src.schemas.news import News as NewsSchema
-from backend.src.schemas.news import NewsCreate, NewsUpdate
+from backend.schemas.news import News as NewsSchema
+from backend.schemas.news import NewsCreate, NewsUpdate
 
 # ✅ Initialize Router
-router = APIRouter(prefix="/news", tags=["news"])
+router = APIRouter(prefix="", tags=["news"])
 
 
 # 🔹 **Retrieve All News Articles**
@@ -44,7 +43,9 @@ def create_news(news: NewsCreate, db: Session = Depends(get_db)):
 @router.put("/{news_id}", response_model=NewsSchema)
 def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
     """Update an existing news article."""
-    updated_news = news_crud.update(db, id=news_id, obj_in=news)
+    updated_news = news_crud.update(
+        db, news_id=news_id, obj_in=news
+    )  # ✅ Fixed parameter name
     if not updated_news:
         raise HTTPException(status_code=404, detail="News article not found.")
     return updated_news
@@ -54,7 +55,7 @@ def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
 @router.delete("/{news_id}", status_code=204)
 def delete_news(news_id: int, db: Session = Depends(get_db)):
     """Delete a news article."""
-    deleted_news = news_crud.remove(db, id=news_id)
+    deleted_news = news_crud.remove(db, news_id=news_id)  # ✅ Fixed parameter name
     if not deleted_news:
         raise HTTPException(status_code=404, detail="News article not found.")
     return {"detail": "News article deleted successfully."}

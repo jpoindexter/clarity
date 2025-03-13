@@ -5,7 +5,7 @@ Handles text summarization using an external AI service.
 
 import logging
 from typing import Optional
-from backend.src.utils.request_utils import send_post_request
+from backend.utils.request_utils import send_post_request
 
 logger = logging.getLogger(__name__)
 

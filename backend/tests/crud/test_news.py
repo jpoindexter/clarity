@@ -1,7 +1,7 @@
 import pytest
-from backend.src.crud.news import news_crud
-from backend.src.models.news import News
-from backend.src.schemas.news import NewsCreate, NewsUpdate
+from backend.crud.news import news_crud
+from backend.models.news import News
+from backend.schemas.news import NewsCreate, NewsUpdate
 
 
 def test_create_news(test_db):

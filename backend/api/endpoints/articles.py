@@ -3,12 +3,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 # ✅ Database & Models
-from backend.src.database.db_connection import get_db
-from backend.src.models.article import Article  # ✅ Using Article model
+from backend.database.db_connection import get_db
+from backend.models.article import Article  # ✅ Using Article model
 
 # ✅ Schemas
-from backend.src.schemas.article import Article as ArticleSchema
-from backend.src.schemas.article import ArticleCreate  # ✅ Correct Schema
+from backend.schemas.article import Article as ArticleSchema
+from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
 
 # ✅ Initialize Router (REMOVE the prefix here)
 router = APIRouter(
@@ -16,6 +16,8 @@ router = APIRouter(
 )
 
 # 🔹 **Retrieve All Articles**
+
+
 @router.get("/", response_model=list[ArticleSchema])
 def get_articles(db: Session = Depends(get_db)):
     """
@@ -29,6 +31,8 @@ def get_articles(db: Session = Depends(get_db)):
     return articles if articles else []  # ✅ Returns an empty list instead of 404
 
 # 🔹 **Create a New Article Entry**
+
+
 @router.post("/", response_model=ArticleSchema)
 def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     """
