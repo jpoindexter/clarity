@@ -4,6 +4,7 @@ from backend.models.news import News
 from backend.schemas.news import NewsCreate, NewsUpdate
 
 
+@pytest.mark.usefixtures("test_db")
 def test_create_news(test_db):
     """✅ Ensure news creation works without violating unique constraints"""
     test_db.query(News).delete()  # ✅ Clear existing entries before running test

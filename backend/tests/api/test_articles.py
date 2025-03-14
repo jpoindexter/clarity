@@ -28,7 +28,8 @@ def test_detect_misinformation():
     """✅ Test AI-powered misinformation detection."""
     result = detect_misinformation("This is fake news.")
     assert isinstance(result, dict), "Result should be a dictionary."
-    assert "misinformation_score" in result.keys(), "Missing 'misinformation_score' key in response."
+    assert "misinformation_score" in result.keys(
+    ), "Missing 'misinformation_score' key in response."
 
 
 # ✅ Test the analyze_news endpoint
@@ -45,9 +46,12 @@ def test_analyze_news(db: Session):
     db.refresh(created_news)  # ✅ Ensure ID is available
 
     response = client.get(f"/news/analyze/{created_news.id}")
-    assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
+    assert response.status_code == 200, (
+        f"Unexpected status code: {response.status_code}"
+    )
     data = response.json()
-    assert "misinformation_analysis" in data.keys(), "Missing 'misinformation_analysis' in response."
+    assert "misinformation_analysis" in data.keys(
+    ), "Missing 'misinformation_analysis' in response."
 
 
 # ✅ Test summarization function

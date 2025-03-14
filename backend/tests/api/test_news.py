@@ -7,6 +7,7 @@ from backend.models.news import News
 # Create a test client for the FastAPI application
 client = TestClient(app)
 
+
 @pytest.fixture(scope="function")
 def test_db():
     """✅ Clears & resets the test DB before running"""
@@ -15,6 +16,7 @@ def test_db():
     db.commit()
     yield db  # Provide the database session to the tests
     db.close()  # Close the session after testing is complete
+
 
 # Test data with all required fields
 news_data = {
@@ -26,18 +28,24 @@ news_data = {
 }
 
 # Test creating news without required fields
+
+
 def test_create_news_missing_fields(test_db):
     payload = {"title": "Missing Content"}
     response = client.post("/api/v1/news/", json=payload)
     assert response.status_code == 422  # Expect validation error
 
 # Test retrieving an empty news list when the database is empty
+
+
 def test_get_empty_news_list(test_db):
     response = client.get("/api/v1/news/")
     assert response.status_code == 200
     assert len(response.json()["articles"]) == 0
 
 # Test creating news successfully with all required fields
+
+
 def test_create_news_success(test_db):
     response = client.post("/api/v1/news/", json=news_data)
     assert response.status_code == 201
@@ -45,6 +53,8 @@ def test_create_news_success(test_db):
     assert response.json()["content"] == news_data["content"]
 
 # Test retrieving a list of news when there is data in the database
+
+
 def test_get_news_list(test_db):
     # Add test data to the database
     new_news = News(**news_data)
@@ -57,6 +67,8 @@ def test_get_news_list(test_db):
     assert response.json()["articles"][0]["title"] == news_data["title"]
 
 # Test updating existing news with valid data
+
+
 def test_update_existing_news(test_db):
     # Add test data to the database
     new_news = News(**news_data)
@@ -70,6 +82,8 @@ def test_update_existing_news(test_db):
     assert response.json()["content"] == updated_data["content"]
 
 # Test deleting existing news with a valid ID
+
+
 def test_delete_existing_news(test_db):
     # Add test data to the database
     new_news = News(**news_data)

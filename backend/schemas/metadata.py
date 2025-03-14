@@ -4,7 +4,10 @@ from pydantic import BaseModel, Field
 
 
 class Metadata(BaseModel):
-    """Schema for storing AI-generated metadata (bias, credibility, topic classification)."""
+    """Schema for storing AI-generated metadata.
+
+    Stores bias, credibility, and topic classification information.
+    """
 
     article_id: int
     credibility_score: float = Field(

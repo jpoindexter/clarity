@@ -1,7 +1,8 @@
 """
 ✅ Misinformation Analysis Module
 
-Provides functions to detect misinformation, score credibility, and analyze media influence.
+Provides functions to detect misinformation, score credibility,
+and analyze media influence.
 """
 
 import logging
@@ -44,7 +45,8 @@ def score_credibility(text: str) -> Optional[float]:
         text (str): The input text to score.
 
     Returns:
-        Optional[float]: A credibility score between 0 and 1, or None if an error occurs.
+        Optional[float]: A credibility score between 0 and 1, or None if an error
+        occurs.
     """
     try:
         result = detect_misinformation(text)

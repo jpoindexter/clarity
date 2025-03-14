@@ -20,6 +20,7 @@ def detect_misinformation(text: str) -> Optional[dict]:
         text (str): The text content to analyze.
 
     Returns:
-        Optional[dict]: The response from the AI API containing misinformation indicators.
+        Optional[dict]: The response from the AI API containing misinformation
+        indicators.
     """
     return send_post_request(API_URL, text)

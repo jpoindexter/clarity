@@ -1,6 +1,4 @@
-from datetime import datetime, timezone
-
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel
 
 
 class ContentSchema(BaseModel):  # ✅ Add this missing schema
@@ -22,5 +20,5 @@ class Article(BaseModel):
     source: str
     url: str
 
-    class YourModel(BaseModel):
-        model_config = ConfigDict(arbitrary_types_allowed=True)
+    class Config:  # ✅ Fix class name and structure
+        arbitrary_types_allowed = True

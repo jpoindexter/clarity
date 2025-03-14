@@ -1,52 +1,54 @@
-import sys
 import os
+import sys
 from pathlib import Path
+from logging.config import fileConfig
 from sqlalchemy import create_engine, pool
-from sqlalchemy.engine.url import make_url
 from alembic import context
-print("ALEMBIC DEBUG - SYS.PATH:", sys.path)
-from backend.models import Base  # ✅ Corrected Import Path
 
-# ✅ Fix Import Path Issue (Ensures `backend/` is available before imports)
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(BASE_DIR / "backend"))
+# ✅ Debugging Output
+print(f"🔥 ALEMBIC DEBUG - SYS.PATH BEFORE: {sys.path}")
 
-# ✅ Debugging Output (Only use for troubleshooting)
-print("SYS.PATH DEBUG:", sys.path)
+# ✅ Ensure Python Can Find `backend/`
+BASE_DIR = Path(__file__).resolve().parents[2]
+BACKEND_DIR = BASE_DIR / "backend"
 
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))  # Ensures backend/ is first
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))  # Ensures project root is included
 
-# ✅ Load Alembic configuration
+print(f"🔥 ALEMBIC DEBUG - SYS.PATH AFTER: {sys.path}")
+
+# ✅ Load Alembic Config
 config = context.config
 
-# ✅ Get the correct database URL from .env or alembic.ini
-DATABASE_URL = os.getenv("DATABASE_URL") or config.get_main_option(
-    "sqlalchemy.url"
-)
+# ✅ Get DATABASE_URL
+DATABASE_URL = os.getenv("DATABASE_URL") or config.get_main_option("sqlalchemy.url")
 
 if not DATABASE_URL or DATABASE_URL == "${DATABASE_URL}":
     raise ValueError(
-        "❌ ERROR: DATABASE_URL is not set in the environment or alembic.ini"
-    )
+        "❌ ERROR: DATABASE_URL is not set. Export it or check alembic.ini.")
 
-# ✅ Ensure DATABASE_URL is correctly formatted
-DATABASE_URL = str(make_url(DATABASE_URL))
+# ✅ Configure Logging
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 
-# ✅ Create an engine with proper pooling
-connectable = create_engine(
-    DATABASE_URL,
-    poolclass=pool.NullPool,
-    echo=True,
-    future=True,
-)
+# ✅ Import Base Model
+try:
+    from backend.models import Base
+    print("✅ SUCCESS: Imported `backend.models`")
+except ImportError as e:
+    print(f"❌ DEBUG: sys.path={sys.path}")  # Print paths for debugging
+    raise ImportError("❌ ERROR: Could not import `backend.models`. "
+                      "Ensure PYTHONPATH is correctly set.") from e
 
-# ✅ Set target metadata for autogeneration
+# ✅ Set `target_metadata`
 target_metadata = Base.metadata
 
+# 🔹 **Offline Migrations**
 
-# 🔹 **Offline Mode Migration**
 
-
-def run_migrations_offline():
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     context.configure(
         url=DATABASE_URL,
@@ -58,35 +60,22 @@ def run_migrations_offline():
     with context.begin_transaction():
         context.run_migrations()
 
+# 🔹 **Online Migrations**
 
-# 🔹 **Online Mode Migration**
 
-
-def run_migrations_online():
+def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
-    try:
-        with connectable.connect() as connection:
-            context.configure(
-                connection=connection,
-                target_metadata=target_metadata,
-            )
+    connectable = create_engine(DATABASE_URL, poolclass=pool.NullPool)
 
-            with context.begin_transaction():
-                context.run_migrations()
+    with connectable.connect() as connection:
+        context.configure(connection=connection, target_metadata=target_metadata)
 
-    except Exception as e:
-        raise RuntimeError(
-            f"❌ ERROR: Unable to connect to the database. "
-            f"Check database settings.\n\n{e}"
-        )
+        with context.begin_transaction():
+            context.run_migrations()
 
 
-# ✅ Ensure the correct migration mode is executed
-
-
+# ✅ Ensure the Correct Mode is Used
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-
-# ✅ Added a newline at the end to fix Flake8 warning (W292)

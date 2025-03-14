@@ -83,7 +83,9 @@ def test_fetch_rss_partial_entries(mock_summarize_text, mock_parse):
         "url": "https://example.com/test-article-1",
         "summary": "Mocked Test Description 1",
     }
-    assert articles[0] == expected_article, f"❌ Incorrect article data (Got: {articles[0]})"
+    assert articles[0] == expected_article, (
+        f"❌ Incorrect article data (Got: {articles[0]})"
+    )
 
 
 @patch("feedparser.parse")

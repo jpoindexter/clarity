@@ -1,7 +1,8 @@
 import pytest
-from backend.schemas.article import Article, ArticleCreate  
+from backend.schemas.article import Article, ArticleCreate
 from pydantic import ValidationError
 from datetime import datetime, timezone
+
 
 def test_article_schema():
     """✅ Ensure Article schema validation works."""
