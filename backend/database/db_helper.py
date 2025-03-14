@@ -1,10 +1,6 @@
 from sqlalchemy.orm import Session
 
 from backend.models.article import Article
-<<<<<<< HEAD
-=======
-from backend.models.news import News
->>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917
 
 
 def get_or_create(db: Session, model, defaults=None, **kwargs):

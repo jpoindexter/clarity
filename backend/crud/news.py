@@ -1,10 +1,9 @@
-<<<<<<< HEAD
 from datetime import datetime
 from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
-from backend.models.news import News
+from backend.models.news import News as NewsModel
 from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate
 
@@ -14,7 +13,7 @@ class NewsCRUD:
 
     def create(self, db: Session, obj_in: NewsCreate) -> NewsSchema:
         """✅ Create a new news item."""
-        new_news = News(
+        new_news = NewsModel(
             title=obj_in.title,
             content=obj_in.content,
             source=obj_in.source,
@@ -28,14 +27,14 @@ class NewsCRUD:
 
     def get(self, db: Session, news_id: int) -> Optional[NewsSchema]:
         """✅ Retrieve a single news item."""
-        news_item = db.query(News).filter(News.id == news_id).first()
+        news_item = db.query(NewsModel).filter(NewsModel.id == news_id).first()
         if news_item:
             return NewsSchema.model_validate(news_item.__dict__)  # ✅ FIXED
         return None
 
     def get_all(self, db: Session) -> List[NewsSchema]:
         """✅ Retrieve all news items."""
-        news_list = db.query(News).all()
+        news_list = db.query(NewsModel).all()
         return [
             NewsSchema.model_validate(news.__dict__) for news in news_list
         ]  # ✅ FIXED
@@ -44,7 +43,7 @@ class NewsCRUD:
         self, db: Session, news_id: int, obj_in: NewsUpdate
     ) -> Optional[NewsSchema]:
         """✅ Update an existing news item."""
-        db_news = db.query(News).filter(News.id == news_id).first()
+        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
         if not db_news:
             return None
 
@@ -58,7 +57,7 @@ class NewsCRUD:
 
     def remove(self, db: Session, news_id: int) -> Optional[NewsSchema]:
         """✅ Delete a news item and return it if successful."""
-        db_news = db.query(News).filter(News.id == news_id).first()
+        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
         if not db_news:
             return None
 
@@ -69,63 +68,5 @@ class NewsCRUD:
 
 # ✅ Singleton instance for usage in API endpoints
 news_crud = NewsCRUD()
-=======
-from typing import List, Optional
-from sqlalchemy.orm import Session
-
-from backend.models.news import News as NewsModel
-from backend.schemas.news import NewsCreate, NewsUpdate, NewsSchema
-
-
-class NewsCRUD:
-    """CRUD operations for News."""
-
-    @staticmethod
-    def get_news(db: Session, news_id: int) -> Optional[NewsSchema]:
-        """Retrieve a specific news article by ID."""
-        return db.query(NewsModel).filter(NewsModel.id == news_id).first()
-
-    @staticmethod
-    def get_all_news(db: Session) -> List[NewsSchema]:
-        """Retrieve all news articles."""
-        return db.query(NewsModel).all()
-
-    @staticmethod
-    def create_news(db: Session, news: NewsCreate) -> NewsSchema:
-        """Create a new news entry."""
-        db_news = NewsModel(**news.dict())
-        db.add(db_news)
-        db.commit()
-        db.refresh(db_news)
-        return db_news
-
-    @staticmethod
-    def update_news(
-        db: Session, news_id: int, news: NewsUpdate
-    ) -> Optional[NewsSchema]:
-        """Update an existing news entry."""
-        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
-        if not db_news:
-            return None
-        for key, value in news.dict(exclude_unset=True).items():
-            setattr(db_news, key, value)
-        db.commit()
-        db.refresh(db_news)
-        return db_news
-
-    @staticmethod
-    def delete_news(db: Session, news_id: int) -> bool:
-        """Delete a news entry."""
-        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
-        if not db_news:
-            return False
-        db.delete(db_news)
-        db.commit()
-        return True
-
-
-# ✅ Define news_crud object for importing
-news_crud = NewsCRUD()
 
 __all__ = ["news_crud", "NewsCRUD"]
->>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917

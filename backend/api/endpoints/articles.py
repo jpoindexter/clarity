@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from datetime import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -11,10 +10,8 @@ from backend.models.article import Article  # ✅ Using Article model
 from backend.schemas.article import Article as ArticleSchema
 from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
 
-# ✅ Initialize Router (REMOVE the prefix here)
-router = APIRouter(
-    tags=["articles"],
-)
+# ✅ Initialize Router (Correct Prefix)
+router = APIRouter(prefix="/articles", tags=["articles"])
 
 # 🔹 **Retrieve All Articles**
 
@@ -58,18 +55,3 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_article)
     return new_article
-=======
-from fastapi import APIRouter, Depends, HTTPException
-from backend.schemas.news import NewsSchema
-from backend.crud.news import news_crud
-
-# ✅ Define the Router for this module (Correct Prefix)
-router = APIRouter(prefix="/articles", tags=["articles"])
-
-# ✅ Define the route
-@router.get("/", response_model=list[NewsSchema])
-def fetch_news():
-    return get_news()
-
-from backend.crud.news import news_crud  # Ensure correct import
->>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917

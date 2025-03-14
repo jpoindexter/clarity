@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -10,7 +9,7 @@ from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate
 
 # ✅ Initialize Router
-router = APIRouter(prefix="", tags=["news"])
+router = APIRouter(prefix="/api/news", tags=["news"])
 
 
 # 🔹 **Retrieve All News Articles**
@@ -60,17 +59,3 @@ def delete_news(news_id: int, db: Session = Depends(get_db)):
     if not deleted_news:
         raise HTTPException(status_code=404, detail="News article not found.")
     return {"detail": "News article deleted successfully."}
-=======
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from backend.schemas.news import NewsSchema
-from backend.crud.news import news_crud
-from backend.database import get_db  # ✅ Corrected import
-
-router = APIRouter(prefix="/api/news", tags=["news"])
-
-
-@router.get("/", response_model=list[NewsSchema])
-def fetch_news(db: Session = Depends(get_db)):  # ✅ Inject DB dependency
-    return news_crud.get_news(db)
->>>>>>> e7de5aae97128e25160c3ae83bd7e7b38dfd0917
