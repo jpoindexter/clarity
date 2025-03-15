@@ -22,10 +22,10 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(
     os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60")
     .split('#')[0]
-    .strip()
+    .strip() or 60
 )
 DEFAULT_ALLOWED_ORIGINS = "http://127.0.0.1:3000,http://localhost:3000"
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")
 
 # ✅ Fetch Configuration
-FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", "600").split("#")[0].strip())
+FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", "600").split("#")[0].strip() or 600)

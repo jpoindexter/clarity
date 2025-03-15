@@ -4,12 +4,13 @@ from sqlalchemy.orm import Session
 # ✅ Database & Models
 from backend.crud.news import news_crud
 from backend.database.db_connection import get_db
+
 # ✅ Schemas
 from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate
 
-# ✅ Initialize Router
-router = APIRouter(prefix="/api/news", tags=["news"])
+# ✅ Initialize Router with Prefix
+router = APIRouter(prefix="/api/news", tags=["news"])  # ✅ Keep the prefix here
 
 
 # 🔹 **Retrieve All News Articles**
@@ -43,9 +44,7 @@ def create_news(news: NewsCreate, db: Session = Depends(get_db)):
 @router.put("/{news_id}", response_model=NewsSchema)
 def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
     """Update an existing news article."""
-    updated_news = news_crud.update(
-        db, news_id=news_id, obj_in=news
-    )  # ✅ Fixed parameter name
+    updated_news = news_crud.update(db, news_id=news_id, obj_in=news)
     if not updated_news:
         raise HTTPException(status_code=404, detail="News article not found.")
     return updated_news
@@ -55,7 +54,7 @@ def update_news(news_id: int, news: NewsUpdate, db: Session = Depends(get_db)):
 @router.delete("/{news_id}", status_code=204)
 def delete_news(news_id: int, db: Session = Depends(get_db)):
     """Delete a news article."""
-    deleted_news = news_crud.remove(db, news_id=news_id)  # ✅ Fixed parameter name
+    deleted_news = news_crud.remove(db, news_id=news_id)
     if not deleted_news:
         raise HTTPException(status_code=404, detail="News article not found.")
     return {"detail": "News article deleted successfully."}

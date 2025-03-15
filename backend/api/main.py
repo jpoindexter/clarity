@@ -7,34 +7,29 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from starlette.requests import Request
 
-from backend.api.router import include_routers
+# ✅ Import API Router
+from backend.api.router import router
 
 # ✅ Ensure log directory exists
 LOG_DIR = "backend/logs"
 LOG_FILE = os.path.join(LOG_DIR, "clarity-api.log")
-
-os.makedirs(LOG_DIR, exist_ok=True)  # ✅ Create logs directory if missing
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # ✅ Logging Configuration
 logging_config = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "default": {
-            "format": "%(asctime)s - %(levelname)s - %(message)s"
-        },
+        "default": {"format": "%(asctime)s - %(levelname)s - %(message)s"}
     },
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
             "filename": LOG_FILE,
             "formatter": "default",
-            "mode": "a",  # ✅ Appends instead of overwriting
+            "mode": "a",
         },
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        },
+        "console": {"class": "logging.StreamHandler", "formatter": "default"},
     },
     "loggers": {
         "uvicorn": {"handlers": ["file", "console"], "level": "INFO"},
@@ -47,39 +42,34 @@ logger = logging.getLogger("fastapi")
 # ✅ Initialize FastAPI application
 app = FastAPI(title="Clarity AI")
 
-# ✅ Enable Cross-Origin Resource Sharing (CORS) if needed
+# ✅ Enable Cross-Origin Resource Sharing (CORS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust in production (e.g., ["https://yourfrontend.com"])
+    allow_origins=["*"],  # Adjust in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Configure Rate Limiting (Prevents API abuse)
+# ✅ Configure Rate Limiting
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 # ✅ Include all API routes
-include_routers(app)
+app.include_router(router)
 
-# ✅ Root route for testing
-
-
+# ✅ Root Route
 @app.get("/")
 def root():
     return {"message": "Welcome to Clarity AI"}
 
-
-# ✅ Health check endpoint
+# ✅ Health Check Route
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
 # ✅ Performance Logging Middleware
-
-
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     from time import time
