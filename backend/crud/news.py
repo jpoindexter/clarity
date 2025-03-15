@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-
 from sqlalchemy.orm import Session
-
 from backend.models.news import News as NewsModel
 from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate
@@ -36,7 +34,19 @@ class NewsCRUD:
         """✅ Retrieve all news items."""
         news_list = db.query(NewsModel).all()
         return [
-            NewsSchema.model_validate(news.__dict__) for news in news_list
+            NewsSchema.model_validate(news.__dict__)
+            for news in news_list
+        ]  # ✅ FIXED
+
+    def search(self, db: Session, query: str) -> List[NewsSchema]:
+        """✅ Search for news articles by title or content."""
+        news_list = db.query(NewsModel).filter(
+            (NewsModel.title.ilike(f"%{query}%")) |
+            (NewsModel.content.ilike(f"%{query}%"))
+        ).all()
+        return [
+            NewsSchema.model_validate(news.__dict__)
+            for news in news_list
         ]  # ✅ FIXED
 
     def update(

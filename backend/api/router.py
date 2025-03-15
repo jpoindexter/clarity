@@ -7,8 +7,8 @@ from backend.api.endpoints.search import router as search_router
 # ✅ Initialize main API router
 router = APIRouter()
 
-# ✅ Include News API Routes
-router.include_router(news_router)  # ✅ `prefix="/api/news"` is handled in news.py
+# ✅ Include News API Routes (Prefix is already set in `news.py`)
+router.include_router(news_router)
 
-# ✅ Include Search API Routes
-router.include_router(search_router)  # ✅ `prefix="/api/search"` is handled in search.py
+# ✅ Include Search API Routes (Prefix is already set in `search.py`)
+router.include_router(search_router)
