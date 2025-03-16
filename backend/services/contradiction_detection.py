@@ -14,11 +14,25 @@ router = APIRouter()
 
 
 def get_contradiction_model():
-    return SentenceTransformer("sentence-transformers/paraphrase-MiniLM-L6-v2")
+    try:
+        logger.info("🚀 Loading contradiction model...")
+        model = SentenceTransformer("sentence-transformers/paraphrase-MiniLM-L6-v2")
+        logger.info("✅ Contradiction model loaded successfully")
+        return model
+    except Exception as e:
+        logger.error(f"❌ Failed to load contradiction model: {e}")
+        raise RuntimeError("Failed to initialize contradiction model")
 
 
 def get_finbert():
-    return pipeline("text-classification", model="yiyanghkust/finbert-tone")
+    try:
+        logger.info("🚀 Loading FinBERT model for sentiment analysis...")
+        model = pipeline("text-classification", model="yiyanghkust/finbert-tone")
+        logger.info("✅ FinBERT model loaded successfully")
+        return model
+    except Exception as e:
+        logger.error(f"❌ Failed to load FinBERT model: {e}")
+        raise RuntimeError("Failed to initialize FinBERT")
 
 
 class Article(BaseModel):
@@ -72,6 +86,8 @@ async def detect_contradictions(
     contradiction_model: SentenceTransformer = Depends(get_contradiction_model),
     finbert: pipeline = Depends(get_finbert),
 ):
+    logger.info("🚀 Starting contradiction detection process")
+    start_time = time.time()
     try:
         body = await request.json()
         if not isinstance(body, dict) or "articles" not in body or not isinstance(
@@ -83,16 +99,17 @@ async def detect_contradictions(
         logger.error(f"Request parsing failed: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
-    start_time = time.time()
     financial_analysis = {}
     article_texts = [article.content for article in articles]
 
     try:
+        logger.info("🚀 Generating embeddings for articles...")
         embeddings = await asyncio.to_thread(
             contradiction_model.encode, article_texts, convert_to_tensor=True
         )
+        logger.info("✅ Embeddings generated successfully")
     except Exception as e:
-        logger.error(f"Embedding error: {e}")
+        logger.error(f"❌ Embedding error: {e}")
         raise HTTPException(
             status_code=500,
             detail={"error": "Internal Server Error", "message": str(e)},
@@ -100,8 +117,12 @@ async def detect_contradictions(
 
     try:
         for article in articles:
+            logger.info(f"🧠 Analyzing sentiment for article: {article.headline}")
             financial_analysis[article.headline] = (
                 await analyze_financial_misinformation(article.content, finbert)
+            )
+            logger.info(
+                f"✅ Sentiment analysis result: {financial_analysis[article.headline]}"
             )
     except Exception as e:
         logger.error(f"Sentiment analysis failed: {e}")

@@ -40,7 +40,12 @@ dictConfig(logging_config)
 logger = logging.getLogger("fastapi")
 
 # ✅ Initialize FastAPI application
-app = FastAPI(title="Clarity AI")
+app = FastAPI(
+    title="Clarity AI",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
 # ✅ Enable Cross-Origin Resource Sharing (CORS)
 app.add_middleware(
@@ -58,6 +63,7 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 
 # ✅ Include all API routes
 app.include_router(router)
+
 
 # ✅ Root Route
 
