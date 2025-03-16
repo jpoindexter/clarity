@@ -2,7 +2,7 @@
 
 ## README.md
 ### High-Level Project Summary
-Clarity Reports is an AI-powered financial intelligence platform that detects media manipulation, ranks news credibility, and delivers real-time market insights for hedge funds and traders.
+Clarity Reports is an AI-driven financial intelligence platform that detects media manipulation, ranks news credibility, and delivers AI-generated market insights and reports. Users can access reports via a secure dashboard or API.
 
 ## project_overview.md
 ### Business Plan, Revenue Model & Execution Roadmap
@@ -10,7 +10,11 @@ Clarity Reports is an AI-powered financial intelligence platform that detects me
 - **Target Users:** Hedge funds, financial analysts, traders.
 - **Pricing Model:** Subscription ($299-$999/mo), Custom Reports ($2K-$10K).
 - **Go-to-Market:** Direct outreach, social media, content marketing.
-- **Tech Stack:** Python (FastAPI), Ollama (AI), PostgreSQL, WeasyPrint (PDF).
+- **Tech Stack:**
+  - **Frontend:** Next.js, Tailwind (Minimal dashboard for report access)
+  - **Backend:** FastAPI, PostgreSQL, Ollama (AI)
+  - **AI Processing:** Mistral, DeepSeek Coder (Credibility scoring & market insights)
+  - **Payments:** Stripe (Subscription-based report access)
 
 ## architecture.md
 ### Backend Structure, Dependencies, API Flow
@@ -75,10 +79,11 @@ newsapi-python
 1. **Set up PostgreSQL database**
 2. **Run FastAPI server**: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
 3. **Schedule Report Generation** (cron job or cloud function)
-4. **Expose API for enterprise clients**
-   - Secure with authentication (API keys or OAuth2)
-   - Deploy with Docker or cloud infrastructure (AWS/GCP/Azure)
-   - Implement logging & monitoring for uptime tracking
+4. ## Deployment Options
+   - **Cloud Hosting (Backend):** Deploy FastAPI via Fly.io or DigitalOcean
+   - **Frontend Hosting:** Deploy Next.js dashboard via Vercel
+   - **Database:** PostgreSQL (Managed Cloud Instance)
+   - **Security:** API authentication with OAuth2, rate limiting, log monitoring
 
 ## security_best_practices.md
 - **API Rate Limiting**

@@ -38,7 +38,8 @@ GRANT ALL PRIVILEGES ON DATABASE clarity_reports TO clarity_user;
 ## 4. Set Up Environment Variables
 Create a `.env` file in the project root (ensure it is added to `.gitignore` to prevent accidental exposure):
 ```plaintext
-DATABASE_URL=postgresql://clarity_user:your_password@localhost:5432/clarity_reports
+DATABASE_URL=postgresql://clarity_user:your_password@db_host:5432/clarity_reports
+NEXT_PUBLIC_API_URL=https://api.clarityreports.com
 SECRET_KEY=your_secret_key
 NEWS_API_KEY=your_news_api_key
 ```
@@ -84,7 +85,32 @@ docker-compose up -d --build
 
 ---
 
-## 6. Configure Nginx Reverse Proxy (Optional)
+## 6. Deploying the Frontend (Next.js Dashboard)
+
+The Clarity Reports dashboard is built with Next.js and should be deployed separately.
+
+### **Option 1: Deploy to Vercel (Recommended)**
+```bash
+cd frontend
+npm install -g vercel
+vercel login
+vercel deploy --prod
+```
+The dashboard will be accessible at your Vercel project URL.
+
+### **Option 2: Deploy to DigitalOcean/App Platform**
+```bash
+cd frontend
+npm install
+npm run build
+npm start
+```
+
+Ensure the frontend is configured to call the correct backend API (`http://your_backend_domain/api`).
+
+---
+
+## 7. Configure Nginx Reverse Proxy (Optional)
 Create an Nginx configuration file `/etc/nginx/sites-available/clarity_reports`:
 ```plaintext
 server {
@@ -113,7 +139,7 @@ sudo systemctl restart nginx
 
 ---
 
-## 7. Testing the Deployment
+## 8. Testing the Deployment
 Verify the API is running:
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/docs
@@ -121,9 +147,12 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/docs
 
 ---
 
-## 8. Scaling & Future Considerations
-- Use **Gunicorn** for production instead of Uvicorn directly.
-- Move to **AWS/GCP** for cloud-based scalability.
-- Implement **Redis + Celery** for background task processing.
+## 9. Scaling & Future Considerations
+
+- **Frontend Auto-Scaling:** Use Vercel or Netlify for auto-scaling frontend deployments.
+- **Backend Load Balancing:** Deploy multiple API instances with a load balancer.
+- **Use Gunicorn for Backend:** Replace Uvicorn with Gunicorn + Uvicorn workers in production.
+- **Move to AWS/GCP:** Deploy both backend and frontend in the cloud for reliability.
+- **Redis + Celery:** Implement background task processing for high-load environments.
 
 🚀 **Clarity Reports is now deployed!**

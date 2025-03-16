@@ -89,6 +89,24 @@ paths:
     post:
       summary: Generate an AI-powered market intelligence report
       description: Compiles AI insights into a structured PDF report.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                report_type:
+                  type: string
+                  description: Type of report to generate (e.g., "market_analysis", "trend_report")
+                start_date:
+                  type: string
+                  format: date
+                  description: Start date for the report data range
+                end_date:
+                  type: string
+                  format: date
+                  description: End date for the report data range
       responses:
         "200":
           description: Report generated
@@ -109,8 +127,8 @@ paths:
 
   /get-report/{id}:
     get:
-      summary: Retrieve a generated report
-      description: Fetches an AI-generated PDF intelligence report.
+      summary: Retrieve a user-generated report
+      description: Fetches an AI-generated PDF intelligence report. The user must be authenticated.
       parameters:
         - name: id
           in: path
@@ -127,6 +145,37 @@ paths:
                 format: binary
         "400":
           description: Bad request (invalid input)
+        "401":
+          description: Unauthorized (invalid API key)
+        "500":
+          description: Internal server error
+
+  /user-reports:
+    get:
+      summary: Retrieve user-specific reports
+      description: Fetches a list of reports available to the authenticated user via the dashboard.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Successfully retrieved reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    report_id:
+                      type: string
+                      description: Unique ID of the report
+                    title:
+                      type: string
+                      description: Report title
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Report generation timestamp
         "401":
           description: Unauthorized (invalid API key)
         "500":

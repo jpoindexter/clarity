@@ -24,11 +24,17 @@
 - **Secure Dependency Management:** Regularly audit dependencies using `pip-audit` and enable Dependabot for automated vulnerability alerts.
 - **Content Security Policy (CSP):** Prevent XSS attacks by defining strict CSP headers.
 - **Regular Security Audits:** Perform periodic security checks and penetration testing.
+- **Secure Frontend Authentication:** Ensure Firebase/Auth0 sessions are securely managed and tokens are not stored in local storage.
+- **Restrict API Access by Role:** Implement role-based access control (RBAC) to limit user permissions in the dashboard.
+- **Enforce CORS Policies:** Restrict API access to only allowed frontend domains to prevent unauthorized requests.
 
 ## 5. Deployment & Compliance
 - **Use Docker Image Scanning:** Scan containers for vulnerabilities before deployment.
 - **Enable Log Rotation:** Prevent logs from exposing sensitive data over time.
 - **Implement DDoS Protection:** Use Cloudflare or AWS Shield to mitigate attacks.
-- **Compliance Standards:** Ensure compliance with GDPR, SOC 2, and ISO 27001 by enforcing strict data access controls, encryption, and audit logging.
+- **Compliance Standards:** Ensure compliance with GDPR, SOC 2, and ISO 27001 by:
+    - Enforcing strict data access controls and role-based permissions.
+    - Encrypting all personally identifiable information (PII) at rest and in transit.
+    - Implementing full audit logging of user actions and system access.
 
 🚀 **Security is not a one-time effort—monitor, update, and improve continuously.**

@@ -9,6 +9,13 @@ This document defines the industry-standard file structure for Clarity Reports. 
 
 ```
 clarity_reports/
+│── frontend/              # Next.js Dashboard for report access
+│   ├── pages/             # Dashboard pages (Login, Reports, Settings)
+│   ├── components/        # Reusable UI components
+│   ├── services/          # API client for fetching reports
+│   ├── public/            # Static assets
+│   ├── styles/            # Tailwind CSS styles
+│   ├── package.json       # Frontend dependencies
 │── backend/               # Core backend services (FastAPI)
 │   ├── api/               # API endpoints
 │   ├── models/            # Database models (SQLAlchemy)
@@ -39,7 +46,8 @@ clarity_reports/
 
 ## 3. Explanation of Key Directories
 
-- **backend/** → FastAPI-based backend API with AI integration.
+- **frontend/** → Next.js dashboard for users to access and manage reports.
+- **backend/** → FastAPI-based backend API handling AI processing and report generation.
 - **data/** → Stores raw news data before processing.
 - **reports/** → Stores AI-generated PDF reports.
 - **docs/** → Contains all project documentation.
@@ -55,6 +63,6 @@ clarity_reports/
 - Write **reusable AI processing logic inside `backend/services/`** for modularity.
 - Place **all automation scripts in `scripts/`** to avoid cluttering the backend.
 - Never store **API keys, credentials, or secrets in the codebase**—use `.env` files.
-- Ensure the `.env` file is stored in the root directory and contains all sensitive credentials, such as API keys and database URLs. This file should never be committed to version control.
+- Ensure the `.env` file is stored in the root directory for backend secrets and a separate `.env.local` file in `frontend/` for frontend environment variables. Neither should be committed to version control.
 
 🚀 **This structure is designed for maximum efficiency, scalability, and maintainability.**
