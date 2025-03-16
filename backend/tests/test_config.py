@@ -18,7 +18,7 @@ def test_database_url():
     assert isinstance(settings.DATABASE_URL, str) and settings.DATABASE_URL.strip(), (
         "DATABASE_URL should be a non-empty string"
     )
-    assert (settings.DATABASE_URL.startswith("postgresql") or
-            settings.DATABASE_URL.startswith("sqlite")), (
+    assert (settings.DATABASE_URL.startswith("postgresql://") or
+            settings.DATABASE_URL.startswith("sqlite://")), (
         "DATABASE_URL should start with a valid database scheme"
     )

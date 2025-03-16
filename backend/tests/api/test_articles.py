@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from backend.main import app
+from backend.api.main import app  # ✅ Corrected import path
 from backend.database.db_connection import get_db
 from backend.crud.news import news_crud
 from backend.utils.detect_misinformation import detect_misinformation  # ✅ Fixed import
@@ -18,9 +18,11 @@ client = TestClient(app)
 @pytest.fixture(scope="module")
 def db():
     """Provide a test database session."""
-    test_db = next(get_db())  # ✅ Get a fresh test DB session
-    yield test_db
-    test_db.close()  # ✅ Ensure session closes properly
+    test_db = next(get_db())  # ✅ Fetch a fresh session
+    try:
+        yield test_db
+    finally:
+        test_db.close()  # ✅ Ensure session is properly closed
 
 
 # ✅ Test misinformation detection function
@@ -45,7 +47,9 @@ def test_analyze_news(db: Session):
     created_news = news_crud.create(db, obj_in=NewsCreate(**news_data))
     db.refresh(created_news)  # ✅ Ensure ID is available
 
-    response = client.get(f"/news/analyze/{created_news.id}")
+    response = client.get(
+        f"/api/news/analyze/{created_news.id}"
+    )  # ✅ Ensure correct API path
     assert response.status_code == 200, (
         f"Unexpected status code: {response.status_code}"
     )

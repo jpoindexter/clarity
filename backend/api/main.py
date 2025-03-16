@@ -60,9 +60,12 @@ app.add_exception_handler(429, _rate_limit_exceeded_handler)
 app.include_router(router)
 
 # ✅ Root Route
+
+
 @app.get("/")
 def root():
     return {"message": "Welcome to Clarity AI"}
+
 
 # ✅ Health Check Route
 @app.get("/health")
@@ -70,6 +73,8 @@ def health_check():
     return {"status": "ok"}
 
 # ✅ Performance Logging Middleware
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     from time import time
