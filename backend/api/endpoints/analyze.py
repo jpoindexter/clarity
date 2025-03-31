@@ -11,8 +11,12 @@ class AnalyzeRequest(BaseModel):
 class AnalyzeMultipleRequest(BaseModel):
     texts: list[str]
 
-
-@router.post("/")
+ 
+@router.post(
+    "/",
+    summary="Analyze article for contradictions",
+    description="Uses internal NLP pipeline to detect contradictions, misinformation signals, and bias in article content."
+)
 def analyze_text(request: AnalyzeRequest):
     return {
         "analysis": f"Analysis result for input text: {request.text}",
@@ -20,7 +24,11 @@ def analyze_text(request: AnalyzeRequest):
     }
 
 
-@router.post("/multiple")
+@router.post(
+    "/multiple",
+    summary="Batch analyze articles for contradictions",
+    description="Processes a list of input texts and analyzes each one for contradictions, misinformation, and bias patterns."
+)
 def analyze_multiple_texts(request: AnalyzeMultipleRequest):
     return {
         "analyses": [

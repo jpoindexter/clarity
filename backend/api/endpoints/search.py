@@ -7,10 +7,15 @@ from backend.schemas.news import News as NewsSchema  # ✅ Ensuring correct sche
 # ✅ Define the Router for Search API
 router = APIRouter(prefix="/api/search", tags=["search"])
 
-# 🔹 **Fetch All News Articles (Moved Here)**
+# 🔹 **Fetch All News Articles (Moved Here)** 
 
 
-@router.get("/", response_model=list[NewsSchema])
+@router.get(
+    "/",
+    response_model=list[NewsSchema],
+    summary="Retrieve all news articles",
+    description="Fetches all news articles from the database."
+)
 def fetch_news(db: Session = Depends(get_db)):
     """Retrieve all stored news articles."""
     return news_crud.get_all(db)  # ✅ Uses `news_crud.get_all()`

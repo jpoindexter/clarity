@@ -13,10 +13,15 @@ from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
 # ✅ Initialize Router (Correct Prefix)
 router = APIRouter(prefix="/articles", tags=["articles"])
 
-# 🔹 **Retrieve All Articles**
+# 🔹 **Retrieve All Articles** 
 
 
-@router.get("/", response_model=list[ArticleSchema])
+@router.get(
+    "/",
+    response_model=list[ArticleSchema],
+    summary="Retrieve all articles",
+    description="Returns a list of ingested articles from the database."
+)
 def get_articles(db: Session = Depends(get_db)):
     """
     Retrieve all stored articles.
@@ -31,7 +36,12 @@ def get_articles(db: Session = Depends(get_db)):
 # 🔹 **Create a New Article Entry**
 
 
-@router.post("/", response_model=ArticleSchema)
+@router.post(
+    "/",
+    response_model=ArticleSchema,
+    summary="Add a new article",
+    description="Stores a new article with full metadata into the database."
+)
 def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     """
     Create a new article entry.

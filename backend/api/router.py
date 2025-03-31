@@ -12,3 +12,7 @@ router.include_router(news_router)
 
 # ✅ Include Search API Routes (Prefix is already set in `search.py`)
 router.include_router(search_router)
+
+# ✅ Attach all routers to the main app
+def include_routers(app):
+    app.include_router(router)

@@ -13,14 +13,18 @@ router = APIRouter()
 class Article(BaseModel):
     source: str
     headline: str
-    content: str
+    content: str 
 
 
 class ContradictionRequest(BaseModel):
     articles: List[Article]
 
 
-@router.post("/detect")
+@router.post(
+    "/detect",
+    summary="Run contradiction detection",
+    description="Analyzes a list of news articles and returns contradiction signal classification between their claims."
+)
 async def detect_contradictions_endpoint(payload: ContradictionRequest):
     """
     API endpoint to detect contradictions between news articles.
