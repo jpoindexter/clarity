@@ -2,8 +2,11 @@
 node_modules/
 .next/
 out/
+frontend/node_modules/
+
+# 🐍 Python Virtual Environments
 venv/
-.venv/  # Catch all virtual environments
+.venv/
 backend/venv/
 
 # 📂 OS and System Files
@@ -13,15 +16,17 @@ Thumbs.db
 # 📝 Logs & Caches
 logs/
 backend/src/logs/
-*.log  # Catch all log files
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.pytest_cache/
 
 # 🔑 Environment Variables
 .env*
-  
+.env
+
 # 🗄 Python Cache & Compiled Files
 __pycache__/
 *.pyc
@@ -35,21 +40,7 @@ backend/*.sqlite3
 backend/*.db
 
 # Backups
+before_snapshot.bcss
 
-before_snapshot.bcss
-before_snapshot.bcss
-.pytest_cache/
-logs/
-.DS_Store
-.env
-.env
-venv/
-.pytest_cache/
-__pycache__/
-*.log
-.env
-venv/
-venv/
-venv/
-frontend/node_modules/
+# Coverage
 htmlcov/
