@@ -1,47 +1,86 @@
-# 🏗 Dependencies & Build
+# === NODE / FRONTEND ===
 node_modules/
 .next/
+dist/
+build/
 out/
+*.log
+*.tsbuildinfo
+frontend/.next/
 frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/package-lock.json
+frontend/yarn.lock
 
-# 🐍 Python Virtual Environments
+# === PYTHON / BACKEND ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+*.sqlite3
+*.db
+*.coverage
+coverage.xml
+htmlcov/
+.cache/
+.mypy_cache/
+.pytest_cache/
+.tox/
+*.env
+.env*
 venv/
 .venv/
+backend/.env
 backend/venv/
+backend/*.db
+backend/*.sqlite3
+backend/requirements.lock
+backend/test.db
 
-# 📂 OS and System Files
+# === ALEMBIC ===
+alembic.ini
+alembic/versions/
+backend/database/migrations/versions/
+
+# === SYSTEM / OS ===
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# 📝 Logs & Caches
+# === LOGS & DUMPS ===
 logs/
-backend/src/logs/
 *.log
+*.log.*
+*.dump
+*.pid
+
+# === IDE / EDITOR FILES ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === BACKUP / TEMP FILES ===
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+*.old
+*.save
+*.~lock.*
+*~.nib
+
+# === MISC ===
+before_snapshot.bcss
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-.pytest_cache/
-
-# 🔑 Environment Variables
-.env*
-.env
-
-# 🗄 Python Cache & Compiled Files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# ⚙️ Database & Virtual Environment Artifacts
-backend/scripts/*.sql
-backend/scripts/*.sqlite
-backend/*.sqlite3
-backend/*.db
-
-# Backups
-before_snapshot.bcss
-
-# Coverage
-htmlcov/
-node_modules/
+all_files.txt
+referenced_files.txt

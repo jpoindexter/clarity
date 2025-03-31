@@ -1,136 +1,59 @@
-# Clarity - AI-Powered News Discovery Platform
+# 🧠 Clarity Intelligence Platform
 
-## 📌 Project Overview
+Clarity is an AI-powered intelligence and narrative analysis platform designed to detect contradictions, misinformation, and narrative manipulation in real-time data streams. Built for neurodivergent learners, independent researchers, and anyone seeking truth through clarity.
 
-Clarity is an AI-powered news aggregation and discovery platform that provides users with unbiased, real-time insights from multiple sources. Built with **FastAPI** and **PostgreSQL**, it enables intelligent news filtering, search, and AI-powered summarization.
+---
 
-## 🚀 Features
+## 🚀 Project Structure
 
-- **AI-enhanced news aggregation** from diverse sources.
-- **Searchable news feed** powered by FastAPI.
-- **Automatic AI-generated summaries** for quick insights.
-- **Real-time updates and filtering options**.
-- **Responsive UI built with Next.js**.
+- `backend/` – FastAPI-based backend (news, contradictions, AI inference, database)
+- `docs/` – Project documentation (vision, architecture, roadmap, PMF, etc.)
+- `alembic/` – Database migration config (via Alembic + SQLAlchemy)
+- `node_modules/` – Local frontend deps (Next.js to be rebuilt)
 
-## 📂 Project Structure
-
-```bash
-backend/
-│── src/
-│   ├── api/              # FastAPI endpoints
-│   ├── models/           # Database models
-│   ├── schemas/          # Pydantic schemas
-│   ├── database/         # Database connection
-│   ├── crud/             # CRUD operations
-│   ├── utils/            # Helper functions
-│── alembic/              # Database migrations
-│── tests/                # Unit tests
-frontend/
-│── components/           # UI components
-│── pages/                # Next.js pages
-│── services/             # API calls from frontend
-│── styles/               # Global styles
-```
+---
 
 ## 🛠️ Tech Stack
 
-### **Backend**
+- **Backend**: FastAPI, PostgreSQL, Alembic, SQLAlchemy
+- **AI**: Ollama (local LLMs: Mistral, DeepSeek, LLaMA, etc.)
+- **Frontend**: [Coming Soon] Next.js (to be rebuilt)
+- **Infra**: Python 3.11+, pgAdmin 4, Alembic migrations
 
-- **Python** (FastAPI)
-- **PostgreSQL**
-- **SQLAlchemy**
-- **Alembic** (Database migrations)
-- **Uvicorn** (ASGI server)
+---
 
-### **Frontend**
+## 🧪 Local Dev Setup
 
-- **Next.js** (React framework)
-- **TailwindCSS** (Styling)
-- **TypeScript** (Strict typing)
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/jpoindexter/clairity.git
+   cd clarity
+   ```
 
-## 🏗️ Installation & Setup
+2. Create `.env` based on `.env.example`
 
-### **1️⃣ Clone the Repository**
+3. Run Alembic migrations:
+   ```bash
+   alembic upgrade head
+   ```
 
-```bash
-git clone https://github.com/yourusername/clarity.git
-cd clarity
-```
+4. Start the backend:
+   ```bash
+   uvicorn backend.main:app --reload
+   ```
 
-### **2️⃣ Backend Setup**
+---
 
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+## 📌 MVP Phase Goals
 
-### **3️⃣ Set Up Environment Variables**
+- Log contradictions in news articles
+- Summarize impact & highlight misinformation
+- Build real-time red flag alert system
+- Serve frontend visualizations via Next.js
 
-Create a `.env` file in the `backend` directory:
+---
 
-```ini
-DATABASE_URL=postgresql://user:password@localhost:5432/clarity
-SECRET_KEY=your_secret_key_here
-DEBUG=True
-```
+## 🔐 Status
 
-### **4️⃣ Apply Database Migrations**
-
-```bash
-alembic upgrade head
-```
-
-### **5️⃣ Run the Backend Server**
-
-```bash
-uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-### **6️⃣ Frontend Setup**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## 🔗 API Documentation
-
-FastAPI provides automatic API documentation:
-
-- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-
-## 🛠️ Running Tests
-
-```bash
-pytest
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature-name`)
-3. Commit changes (`git commit -m 'Added new feature'`)
-4. Push to your branch (`git push origin feature-name`)
-5. Open a Pull Request 🚀
-
-## 📜 License
-
-This project is licensed under the **Business Source License (BSL) 1.1**.
-
-### **Business Source License (BSL) 1.1**
-
-**Change Date:** 2027-02-13 _(3 years from now, it may transition to Apache 2.0 or another license at Clarity Technologies’ discretion.)_
-
-**Use Restrictions:**
-
-- **Commercial use requires a paid license** from Clarity Technologies.
-- **No competing AI news aggregation platforms** may use this software **without explicit permission**.
-- **Personal, non-commercial use is allowed**.
-
-For commercial licensing and permission requests, contact: **legal@claritytech.com**
-
-Copyright © 2025 Clarity Technologies. All rights reserved.
+> Internal MVP — not yet deployed.  
+> For dev use only.  

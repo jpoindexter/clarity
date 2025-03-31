@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1447c04f38a307fd2b1a183f34c088413aa6c5eb5f233deb292cc33d0e67c1d9
-size 457
+{
+  "feeds": [
+    "https://feeds.bbci.co.uk/news/rss.xml",
+    "https://www.theguardian.com/business/rss",
+    "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+    "https://techcrunch.com/feed/",
+    "https://www.economist.com/finance-and-economics/rss.xml",
+    "https://www.businessinsider.com/rss",
+    "https://www.marketwatch.com/rss/topstories",
+    "https://www.ft.com/rss/home"
+  ]
+}
