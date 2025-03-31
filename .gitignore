@@ -44,3 +44,4 @@ before_snapshot.bcss
 
 # Coverage
 htmlcov/
+node_modules/
