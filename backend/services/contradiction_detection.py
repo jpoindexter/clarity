@@ -10,7 +10,7 @@ import asyncio
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter() 
 
 
 def get_contradiction_model():
@@ -80,7 +80,7 @@ async def calculate_contradictions(articles, embeddings, financial_analysis):
     return contradictions
 
 
-@router.post("/api/contradictions/detect")
+@router.post("/contradictions/detect")
 async def detect_contradictions(
     request: Request,
     contradiction_model: SentenceTransformer = Depends(get_contradiction_model),

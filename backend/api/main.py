@@ -8,7 +8,7 @@ from slowapi.util import get_remote_address
 from starlette.requests import Request
 
 # ✅ Import API Router
-from backend.api.router import router
+from backend.api.router import router 
 
 # ✅ Ensure log directory exists
 LOG_DIR = "backend/logs"

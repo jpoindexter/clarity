@@ -1,5 +1,6 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
+from pydantic_settings import BaseSettings
 
 # ✅ Load environment variables from .env
 load_dotenv()
@@ -14,7 +15,7 @@ BACKEND_HOST = os.getenv("BACKEND_HOST", "127.0.0.1")
 BACKEND_PORT = (
     int(os.getenv("BACKEND_PORT", "8000").strip())
     if os.getenv("BACKEND_PORT")
-    else 8000
+    else 8000 
 )
 FRONTEND_HOST = os.getenv("FRONTEND_HOST", "127.0.0.1")
 FRONTEND_PORT = (
@@ -39,9 +40,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = (
 )
 DEFAULT_ALLOWED_ORIGINS = "http://127.0.0.1:3000,http://localhost:3000"
 ALLOWED_ORIGINS = list(
-    filter(None, os.getenv("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(","))
-)
-
+    filter(None, os.getenv("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")))
+    
 # ✅ Fetch Configuration
 FETCH_INTERVAL = (
     int(os.getenv("FETCH_INTERVAL", "600").strip())
@@ -51,6 +51,22 @@ FETCH_INTERVAL = (
 
 # ✅ Additional Configurations
 # Add any additional configuration variables below this line.
+
+class Settings(BaseSettings):
+    database_url: str = "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity"
+    backend_host: str = "127.0.0.1"
+    backend_port: int = 8000
+    frontend_host: str = "127.0.0.1"
+    frontend_port: int = 3000
+    ollama_model: str = "mistral"
+    enable_summarization: bool = True
+    secret_key: str = "fallback-secret-key"
+    access_token_expire_minutes: int = 60
+    default_allowed_origins: str = "http://127.0.0.1:3000,http://localhost:3000"
+    fetch_interval: int = 600
+    debug: bool = False
+
+settings = Settings()  # initialize the settings instance
 
 if os.getenv("DEBUG", "false").lower() == "true":
     print(

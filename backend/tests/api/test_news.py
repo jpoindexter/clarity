@@ -18,7 +18,7 @@ def test_db():
     db.close()  # Close the session after testing is complete
 
 
-# Test data with all required fields
+# Test data with all required fields 
 news_data = {
     "title": "Test News Article",
     "content": "This is a test article.",
@@ -32,14 +32,14 @@ news_data = {
 
 def test_create_news_missing_fields(test_db):
     payload = {"title": "Missing Content"}
-    response = client.post("/api/v1/news/", json=payload)
+    response = client.post("/api/news/", json=payload)
     assert response.status_code == 422  # Expect validation error
 
 # Test retrieving an empty news list when the database is empty
 
 
 def test_get_empty_news_list(test_db):
-    response = client.get("/api/v1/news/")
+    response = client.get("/api/news/")
     assert response.status_code == 200
     assert len(response.json()["articles"]) == 0
 
@@ -47,7 +47,7 @@ def test_get_empty_news_list(test_db):
 
 
 def test_create_news_success(test_db):
-    response = client.post("/api/v1/news/", json=news_data)
+    response = client.post("/api/news/", json=news_data)
     assert response.status_code == 201
     assert response.json()["title"] == news_data["title"]
     assert response.json()["content"] == news_data["content"]
@@ -61,7 +61,7 @@ def test_get_news_list(test_db):
     test_db.add(new_news)
     test_db.commit()
 
-    response = client.get("/api/v1/news/")
+    response = client.get("/api/news/")
     assert response.status_code == 200
     assert len(response.json()["articles"]) == 1
     assert response.json()["articles"][0]["title"] == news_data["title"]
@@ -76,7 +76,7 @@ def test_update_existing_news(test_db):
     test_db.commit()
 
     updated_data = {"title": "Updated Title", "content": "Updated content."}
-    response = client.put(f"/api/v1/news/{new_news.id}", json=updated_data)
+    response = client.put(f"/api/news/{new_news.id}", json=updated_data)
     assert response.status_code == 200
     assert response.json()["title"] == updated_data["title"]
     assert response.json()["content"] == updated_data["content"]
@@ -90,9 +90,9 @@ def test_delete_existing_news(test_db):
     test_db.add(new_news)
     test_db.commit()
 
-    response = client.delete(f"/api/v1/news/{new_news.id}")
+    response = client.delete(f"/api/news/{new_news.id}")
     assert response.status_code == 204
 
     # Verify the news item is deleted by trying to retrieve it again
-    response = client.get(f"/api/v1/news/{new_news.id}")
+    response = client.get(f"/api/news/{new_news.id}")
     assert response.status_code == 404

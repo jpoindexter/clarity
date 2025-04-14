@@ -1,7 +1,6 @@
+"""This module contains a test for the DATABASE_URL configuration.
 """
-This module contains a test for the DATABASE_URL configuration.
-"""
-
+ 
 from backend.config.config import settings
 
 
@@ -14,11 +13,11 @@ def test_database_url():
     2. A valid non-empty string
     3. A properly formatted database URL
     """
-    assert settings.DATABASE_URL is not None, "DATABASE_URL should not be None"
-    assert isinstance(settings.DATABASE_URL, str) and settings.DATABASE_URL.strip(), (
-        "DATABASE_URL should be a non-empty string"
+    assert settings.database_url is not None, "database_url should not be None"
+    assert isinstance(settings.database_url, str) and settings.database_url.strip(), (
+        "database_url should be a non-empty string"
     )
-    assert (settings.DATABASE_URL.startswith("postgresql://") or
-            settings.DATABASE_URL.startswith("sqlite://")), (
-        "DATABASE_URL should start with a valid database scheme"
+    assert (settings.database_url.startswith("postgresql://") or
+            settings.database_url.startswith("sqlite://")), (
+        "database_url should start with a valid database scheme"
     )

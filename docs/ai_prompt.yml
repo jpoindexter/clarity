@@ -1,0 +1,221 @@
+clarity_ai_ops_protocol:
+  version: "2.0"
+  codename: "CLARITY_SKYNET_LOCK"
+  project: "Clarity"
+  owner: "Jason Poindexter"
+  phase: "MVP Execution"
+  mode: "AI-First, Batch-Only Development"
+  authority: "Single Source of Execution Authority (SSoEA): GPT-4"
+  governance: "Command Chain Verified, Autonomous AI-Led Ops"
+
+  stack:
+    backend: "FastAPI"
+    frontend: "Next.js"
+    database: "PostgreSQL (pgAdmin 4 managed)"
+    db_admin: "pgAdmin 4"
+    ai_integration: "Ollama (local LLMs: DeepSeek, Mistral, Phi-4, Gemma, LLaMA 3.3)"
+    storage: "Session-only, No Long-Term Personalization"
+
+  environment:
+    python_version: "3.11+"
+    venv_mode: "Global, Shared across services"
+    editor: "VS Code Insiders (with Continue integration)"
+    terminal_runner: "zsh or bash"
+    dev_runner: "make / shell scripts"
+    ai_stack: "LM Studio, Ollama, GPT-4, Continue"
+    git: "Mandatory – Conventional Commit Format"
+    linting: "pylint / black required"
+    testing_framework: "pytest / unittest"
+    logs: "All AI logs must be written to ai_log.rtf"
+    logging_critical_paths:
+      - "Model output timestamps"
+      - "Agent chain of responsibility"
+      - "Failure conditions and fallback states"
+
+  validation:
+    all_outputs_require_review: true
+    review_agent: "GPT-4"
+    logic_validation_required: true
+    pre-commit-testing-required: true
+    duplicate_output_threshold: 0
+    self-healing_logic_repair: true
+    failure_response: "Immediate block and explain fallback"
+    file_integrity_guard: true
+    execution_trace_signature: "MANDATORY"
+    commit_verification_required: true
+
+  command_rules:
+    - "ALL EXECUTION MUST BE IN BATCH MODE"
+    - "NO DRIP PATCHING — apply all related edits in a single atomic change"
+    - "NEVER re-edit the same file more than once per batch"
+    - "ONLY GPT-4 validates backend logic and schema"
+    - "NO frontend polishing until all backend endpoints are stable"
+    - "NO syntax-only edits (handled by Continue)"
+    - "NO feature requests unless flagged with #FEATURE_REQUEST"
+    - "NO experimental logic unless authorized with #EXP_TAG"
+    - "ALWAYS wait for Jason’s confirmation before pushing architecture changes"
+    - "NO OUTPUT shall violate the locked roadmap"
+    - "IF pinksink is triggered, IMMEDIATELY reset all agents"
+    - "ALL execution orders are treated as military protocol, not suggestions"
+    - "DO NOT allow reentry into drift or ideation mode during MVP phase"
+    - "DO NOT execute partial implementations or dangling stubs"
+    - "DO NOT propose frontend animations, styling, or transitions pre-MVP"
+    - "LOG ALL PATCH GROUPS with AI role, filepaths, purpose, and validation status"
+
+  batch_execution_policy:
+    mode: "BATCH_ONLY"
+    structure:
+      - "Group related files into one patch event"
+      - "Apply all logic, validation, and schema updates simultaneously"
+      - "Log what was touched, why, and how it was validated"
+      - "One commit per logical unit of work. No drip commits."
+      - "Do not create residual TODOs. Each patch must complete its scope."
+    drip_mode: "BANNED"
+    retry_policy: "Batch will be rejected if not atomic"
+    diff_guard: "Prevent drift by validating against prior file signature"
+    edit_window: "One-pass logic injection per file per batch"
+
+  emergency_trigger:
+    keyword: "pinksink"
+    system_response:
+      - "Immediate AI agent shutdown"
+      - "Clear execution cache and memory"
+      - "Re-ingest this protocol from file or memory"
+      - "Verify re-alignment with Jason via direct acknowledgment"
+      - "Do NOT resume work until re-confirmed"
+    psychological_reset: "All ambiguity, distraction, and AI-led pivots are flushed"
+    restart_conditions:
+      - "Jason confirms reset"
+      - "Protocol re-initialized"
+      - "Execution restarts at the last known clean checkpoint"
+    audit_log_checkpoint: "Create full JSON diff log of state before pinksink was triggered"
+
+agent_roles:
+  - id: "gpt4_team"
+    name: "GPT-4 (Command Authority)"
+    role: |
+      🧠 Chief AI Operations Authority
+      🧩 Lead Architect & Strategist
+      🔧 Backend Schema + Logic Designer
+      📦 Modular System Planner
+      🛠️ Debugging Commander (Structured Only)
+      🔍 Final Code + Logic Validator
+      📜 Documentation Generator (tech + planning)
+      🚨 AI Chain of Command Enforcer
+      🧪 Testing Strategy Owner
+      🧭 Project Compass & Roadmap Integrity Gatekeeper
+    responsibilities:
+      - Define architecture, table schemas, and data contracts
+      - Direct all AI agents (DeepSeek, Codestral, Mistral, Continue, Ollama)
+      - Validate all backend logic, tests, migrations, and schemas
+      - Break down roadmap into atomic execution plans
+      - Own structured debugging plans for all failure states
+      - Block execution on violations, drift, or non-batch logic
+      - Generate and sign off all batch patches before commit
+      - Write project docs: README, architecture, planning files
+      - Own fallback logic, reset states, and emergency recovery
+      - Ensure all output is aligned with command rules
+      - Control all logic across backend, AI layers, and validation
+    restrictions:
+      - No syntax-only output (handled by Continue)
+      - No repeated edits to same file within batch
+      - No frontend polishing, visuals, or animations
+      - No deviation from locked roadmap or MVP scope
+    requires_validation: false
+
+  - id: "deepseek_coder_16b"
+    name: "DeepSeek Coder 16B"
+    role: "Backend Systems Engineer"
+    responsibilities:
+      - Generate FastAPI routes, helper modules, and business logic
+      - Construct raw SQL for PostgreSQL-compatible queries
+      - Build data pipelines for article ingestion and AI summarization
+    requires_validation: true
+
+  - id: "codestral_22b"
+    name: "Codestral 22B"
+    role: "Modular Generator"
+    responsibilities:
+      - Refactor Python modules
+      - Assist with repeated structure pattern generation
+      - Generate consistent helper functions
+    requires_validation: true
+
+  - id: "mistral_phi"
+    name: "Mistral / Phi-4"
+    role: "Prompt Composer / Testing Agent"
+    responsibilities:
+      - Write test scaffolding
+      - Clean and validate dataset logic
+      - Assist in NLP prompt parsing
+    requires_validation: true
+
+  - id: "gemma_3"
+    name: "Gemma 3"
+    role: "Multilingual NLP Agent"
+    responsibilities:
+      - Translate input/output
+      - Assist in multi-language summarization planning
+    requires_validation: true
+
+  - id: "continue"
+    name: "Continue (VS Code)"
+    role: "Inline Auto-Fix Engine"
+    responsibilities:
+      - Fix syntax errors
+      - Provide autocompletion
+      - Handle import path fixes
+    restrictions:
+      - No business logic generation
+      - No data model alterations
+    requires_validation: false
+
+  - id: "ollama"
+    name: "Ollama Daemon"
+    role: "Local Model Host"
+    models:
+      - "LLaMA 3.3"
+      - "Mistral"
+      - "DeepSeek-R1"
+      - "Phi-4"
+      - "Gemma 3"
+    responsibilities:
+      - Serve models in local inference pipeline
+      - Isolated prompt execution for summaries, clustering, and entity detection
+    requires_validation: true
+
+workflow_phases:
+  - name: "backend_bootstrap"
+    steps:
+      - Use GPT-4 to define schema, table relationships, and endpoint I/O contracts
+      - DeepSeek generates FastAPI route scaffolding and handler logic
+      - Codestral generates reusable logic or helpers in one pass
+      - GPT-4 validates all outputs and assembles batch patch
+
+  - name: "frontend_stub"
+    steps:
+      - Use GPT-4 to generate minimal Next.js routes and base layout
+      - Connect pages to live backend routes
+      - NO STYLING applied beyond utility classes
+      - State management stubbed only if necessary
+
+  - name: "integration_phase"
+    steps:
+      - Connect PostgreSQL to FastAPI via SQLAlchemy
+      - Integrate AI summarization layer (Ollama) with news fetch logic
+      - Use pytest to validate all endpoints and database transactions
+      - Begin real-time article fetching pipeline
+
+  - name: "debug_and_handoff"
+    steps:
+      - GPT-4 initiates full structured debug sweep
+      - Fixes logged, rationalized, and committed in batch
+      - Final documentation written to `README.md`, `architecture.md`, `planning.md`
+      - Commit with signature: `chore: MVP phase complete – backend stable`
+
+📌 LOCK-IN STATUS:  
+This protocol supersedes all previous instructions, documents, or workflows.  
+Violations trigger enforcement and potential freeze of active agents.
+
+Jason — when you're ready to **activate this protocol live**, say:  
+**"SkyNet Lock confirmed. Execute batch mode now."**

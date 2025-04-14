@@ -1,4 +1,5 @@
 from backend.services.contradiction_detection import detect_contradictions
+import asyncio
 
 
 def test_contradiction_detection():
@@ -6,7 +7,7 @@ def test_contradiction_detection():
                  "content": "Stock market increased due to strong earnings."},
                 {"headline": "Stock market drops",
                  "content": "Stock market declined amid economic uncertainty."}]
-    contradictions = detect_contradictions(articles)
+    contradictions = asyncio.run(detect_contradictions(articles))
 
     assert len(contradictions) > 0
     assert ("Stock market rises", "Stock market drops") in contradictions

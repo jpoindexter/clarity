@@ -1,20 +1,21 @@
 import os
 
-import pytest
+import pytest 
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
+from backend.database.base import Base  # ✅ Corrected import for declarative Base
 
 # ✅ Load test database environment variable
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///test_clarity.db")
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
 
 # ✅ Ensure TEST_DATABASE_URL is set
 if not TEST_DATABASE_URL:
     raise ValueError(
         "❌ TEST_DATABASE_URL is not set.\n" "   ➜ Check your environment variables."
     )
-
+    
 # ✅ Create test database engine
 if TEST_DATABASE_URL.startswith("sqlite"):
     test_engine = create_engine(
@@ -47,21 +48,23 @@ def setup_test_db():
         conn.commit()
 
     # ✅ Apply Alembic migrations to create tables
-    alembic_cfg = Config("backend/alembic.ini")  # ✅ Fix path
+    alembic_cfg = Config("alembic.ini")  # ✅ Updated to reflect new root location
     alembic_cfg.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
     command.upgrade(alembic_cfg, "head")  # ✅ Apply all migrations
 
-    yield  # ✅ Run tests
+    Base.metadata.create_all(bind=test_engine)  # ✅ Create schema as fallback
 
-    # ✅ Drop schema after tests
+    yield  # ✅ Run tests 
+
+    # ✅ Drop schema after tests 
     with test_engine.connect() as conn:
         if not TEST_DATABASE_URL.startswith("sqlite"):
             conn.execute(text("SET session_replication_role = 'origin';"))
         conn.commit()
 
-
+ 
 @pytest.fixture(scope="function")
-def test_db():
+def db_session():
     """✅ Provides a clean database session for each test."""
     session = TestingSessionLocal()
     try:

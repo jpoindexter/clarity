@@ -4,6 +4,7 @@ Handles text summarization using an external AI service.
 """
 
 import logging
+import requests
 from typing import Optional
 from backend.utils.request_utils import send_post_request
 
@@ -14,18 +15,36 @@ API_URL = "https://ai-summarizer.example.com/summarize"  # Placeholder URL
 
 def summarize_text(text: str) -> Optional[str]:
     """
-    Summarizes the given text using an external AI API.
+    Summarizes the given text using a local Ollama model, with fallback if unavailable.
 
     Args:
         text (str): The text to summarize.
 
     Returns:
-        Optional[str]: The AI-generated summary or None if an error occurs.
+        Optional[str]: The AI-generated summary or fallback stub.
     """
-    response = send_post_request(API_URL, text)
-    return response.get("summary") if response else None
+    if not text.strip():
+        return "⚠️ Error: Input text is empty."
+        
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "mistral",
+                "prompt": f"Summarize this: {text}",
+                "stream": False
+            },
+            timeout=10
+        )
+        if response.ok:
+            result = response.json()
+            return result.get("response", "").strip()
+        return "⚠️ Error: No valid summary returned."
+    except Exception as e:
+        print(f"⚠️ Ollama unavailable: {e}")
+        return "⚠️ Ollama unavailable — test stub summary."
 
-
+ 
 # ✅ Renamed variable to follow uppercase constant naming convention
 TEST_TEXT = """
 Clarity AI is an advanced intelligence platform designed to detect misinformation,

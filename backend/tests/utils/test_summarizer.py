@@ -4,17 +4,12 @@ import pytest
 from backend.utils.summary_generator import summarize_text
 
 
-@pytest.fixture
-def mock_ollama_response():
-    """Mock the Ollama API response."""
-    return json.dumps({"response": "AI is transforming the world."})
-
-
 @patch("requests.post")
-def test_summarize_text_success(mock_post, mock_ollama_response):
+def test_summarize_text_success(mock_post):
     """✅ Ensure summarize_text returns expected summary"""
+    mock_response = json.dumps({"response": "AI is transforming the world."})
     mock_post.return_value.status_code = 200
-    mock_post.return_value.iter_lines.return_value = [mock_ollama_response.encode()]
+    mock_post.return_value.iter_lines.return_value = [mock_response.encode()]
 
     summary = summarize_text("AI is the future.")
     assert summary == "AI is transforming the world."

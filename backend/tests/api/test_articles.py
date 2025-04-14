@@ -9,12 +9,13 @@ from backend.crud.news import news_crud
 from backend.utils.detect_misinformation import detect_misinformation  # ✅ Fixed import
 from backend.utils.summarizer import summarize_text  # ✅ Updated import
 from backend.schemas.news import NewsCreate
+from backend.models.news import News  # Add this import at the top if not already present
 
 # ✅ Create a test client for API testing
 client = TestClient(app)
 
 
-# ✅ Setup a test database session
+# ✅ Setup a test database session 
 @pytest.fixture(scope="module")
 def db():
     """Provide a test database session."""
@@ -34,7 +35,7 @@ def test_detect_misinformation():
     ), "Missing 'misinformation_score' key in response."
 
 
-# ✅ Test the analyze_news endpoint
+# ✅ Test the analyze_news endpoint 
 def test_analyze_news(db: Session):
     """✅ Ensure AI analysis works on news articles."""
     news_data = {
@@ -42,20 +43,19 @@ def test_analyze_news(db: Session):
         "content": "This is a test article.",
         "source": "Test Source",
         "url": "https://example.com/test-news",
-        "published_at": datetime.utcnow(),  # ✅ Ensure valid timestamp
+        "published_at": datetime.utcnow(),
     }
-    created_news = news_crud.create(db, obj_in=NewsCreate(**news_data))
-    db.refresh(created_news)  # ✅ Ensure ID is available
+    # Use raw SQLAlchemy model and skip .refresh()
+    new_article = News(**news_data)
+    db.add(new_article)
+    db.commit() 
 
-    response = client.get(
-        f"/api/news/analyze/{created_news.id}"
-    )  # ✅ Ensure correct API path
+    response = client.get(f"/news/analyze/{new_article.id}")
     assert response.status_code == 200, (
         f"Unexpected status code: {response.status_code}"
     )
     data = response.json()
-    assert "misinformation_analysis" in data.keys(
-    ), "Missing 'misinformation_analysis' in response."
+    assert "misinformation_analysis" in data, "Missing 'misinformation_analysis' in response."
 
 
 # ✅ Test summarization function

@@ -1,9 +1,9 @@
 import pytest
 from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
+from backend.database.base import Base
 from backend.database.db_helper import get_or_create, fetch_articles
-
-Base = declarative_base()
+from backend.database.models import Article
 
 
 # Using pytest fixture to setup database for tests
@@ -21,12 +21,6 @@ class MockModel(Base):
     __tablename__ = 'mock_model'
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-
-
-class MockArticle(Base):
-    __tablename__ = 'mock_article'
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
 
 
 def some_function():
@@ -72,8 +66,8 @@ def test_get_or_create(db_session):
 
 def test_fetch_articles(db_session):
     # Test when there are articles in the database
-    article1 = MockArticle(title="Article 1")
-    article2 = MockArticle(title="Article 2")
+    article1 = Article(title="Article 1")
+    article2 = Article(title="Article 2")
     db_session.add(article1)
     db_session.add(article2)
     db_session.commit()
@@ -84,8 +78,8 @@ def test_fetch_articles(db_session):
     assert articles[1].title == "Article 2"
 
     # Test when there are no articles in the database
-    db_session.query(MockArticle).delete()
-    db_session.commit()
+    db_session.query(Article).delete()
+    db_session.commit() 
 
     articles = fetch_articles(db_session)
     assert len(articles) == 0

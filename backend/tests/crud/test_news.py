@@ -14,7 +14,7 @@ def test_create_news(test_db):
         title="Test News",
         content="This is a test news article.",
         source="Test Source",
-        url="https://test.com/news"
+        url="https://test.com/news" 
     )
     news_item = news_crud.create(test_db, obj_in=news_data)
     assert news_item.id is not None
@@ -33,7 +33,7 @@ def test_update_news(test_db):
     )
 
     update_data = NewsUpdate(title="New Title")
-    updated_news = news_crud.update(test_db, db_obj=news_item, obj_in=update_data)
+    updated_news = news_crud.update(test_db, obj_in=update_data, db_obj=news_item)
 
     assert updated_news.title == "New Title"
 

@@ -5,7 +5,7 @@ from backend.models.news import News as NewsModel
 from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate
 
-
+ 
 class NewsCRUD:
     """✅ CRUD operations for news items."""
 
@@ -21,7 +21,7 @@ class NewsCRUD:
         db.add(new_news)
         db.commit()
         db.refresh(new_news)
-        return NewsSchema.model_validate(new_news.__dict__)  # ✅ FIXED
+        return new_news  # ✅ Return ORM instance for internal use
 
     def get(self, db: Session, news_id: int) -> Optional[NewsSchema]:
         """✅ Retrieve a single news item."""
@@ -50,25 +50,21 @@ class NewsCRUD:
         ]  # ✅ FIXED
 
     def update(
-        self, db: Session, news_id: int, obj_in: NewsUpdate
-    ) -> Optional[NewsSchema]:
-        """✅ Update an existing news item."""
-        db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
-        if not db_news:
-            return None
-
+        self, db: Session, db_obj: NewsModel, obj_in: NewsUpdate
+    ) -> NewsSchema:
+        """✅ Update an existing news item using an existing ORM object."""
         update_data = obj_in.model_dump(exclude_unset=True)
         for key, value in update_data.items():
-            setattr(db_news, key, value)
+            setattr(db_obj, key, value)
 
         db.commit()
-        db.refresh(db_news)
-        return NewsSchema.model_validate(db_news.__dict__)  # ✅ FIXED
+        db.refresh(db_obj)
+        return NewsSchema.model_validate(db_obj)  # Updated line
 
     def remove(self, db: Session, news_id: int) -> Optional[NewsSchema]:
         """✅ Delete a news item and return it if successful."""
         db_news = db.query(NewsModel).filter(NewsModel.id == news_id).first()
-        if not db_news:
+        if not db_news: 
             return None
 
         db.delete(db_news)
