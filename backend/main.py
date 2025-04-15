@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from backend.api.endpoints import (
     summarize,
     news,
@@ -11,6 +12,14 @@ from backend.api.endpoints import (
 # ✅ Initialize FastAPI application
 app = FastAPI(title="Clarity AI")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+) 
+
 # ✅ Include all API routes
 app.include_router(summarize.router)
 app.include_router(news.router)
@@ -19,7 +28,7 @@ app.include_router(analyze.router)
 app.include_router(fetch.router)
 app.include_router(search.router)
  
- 
+  
 # ✅ Root route for testing
 @app.get("/")
 def root():

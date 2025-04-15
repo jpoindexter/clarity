@@ -1,7 +1,7 @@
 def parse_feed(feed_data):
     """
     ✅ Parses RSS feed data into structured articles, ensuring deduplication
-    & handling errors.
+    & handling errors. 
     """
     articles = []
     seen_urls = set()  # ✅ Track processed URLs to prevent duplicates
@@ -35,3 +35,16 @@ def parse_feed(feed_data):
             print(f"❌ Error processing entry from {source_name}: {e}")
 
     return articles
+
+import feedparser
+
+def fetch_and_parse_feed(feed_url: str):
+    """
+    📥 Fetches and parses an RSS feed URL into structured articles.
+    """
+    try:
+        feed_data = feedparser.parse(feed_url)
+        return parse_feed(feed_data)
+    except Exception as e:
+        print(f"❌ Failed to parse RSS feed: {e}")
+        return []

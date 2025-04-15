@@ -29,7 +29,7 @@ export default function IngestForm() {
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE;
-      const res = await fetch(`${apiBase}/api/articles/ingest`, {
+      const res = await fetch(`${apiBase}/articles/ingest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input, source }),
