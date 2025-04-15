@@ -77,7 +77,7 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     response_model=list[SummarizedArticle],
     summary="Ingest article(s) from RSS or URL",
     description="Fetches article(s) from a given URL or RSS feed and returns summarized content."
-)
+) 
 def ingest_articles(request: ArticleIngestRequest):
     if request.source == "url":
         text = fetch_article_text(request.input)
@@ -93,8 +93,8 @@ def ingest_articles(request: ArticleIngestRequest):
         }]
 
     elif request.source == "rss":
-        from backend.rss.feed_parser import parse_feed
-        articles = parse_feed(request.input)
+        from backend.rss.parser import fetch_and_parse_feed
+        articles = fetch_and_parse_feed(request.input)
         results = []
         for entry in articles:
             content = entry.get("summary", "") or entry.get("content", "")
