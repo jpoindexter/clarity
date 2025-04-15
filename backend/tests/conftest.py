@@ -3,11 +3,11 @@ import os
 import pytest 
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, inspect
 from sqlalchemy.orm import scoped_session, sessionmaker
 from backend.database.base import Base  # ✅ Corrected import for declarative Base
 
-# ✅ Load test database environment variable
+# ✅ Load test database environment variable 
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://jpoindexter:dontforgetme@localhost:5432/clarity")
 
 # ✅ Ensure TEST_DATABASE_URL is set
@@ -47,10 +47,14 @@ def setup_test_db():
             conn.execute(text("SET session_replication_role = 'replica';"))
         conn.commit()
 
-    # ✅ Apply Alembic migrations to create tables
-    alembic_cfg = Config("alembic.ini")  # ✅ Updated to reflect new root location
-    alembic_cfg.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
-    command.upgrade(alembic_cfg, "head")  # ✅ Apply all migrations
+    with test_engine.connect() as conn:
+        inspector = inspect(conn)
+        tables = inspector.get_table_names()
+        if "articles" not in tables:
+            # ✅ Apply Alembic migrations to create tables
+            alembic_cfg = Config("alembic.ini")  # ✅ Updated to reflect new root location
+            alembic_cfg.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
+            command.upgrade(alembic_cfg, "head")  # ✅ Apply all migrations
 
     Base.metadata.create_all(bind=test_engine)  # ✅ Create schema as fallback
 

@@ -44,3 +44,18 @@ class ArticleUpdate(BaseModel):
     published_at: Optional[datetime] = None
     credibility_score: Optional[float] = None
     ai_summary: Optional[str] = None
+
+from typing import Literal, List
+
+class ArticleIngestRequest(BaseModel):
+    """🆕 Request schema for /articles/ingest endpoint"""
+    source: Literal["url", "rss"]
+    input: str
+
+class SummarizedArticle(BaseModel):
+    """🆕 Response schema for summarized articles"""
+    title: str
+    url: str
+    summary: str
+    source: str
+    published: Optional[str] = None

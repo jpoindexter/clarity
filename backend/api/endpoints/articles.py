@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # ✅ Database & Models
@@ -9,9 +9,12 @@ from backend.models.article import Article  # ✅ Using Article model
 # ✅ Schemas
 from backend.schemas.article import Article as ArticleSchema
 from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
+from backend.schemas.article import ArticleIngestRequest, SummarizedArticle
+from backend.utils.article_fetcher import fetch_article_text
+from backend.utils.article_summarizer import summarize_article
 
 # ✅ Initialize Router (Correct Prefix)
-router = APIRouter(prefix="/articles", tags=["articles"])
+router = APIRouter(prefix="/articles", tags=["Articles"])
 
 # 🔹 **Retrieve All Articles** 
 
@@ -24,7 +27,7 @@ router = APIRouter(prefix="/articles", tags=["articles"])
 )
 def get_articles(db: Session = Depends(get_db)):
     """
-    Retrieve all stored articles.
+    Retrieve all stored articles. 
 
     Returns:
         list[ArticleSchema]: List of stored articles.
@@ -36,7 +39,7 @@ def get_articles(db: Session = Depends(get_db)):
 # 🔹 **Create a New Article Entry**
 
 
-@router.post(
+@router.post( 
     "/",
     response_model=ArticleSchema,
     summary="Add a new article",
@@ -65,3 +68,41 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_article)
     return new_article
+
+# 🔹 **Ingest Article(s) from RSS or URL**
+
+@router.post(
+    "/ingest",
+    response_model=list[SummarizedArticle],
+    summary="Ingest article(s) from RSS or URL",
+    description="Fetches article(s) from a given URL or RSS feed and returns summarized content."
+)
+def ingest_articles(request: ArticleIngestRequest):
+    if request.source == "url":
+        text = fetch_article_text(request.input)
+        summary = summarize_article(text)
+        return [{
+            "title": "Untitled",
+            "url": request.input,
+            "summary": summary,
+            "source": "url",
+            "published": datetime.utcnow().isoformat()
+        }]
+
+    elif request.source == "rss":
+        from backend.rss.feed_parser import parse_feed
+        articles = parse_feed(request.input)
+        results = []
+        for entry in articles:
+            content = entry.get("summary", "") or entry.get("content", "")
+            summary = summarize_article(content)
+            results.append({
+                "title": entry.get("title", "Untitled"),
+                "url": entry.get("url"),
+                "summary": summary,
+                "source": "rss",
+                "published": entry.get("published", datetime.utcnow().isoformat())
+            })
+        return results
+
+    raise HTTPException(status_code=400, detail="Invalid source type.")

@@ -66,3 +66,16 @@ def test_summarization():
 
     assert isinstance(summary, str), "Summary should be a string."
     assert len(summary) > 0, "Summary should not be empty."
+
+def test_ingest_article_url():
+    """✅ Test article ingestion via URL and summarization."""
+    response = client.post("/api/articles/ingest", json={
+        "source": "url",
+        "input": "https://example.com"
+    })
+    assert response.status_code == 200, f"Unexpected status: {response.status_code}"
+    data = response.json()
+    assert isinstance(data, list), "Response should be a list"
+    assert len(data) > 0, "No article summaries returned"
+    assert "summary" in data[0], "Missing 'summary' in response"
+    assert "url" in data[0], "Missing 'url' in response"

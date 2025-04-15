@@ -5,11 +5,11 @@ from backend.database.db_connection import get_db
 from backend.schemas.news import News as NewsSchema  # ✅ Ensuring correct schema import
 
 # ✅ Define the Router for Search API
-router = APIRouter(prefix="/api/search", tags=["search"])
+router = APIRouter(prefix="/api/search", tags=["Search"])
 
 # 🔹 **Fetch All News Articles (Moved Here)** 
 
-
+ 
 @router.get(
     "/",
     response_model=list[NewsSchema],
@@ -22,7 +22,7 @@ def fetch_news(db: Session = Depends(get_db)):
 
 
 # 🔹 **Search News Articles**
-@router.get("/query", summary="Search for articles based on a query")
+@router.get("/query", summary="Search for articles based on a query", description="Searches all news articles for matches based on the provided query string.")
 def search_articles(
     q: str = Query(..., min_length=2, title="Search Query"),
     db: Session = Depends(get_db)

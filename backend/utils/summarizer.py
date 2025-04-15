@@ -25,7 +25,7 @@ def summarize_text(text: str) -> Optional[str]:
     """
     if not text.strip():
         return "⚠️ Error: Input text is empty."
-        
+         
     try:
         response = requests.post(
             "http://localhost:11434/api/generate",
@@ -54,5 +54,3 @@ track narrative shifts, and provide actionable insights.
 if __name__ == "__main__":
     summary = summarize_text(TEST_TEXT)
     print(f"Generated Summary: {summary}" if summary else "Summarization failed.")
-
-# ✅ Fixed: Added final newline

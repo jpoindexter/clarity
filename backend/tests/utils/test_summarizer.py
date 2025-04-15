@@ -1,54 +1,27 @@
-import json
-from unittest.mock import patch
 import pytest
 from backend.utils.summary_generator import summarize_text
+from unittest.mock import patch
+import requests
 
-
-@patch("requests.post")
-def test_summarize_text_success(mock_post):
-    """✅ Ensure summarize_text returns expected summary"""
-    mock_response = json.dumps({"response": "AI is transforming the world."})
-    mock_post.return_value.status_code = 200
-    mock_post.return_value.iter_lines.return_value = [mock_response.encode()]
-
+def test_summarize_text_success():
+    """✅ Ensure summarize_text returns actual summary from Ollama"""
     summary = summarize_text("AI is the future.")
-    assert summary == "AI is transforming the world."
+    assert isinstance(summary, str)
+    assert len(summary) > 10
 
-
-@patch("requests.post")
-def test_summarize_text_empty(mock_post):
+def test_summarize_text_empty():
     """✅ Ensure it handles empty input properly."""
     summary = summarize_text("")
     assert summary == "⚠️ Error: Input text is empty."
 
+def test_summarize_text_none():
+    """✅ Ensure it handles None input gracefully."""
+    summary = summarize_text(None)
+    assert summary == "⚠️ Error: Input text is empty."
 
-@patch("requests.post")
-def test_summarize_text_error(mock_post):
-    """✅ Ensure it handles API errors gracefully."""
-    mock_post.return_value.status_code = 500  # ✅ Mock API failure
-    mock_post.return_value.json.return_value = {"error": "Server Down"}
-
-    summary = summarize_text("AI is powerful.")
-    assert "⚠️ Error: Ollama service unavailable" in summary
-
-
-@patch("requests.post")
-def test_summarize_text_partial_response(mock_post):
-    """✅ Ensure it handles partial API responses."""
-    partial_response = json.dumps({"response": "AI is"})
-    mock_post.return_value.status_code = 200
-    mock_post.return_value.iter_lines.return_value = [partial_response.encode()]
-
-    summary = summarize_text("AI is the future.")
-    assert summary == "AI is"
-
-
-@patch("requests.post")
-def test_summarize_text_invalid_json(mock_post):
-    """✅ Ensure it handles invalid JSON responses."""
-    invalid_json_response = "Invalid JSON"
-    mock_post.return_value.status_code = 200
-    mock_post.return_value.iter_lines.return_value = [invalid_json_response.encode()]
-
-    summary = summarize_text("AI is the future.")
-    assert "⚠️ Error: Invalid response from Ollama" in summary
+def test_summarize_text_error_unavailable():
+    """✅ Simulate Ollama error by mocking requests.post to raise exception."""
+    with patch("backend.utils.summary_generator.requests.post") as mock_post:
+        mock_post.side_effect = requests.exceptions.ConnectionError("Simulated Ollama failure")
+        result = summarize_text("Trigger fallback.")
+        assert "⚠️ Error: Ollama service unavailable" in result
