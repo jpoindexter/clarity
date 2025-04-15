@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ResultCard from "@/components/ResultCard";
 
 type Article = {
   title: string;
@@ -77,25 +77,16 @@ export default function IngestForm() {
       {results.length > 0 && (
         <div className="space-y-4">
           {results.map((article, idx) => (
-            <Card key={idx}>
-              <CardContent className="space-y-2 p-4">
-                <div className="text-lg font-semibold">{article.title}</div>
-                <div className="text-sm text-zinc-400">{article.url}</div>
-                <p className="text-sm">{article.summary}</p>
-                {article.tags && (
-                  <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
-                    {article.tags.map((tag, i) => (
-                      <span key={i} className="border px-2 py-0.5 rounded border-zinc-700 bg-zinc-900">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <ResultCard
+              key={idx}
+              title={article.title}
+              summary={article.summary}
+              tags={article.tags}
+              time={article.url}
+            />
           ))}
         </div>
       )}
     </div>
   );
-}
+} 
