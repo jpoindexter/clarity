@@ -84,7 +84,7 @@ def ingest_articles(request: ArticleIngestRequest):
         summary = summarize_article(text)
         tags = classify_article(text)  # Classifying the article
         return [{
-            "title": "Untitled",
+            "title": "Untitled", 
             "url": request.input,
             "summary": summary,
             "source": "url",
@@ -108,6 +108,6 @@ def ingest_articles(request: ArticleIngestRequest):
                 "published": entry.get("published", datetime.utcnow().isoformat()),
                 "tags": tags  # Adding tags to the response
             })
-        return results
+        return results  
 
     raise HTTPException(status_code=400, detail="Invalid source type.")

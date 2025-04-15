@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/api/analyze", tags=["Analyze"])
+router = APIRouter(prefix="/analyze", tags=["Analyze"])
 
 
 class AnalyzeRequest(BaseModel):

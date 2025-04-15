@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from backend.services.contradiction_detection import detect_contradictions
 
 
-router = APIRouter()
+router = APIRouter(prefix="/contradiction", tags=["Contradiction"])
 
 
 # Define Pydantic model for request validation
@@ -18,7 +18,7 @@ class Article(BaseModel):
 
 class ContradictionRequest(BaseModel):
     articles: List[Article]
-
+  
 
 @router.post(
     "/detect",
@@ -55,4 +55,4 @@ async def detect_contradictions_endpoint(payload: ContradictionRequest):
     structured_articles = [article.dict() for article in payload.articles]
 
     contradictions = detect_contradictions(structured_articles)
-    return {"contradictions": contradictions}
+    return contradictions

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from datetime import datetime
 from typing import List
 
-router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
+router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 @router.get(
     "/summary",

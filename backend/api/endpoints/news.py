@@ -10,7 +10,7 @@ from backend.schemas.news import News as NewsSchema
 from backend.schemas.news import NewsCreate, NewsUpdate 
 
 # ✅ Initialize Router with Prefix
-router = APIRouter(prefix="/api/news", tags=["News"])  # ✅ Keep the prefix here
+router = APIRouter(prefix="/news", tags=["News"])  # ✅ Keep the prefix here
 
 
 # 🔹 **Retrieve All News Articles**

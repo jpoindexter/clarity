@@ -5,7 +5,7 @@ from backend.database.db_connection import get_db
 from backend.schemas.news import News as NewsSchema  # ✅ Ensuring correct schema import
 
 # ✅ Define the Router for Search API
-router = APIRouter(prefix="/api/search", tags=["Search"])
+router = APIRouter(prefix="/search", tags=["Search"])
 
 # 🔹 **Fetch All News Articles (Moved Here)** 
 
@@ -36,4 +36,4 @@ def search_articles(
     return {
         "query": q,
         "results": search_results or []
-    }  # ✅ Returns empty list if no results
+    }  # ✅ Returns empty list if no results 
