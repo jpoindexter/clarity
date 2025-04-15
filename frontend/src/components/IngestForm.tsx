@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,7 @@ export default function IngestForm() {
   const [results, setResults] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -37,6 +38,7 @@ export default function IngestForm() {
 
       const data = await res.json();
       setResults(data);
+      resultsRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -75,7 +77,7 @@ export default function IngestForm() {
       {error && <p className="text-red-500">{error}</p>}
 
       {results.length > 0 && (
-        <div className="space-y-4">
+        <div ref={resultsRef} className="space-y-4">
           {results.map((article, idx) => (
             <ResultCard
               key={idx}
@@ -89,4 +91,4 @@ export default function IngestForm() {
       )}
     </div>
   );
-} 
+}
