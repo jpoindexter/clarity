@@ -5,19 +5,21 @@
 To systematically develop Clarity into a real-time AI-powered intelligence platform for detecting media manipulation, misinformation, and financial narrative tracking. The roadmap prioritizes MVP delivery, AI integration, and monetization, ensuring scalability and industry-standard best practices.
 
 ## Phase 1 (0-6 Months): MVP Development & Validation
-
+ 
 ### Core Features 
 
 - AI-powered contradiction detection – Identify conflicting financial narratives.
 - Real-time intelligence mapping – Analyze how misinformation spreads and its influence on financial markets.
 - Financial narrative tracking – Detect and correlate key market-impacting narratives.
 - Enterprise API (Early Access) – Deliver structured intelligence to financial institutions.
+- Multi-agent AI pipeline – Dispatch summarization, contradiction, and classification to local models.
+- Article ingestion from RSS and URL – Auto-summarize and tag narratives for insight tracking.
 
 ### Infrastructure & Scalability
 
 - Backend: FastAPI + PostgreSQL + Redis for high-efficiency data handling.
 - Frontend: Next.js + Tailwind CSS for a sleek, responsive intelligence dashboard.
-- AI Model Deployment: Hybrid approach – Local inference for individuals, cloud scaling for enterprises.
+- AI Model Deployment: Modular agent framework with local Ollama LLMs (Mistral, LLaMA3, Phi-4, DeepSeek Coder) for privacy and speed.
 
 ### Target Audience Validation
 
@@ -79,7 +81,7 @@ To systematically develop Clarity into a real-time AI-powered intelligence platf
 
 ## Next Steps
 
-- Finalize MVP architecture & AI engine optimizations.
+- Finalize frontend architecture; backend AI pipeline complete.
 - Prepare prototype for internal testing.
 - Onboard select industry experts for early feedback.
 - Iterate rapidly based on real-world use cases.

@@ -9,7 +9,7 @@
 - [x] Achieve Full Test Coverage (Unit & Integration Tests)
 
 - [x] Implement Logging & Monitoring
-
+ 
 
 ### Deliverables:
 
@@ -29,7 +29,13 @@
 
 - [x] Clarity is a real-time intelligence engine, not a simple news aggregator.
 
-- [x] NLP-powered contradiction detection
+- [x] NLP-powered contradiction detection (complete)
+
+- [x] LLM-based summarization agent (complete)
+
+- [x] LLM-based classification agent with tagging (complete)
+
+- [x] Multi-agent dispatcher architecture (complete)
 
 - [x] Entity mapping & relationship tracking 
 
@@ -48,24 +54,28 @@
 ## Expected Timeframe: ~2 Weeks
 
 
-## Phase 3: Frontend & Visualization Layer (After Backend Matures)
+## Phase 3: Frontend & Visualization Layer (Active Phase)
 
 - [x] Clarity needs an intuitive UI that presents complex intelligence seamlessly.
 
-- [x] Real-time Graph-Based Visualization
+- [ ] Semantic Timeline + AI Metadata Overlay
 
-- [x] AI-Assisted Search & Filtering
+- [ ] Topic & Tone Exploration View
 
-- [x] Dynamic Contradiction & Influence Mapping
+- [ ] Real-Time Narrative Shift Detection
+
+- [ ] Filterable Intelligence Dashboard (Tags, Contradictions, Themes)
 
 
 ### Deliverables:
 
-- Develop core UI framework
+- Scaffold core frontend layout (Next.js + Tailwind)
 
-- Implement interactive intelligence dashboards
+- Implement semantic timeline interface and sidebar
 
-- Integrate frontend with backend APIs
+- Integrate backend API endpoints (ingest, summarize, classify)
+
+- Layer LLM-generated tags, contradictions, and summaries into the UI
 
 
 ## Expected Timeframe: ~3-4 Weeks

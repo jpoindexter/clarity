@@ -10,11 +10,19 @@
  - `v1.0.0` → Initial stable release with core features.
  - `v1.1.0` → New functionality added (e.g., API endpoint, report automation).
  - `v1.1.1` → Bug fix or performance improvement.
- 
+  
  ---
  
  ## 2. Release Notes
  
+ ### v0.9.0 (Backend MVP Complete)
+ - 🧠 Multi-Agent AI System: Dispatcher, prompt routing, and task handling for summarization, contradiction, and classification.
+ - 🌐 Ingest Endpoint: RSS and URL pipeline integrated with AI agents for summarization and tagging.
+ - 🧪 Agent Test Coverage: Full pytest suite for all agent types and dispatch scenarios.
+ - 🗃️ Schema Updates: Articles now include AI-generated tags alongside summaries.
+ - 🧩 Ollama Integration: Local model execution with support for Mistral, LLaMA3, Phi-4, and DeepSeek.
+ - 📘 Docs: Architecture, roadmap, and coverage reports updated to reflect backend completion.
+
  ### v1.1.0 (Upcoming)
  - 🔄 **Automated Report Generation:** AI-generated reports now scheduled via cron, reducing manual intervention.
  - 🌐 **API Enhancements:** Added `/fetch-trends` endpoint.

@@ -13,12 +13,21 @@ frontend/build/
 frontend/package-lock.json
 frontend/yarn.lock
 
+# === NEXT.JS APP DIR ===
+frontend/.env.local
+frontend/.env.*.local
+frontend/.turbo/
+frontend/.eslintcache
+frontend/.output/
+frontend/.next/
+frontend/public/build/
+
 # === PYTHON / BACKEND ===
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-*.so
+*.so 
 *.egg
 *.egg-info/
 *.sqlite3

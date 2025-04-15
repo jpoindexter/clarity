@@ -1,6 +1,6 @@
 # Clarity Reports - Project Documentation
 
-## architecture.md
+## architecture.md 
 ### **System Architecture & Tech Stack**
 
 ### **1. Overview**
@@ -9,7 +9,7 @@ Clarity Reports is an **AI-powered financial intelligence platform** that proces
 ### **2. Tech Stack**
 - **Frontend:** Next.js (React) for the user dashboard (report access & management).
 - **Backend:** FastAPI (Python) for API services.
-- **AI Processing:** Ollama (Mistral, DeepSeek Coder) for NLP summarization, contradiction detection, and market trend analysis.
+- **AI Processing:** Multi-agent architecture using Ollama (Mistral, LLaMA3, Phi-4, DeepSeek Coder). Agents handle summarization, contradiction detection, classification, tagging, and future tone analysis.
 - **Database:** PostgreSQL (storing processed news credibility data).
 - **Data Pipeline:** NewsAPI, Twitter Scraper → AI Processing → Sentiment & Credibility Scoring → Report Generation.
 - **Report Generation:** WeasyPrint (PDF creation for intelligence reports).
@@ -33,6 +33,7 @@ clarity_reports/
 │   ├── api/            # API Endpoints
 │   ├── models/         # Database Models (PostgreSQL)
 │   ├── services/       # Business Logic (AI Processing, Data Analysis)
+│   ├── agents/         # Multi-agent dispatcher, prompts, and task-specific LLM logic
 │   ├── utils/          # Helper Functions & Utilities
 │── data/               # Raw & Processed News Data
 │── reports/            # Generated PDF Reports
@@ -48,7 +49,7 @@ clarity_reports/
 
 ### **4. API Workflow**
 1️⃣ **Data Ingestion**: Scrape financial news from multiple sources (NewsAPI, Twitter, Reddit, RSS feeds). Store raw data in a structured database.  
-2️⃣ **AI Processing**: Run NLP models (Mistral/DeepSeek) to summarize & detect contradictions.  
+2️⃣ **AI Processing**: Run NLP models (Mistral/LLaMA3/Phi-4/DeepSeek) to summarize & detect contradictions.  
 3️⃣ **Sentiment & Credibility Scoring**: Apply VADER NLP for bias detection.  
 4️⃣ **Report Generation**: Convert AI-driven insights into structured reports (PDF and JSON formats) for clients. Future support planned for API-based real-time retrieval.  
 5️⃣ **Client Access**:

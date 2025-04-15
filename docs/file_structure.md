@@ -3,7 +3,7 @@
 ## 1. Overview
 This document defines the industry-standard file structure for Clarity Reports. It ensures maintainability, scalability, and modularity.
 
----
+--- 
 
 ## 2. Directory Layout
 
@@ -19,8 +19,8 @@ clarity_reports/
 │── backend/               # Core backend services (FastAPI)
 │   ├── api/               # API endpoints
 │   ├── models/            # Database models (SQLAlchemy)
-│   ├── services/          # Business logic (AI processing, credibility scoring)
-│   ├── utils/             # Helper functions and utilities
+│   ├── agents/            # Multi-agent dispatcher, prompt templates, agent types
+│   ├── utils/             # Helper functions and utilities (Ollama client, summarizer, fetcher, classifier)
 │   ├── main.py            # FastAPI entry point
 │── data/                  # Storage for raw and processed news data
 │── reports/               # Generated AI-powered PDF reports
@@ -48,6 +48,7 @@ clarity_reports/
 
 - **frontend/** → Next.js dashboard for users to access and manage reports.
 - **backend/** → FastAPI-based backend API handling AI processing and report generation.
+- **agents/** → Modular agent system for dispatching tasks like summarization, classification, and contradiction detection.
 - **data/** → Stores raw news data before processing.
 - **reports/** → Stores AI-generated PDF reports.
 - **docs/** → Contains all project documentation.
