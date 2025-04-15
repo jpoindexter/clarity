@@ -45,3 +45,9 @@ def run_agent_task(agent: str, input_text: str, model: str = "llama3") -> dict:
             "success": False,
             "error": str(e)
         }
+
+def test_classifier_agent_dispatch():
+    result = run_agent_task("classifier", "Markets crash amid political unrest.")
+    assert result["success"] is True
+    assert isinstance(result["result"], str)
+    assert "," in result["result"] or len(result["result"].split()) > 1

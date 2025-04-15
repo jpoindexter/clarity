@@ -20,7 +20,13 @@ To ensure 100% test coverage for Clarity’s backend, frontend, and AI compone
 
 ✅ Authentication & authorization flows
 
-### Integration Tests (90% Coverage Goal)
+✅ Multi-agent dispatcher logic (/agents)
+
+✅ AI prompt routing via `prompts.py`
+
+✅ AgentType enum behavior
+
+### Integration Tests (90% Coverage Goal) 
 
 ✅ End-to-end API request-response validation
 
@@ -29,6 +35,10 @@ To ensure 100% test coverage for Clarity’s backend, frontend, and AI compone
 ✅ AI pipeline execution & result validation
 
 ✅ Database read/write operations under load 
+
+✅ /api/articles/ingest flow: RSS/URL → summarize
+
+✅ Agent dispatch via /analyze/contradiction
 
 ### Performance & Load Tests (80% Stability Goal)
 
@@ -59,6 +69,10 @@ To ensure 100% test coverage for Clarity’s backend, frontend, and AI compone
 ✅ Expand test coverage to UI components & performance benchmarks.
 
 ✅ Integrate tests into CI/CD pipeline for automatic validation.
+
+✅ Validate each agent's routing and model invocation
+
+✅ Add regression tests for dispatcher logic
 
 ## Next Steps
 

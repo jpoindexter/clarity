@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Literal, List
 
 from pydantic import BaseModel, Field
 
@@ -45,12 +45,12 @@ class ArticleUpdate(BaseModel):
     credibility_score: Optional[float] = None
     ai_summary: Optional[str] = None
 
-from typing import Literal, List
 
 class ArticleIngestRequest(BaseModel):
     """🆕 Request schema for /articles/ingest endpoint"""
     source: Literal["url", "rss"]
     input: str
+
 
 class SummarizedArticle(BaseModel):
     """🆕 Response schema for summarized articles"""
@@ -58,4 +58,8 @@ class SummarizedArticle(BaseModel):
     url: str
     summary: str
     source: str
-    published: Optional[str] = None
+    published: Optional[str] = None 
+    tags: Optional[List[str]] = Field(
+        default=None,
+        description="List of tags or classifications assigned by AI"
+    )

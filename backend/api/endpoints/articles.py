@@ -12,6 +12,7 @@ from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
 from backend.schemas.article import ArticleIngestRequest, SummarizedArticle
 from backend.utils.article_fetcher import fetch_article_text
 from backend.utils.article_summarizer import summarize_article
+from backend.utils.article_classifier import classify_article  # New import
 
 # ✅ Initialize Router (Correct Prefix)
 router = APIRouter(prefix="/articles", tags=["Articles"])
@@ -81,12 +82,14 @@ def ingest_articles(request: ArticleIngestRequest):
     if request.source == "url":
         text = fetch_article_text(request.input)
         summary = summarize_article(text)
+        tags = classify_article(text)  # Classifying the article
         return [{
             "title": "Untitled",
             "url": request.input,
             "summary": summary,
             "source": "url",
-            "published": datetime.utcnow().isoformat()
+            "published": datetime.utcnow().isoformat(),
+            "tags": tags  # Adding tags to the response
         }]
 
     elif request.source == "rss":
@@ -96,12 +99,14 @@ def ingest_articles(request: ArticleIngestRequest):
         for entry in articles:
             content = entry.get("summary", "") or entry.get("content", "")
             summary = summarize_article(content)
+            tags = classify_article(content)  # Classifying the article
             results.append({
                 "title": entry.get("title", "Untitled"),
                 "url": entry.get("url"),
                 "summary": summary,
                 "source": "rss",
-                "published": entry.get("published", datetime.utcnow().isoformat())
+                "published": entry.get("published", datetime.utcnow().isoformat()),
+                "tags": tags  # Adding tags to the response
             })
         return results
 

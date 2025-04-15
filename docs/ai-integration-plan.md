@@ -4,7 +4,7 @@
 
 🧠 AI Model Stack & Purpose
 
-🤍 AI Integration Workflow
+🤍 AI Integration Workflow 
 
 1️⃣ Data Collection (Data Ingestion Layer)
 ✅ Scrape & Aggregate real-time structured data (APIs, RSS feeds, web crawling, financial reports, geopolitical datasets).
@@ -17,9 +17,9 @@
 ✅ Entity & Relationship Extraction using Named Entity Recognition (NER).
 
 3️⃣ AI Processing (Core Intelligence Engine)
-✅ Mistral identifies contradictions across datasets.
-✅ DeepSeek Coder maps structural manipulation in financial & political narratives.
-✅ Ollama executes inference locally to maintain privacy & speed.
+✅ Multi-agent framework routes tasks like summarization, contradiction detection, and classification to the appropriate LLMs.
+✅ Ollama executes all inference locally using models like Mistral, LLaMA3, Phi-4, and DeepSeek Coder.
+✅ Agents are modular and extensible — each one has its own prompt strategy and structured response schema.
 
 4️⃣ Postprocessing & Validation
 ✅ Validate AI outputs against existing datasets for accuracy.

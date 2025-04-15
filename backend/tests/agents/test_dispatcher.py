@@ -12,6 +12,12 @@ def test_contradiction_agent_dispatch():
     assert isinstance(result["result"], str)
 
 def test_unknown_agent_type():
-    result = run_agent_task("nonsense", "Text")
+    result = run_agent_task("nonsense", "Text") 
     assert result["success"] is False
     assert result["error"].startswith("Unknown agent type")
+
+def test_classifier_agent_dispatch():
+    result = run_agent_task("classifier", "Markets crash amid political unrest.")
+    assert result["success"] is True
+    assert isinstance(result["result"], str)
+    assert "," in result["result"] or len(result["result"].split()) > 1

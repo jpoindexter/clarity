@@ -4,7 +4,7 @@
 
 Clarity is an AI-powered intelligence platform designed to detect misinformation, analyze media bias, and provide real-time insights for financial analysts, hedge funds, investigative journalists, and enterprises. This document outlines the full feature set, technical requirements, and development roadmap.
 
-## 2. Core Functionalities
+## 2. Core Functionalities 
 
 ### 2.1 Real-Time News Manipulation Dashboard (MVP - Phase 1)
 
@@ -12,6 +12,7 @@ Key Features:
 
 - Live News Feed Analysis → AI scans, classifies, and ranks news for potential manipulation.
 - Contradiction Detection → Identifies conflicting narratives across sources.
+- Multi-Agent AI Orchestration → Tasks like summarization, contradiction, and classification routed to optimal local model.
 - Source Credibility Scoring → Ranks sources based on historical accuracy and bias.
 - User-Defined Alerts → Custom notifications when misinformation trends emerge.
 - Interactive Visualization → Shows misinformation spread in a network graph.
@@ -72,7 +73,7 @@ Technical Considerations:
 
 ### 4.1 AI Model Stack
 
-- NLP Processing: Ollama, Mistral, DeepSeek Coder.
+- NLP Processing: Multi-agent dispatcher routing tasks to Ollama models like Mistral, LLaMA3, Phi-4, and DeepSeek Coder.
 - Fact-Checking & Contradiction Detection: Custom LLM fine-tuned on misinformation datasets.
 - Multimedia Analysis: Deep Fake detection using computer vision models.
 
@@ -110,6 +111,7 @@ Technical Considerations:
 - ✅ AI-driven contradiction detection.
 - ✅ Initial hedge fund & financial analyst deployment.
 - ✅ Backend & database scalability optimization.
+- ✅ Multi-agent AI orchestration layer (dispatcher, prompt routing, local inference).
 
 ### 6.2 Phase 2 (6-12 Months) - Expansion to Media Intelligence
 

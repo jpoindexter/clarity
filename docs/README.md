@@ -13,12 +13,12 @@ Clarity Reports is an AI-driven financial intelligence platform that detects med
 - **Tech Stack:**
   - **Frontend:** Next.js, Tailwind (Minimal dashboard for report access)
   - **Backend:** FastAPI, PostgreSQL, Ollama (AI)
-  - **AI Processing:** Mistral, DeepSeek Coder (Credibility scoring & market insights)
+  - **AI Processing:** Multi-agent framework with task routing (summarization, contradiction detection, classification) using local models (Mistral, LLaMA3, DeepSeek Coder).
   - **Payments:** Stripe (Subscription-based report access)
-
+ 
 ## architecture.md
 ### Backend Structure, Dependencies, API Flow
-- **Backend:** FastAPI for API, AI models (Mistral, DeepSeek Coder), PostgreSQL for storing news credibility data.
+- **Backend:** FastAPI for API endpoints, modular multi-agent system (summarizer, contradiction, classifier), Ollama for local LLM execution (Mistral, LLaMA3, Phi-4), PostgreSQL for news and report storage.
 - **Data Pipeline:** NewsAPI, Twitter Scraper → AI Processing → Sentiment & Credibility Scoring → Report Generation.
 - **Frontend (Later Phase):** Minimal UI for purchasing and scheduling reports.
 

@@ -1,6 +1,6 @@
 # Clarity Data Ingestion Roadmap
 Last Updated: March 2025
-
+ 
 ## Overview 
 
 Clarity's intelligence system requires a robust, scalable, and modular data ingestion pipeline to handle various types of structured and unstructured data. This roadmap outlines the ingestion architecture, data types, and processing strategies for transforming raw data into actionable intelligence.
@@ -27,10 +27,11 @@ Each data type follows a specific workflow but adheres to this overarching struc
 **Extraction:** Automated scrapers, API integrations.
 
 **Processing:**
-- Deduplication of similar articles.
+- Deduplication of similar articles using fingerprinting or clustering.
 - Entity recognition (organizations, people, locations).
-- Sentiment & bias detection.
-- Contradiction analysis using NLP models.
+- Summarization via local LLMs (Mistral, LLaMA3).
+- Contradiction analysis using task-routed agents.
+- Classification and tagging for topic, tone, and threat level.
 
 **Storage:** Time-series indexed for real-time access.
 
