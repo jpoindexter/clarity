@@ -4,6 +4,15 @@ import trafilatura
 from trafilatura.settings import use_config
 from bs4 import BeautifulSoup
 
+# 🧠 CLARITY CONTENT LADDER
+# This function implements a multi-layer fallback system for reliably extracting article text.
+# It tries the following steps in order:
+# 1. Newspaper3k — Fast and structured if available.
+# 2. Trafilatura — Lightweight but smart extraction with custom user-agent.
+# 3. BeautifulSoup — Raw HTML scan of all <p> tags.
+# 4. (Coming Soon) AMP variant, Wayback Machine, News APIs, and Playwright fallback.
+#
+# Each layer includes logging and a minimum character count to ensure usable content is returned to the AI pipeline.
 def fetch_article_text(url: str) -> str:
     """Fetch article text using newspaper3k with trafilatura and BS4 fallback."""
     try:

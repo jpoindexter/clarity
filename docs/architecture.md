@@ -46,7 +46,7 @@ clarity_reports/
 ```
 
 ---
-
+ 
 ### **4. API Workflow**
 1️⃣ **Data Ingestion**: Scrape financial news from multiple sources (NewsAPI, Twitter, Reddit, RSS feeds). Store raw data in a structured database.  
 2️⃣ **AI Processing**: Run NLP models (Mistral/LLaMA3/Phi-4/DeepSeek) to summarize & detect contradictions.  
@@ -59,3 +59,21 @@ clarity_reports/
 ---
 
 ### **5. API Endpoints Overview**
+
+---
+
+### 6. Article Ingestion Fallback Strategy
+
+To ensure high-reliability text extraction from online articles, Clarity implements a multi-layer content fallback system known internally as the **Clarity Content Ladder**. Each layer attempts to extract usable article text and only falls through when the previous layer fails.
+
+#### 🧠 Content Ladder Flow
+
+1. **Newspaper3k** – Standard structured extractor.
+2. **Trafilatura** – Fast, lightweight extractor with user-agent spoofing.
+3. **BeautifulSoup** – Raw HTML paragraph text fallback.
+4. **RSS Summary Fallback** – Uses entry summary if all scrapers fail.
+5. *(Coming Soon)*: AMP variant, Wayback Archive lookup, News APIs, Playwright browser automation.
+
+This ensures that every article passed to the AI agents contains readable, high-signal content — even if protected, JS-rendered, or blocked.
+
+The fallback system is centralized in `article_fetcher.py` and automatically wired into the `/articles/ingest` FastAPI route.
