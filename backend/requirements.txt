@@ -9,3 +9,4 @@ requests
 ollama  # Local AI Processing (if applicable)
 python-dotenv
 pytest  # Only if testing
+trafilatura>=1.4.0

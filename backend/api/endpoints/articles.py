@@ -13,10 +13,11 @@ from backend.schemas.article import ArticleIngestRequest, SummarizedArticle
 from backend.utils.article_fetcher import fetch_article_text
 from backend.utils.article_summarizer import summarize_article
 from backend.utils.article_classifier import classify_article  # New import
+from backend.rss.parser import fetch_and_parse_feed
 
 # ✅ Initialize Router (Correct Prefix)
 router = APIRouter(prefix="/articles", tags=["Articles"])
-
+ 
 # 🔹 **Retrieve All Articles** 
 
 
@@ -93,11 +94,13 @@ def ingest_articles(request: ArticleIngestRequest):
         }]
 
     elif request.source == "rss":
-        from backend.rss.parser import fetch_and_parse_feed
         articles = fetch_and_parse_feed(request.input)
         results = []
         for entry in articles:
-            content = entry.get("summary", "") or entry.get("content", "")
+            content = fetch_article_text(entry.get("url", ""))
+            if not content or len(content) < 100:
+                content = entry.get("summary") or entry.get("description") or entry.get("content", [{}])[0].get("value", "")
+            print(f"🧪 RAW content from {entry.get('url')}:\n{content[:500]}")
             summary = summarize_article(content)
             tags = classify_article(content)  # Classifying the article
             results.append({
@@ -108,6 +111,6 @@ def ingest_articles(request: ArticleIngestRequest):
                 "published": entry.get("published", datetime.utcnow().isoformat()),
                 "tags": tags  # Adding tags to the response
             })
-        return results  
+        return results    
 
     raise HTTPException(status_code=400, detail="Invalid source type.")

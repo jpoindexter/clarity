@@ -1,21 +1,42 @@
 import requests
+from newspaper import Article
+import trafilatura
+from trafilatura.settings import use_config
 from bs4 import BeautifulSoup
 
 def fetch_article_text(url: str) -> str:
-    """Fetch and extract main article text from a given URL."""
+    """Fetch article text using newspaper3k with trafilatura and BS4 fallback."""
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-    except requests.RequestException as e:
-        return f"⚠️ Error fetching article: {e}"
+        article = Article(url)
+        article.download()
+        article.parse()
+        text = article.text
+        if text and len(text) > 200:
+            return text[:10000]
+    except Exception as e:
+        print(f"⚠️ Newspaper3k failed: {e}")
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    try:
+        config = use_config()
+        config.set("DEFAULT", "user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+        downloaded = trafilatura.fetch_url(url, config=config)
+        if downloaded:
+            content = trafilatura.extract(downloaded)
+            if content and len(content) > 200:
+                return content[:10000]
+    except Exception as e:
+        print(f"❌ Trafilatura fallback failed: {e}")
 
-    # Try extracting from common tags
-    candidates = soup.find_all(["article", "section", "main"])
-    if candidates:
-        text = " ".join([tag.get_text(separator=" ", strip=True) for tag in candidates])
-    else:
-        text = soup.get_text(separator=" ", strip=True)
+    # Final fallback: raw HTML + paragraph text
+    try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+        res = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(res.text, "html.parser")
+        paragraphs = soup.find_all("p")
+        raw_text = " ".join(p.get_text() for p in paragraphs)
+        if raw_text and len(raw_text) > 200:
+            return raw_text[:10000]
+    except Exception as e:
+        print(f"❌ Final fallback (BS4) failed: {e}")
 
-    return text[:10000]  # truncate long articles if needed
+    return ""
