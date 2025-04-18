@@ -64,16 +64,45 @@ clarity_reports/
 
 ### 6. Article Ingestion Fallback Strategy
 
-To ensure high-reliability text extraction from online articles, Clarity implements a multi-layer content fallback system known internally as the **Clarity Content Ladder**. Each layer attempts to extract usable article text and only falls through when the previous layer fails.
+To ensure maximum resilience when extracting article content, Clarity uses a tiered mesh known internally as the **Clarity Content Ladder**. This multi-layer system guarantees usable input for AI summarization — even when sources are blocked, paywalled, JavaScript-rendered, or unavailable.
 
 #### 🧠 Content Ladder Flow
 
-1. **Newspaper3k** – Standard structured extractor.
-2. **Trafilatura** – Fast, lightweight extractor with user-agent spoofing.
-3. **BeautifulSoup** – Raw HTML paragraph text fallback.
-4. **RSS Summary Fallback** – Uses entry summary if all scrapers fail.
-5. *(Coming Soon)*: AMP variant, Wayback Archive lookup, News APIs, Playwright browser automation.
+1. **Newspaper3k** – Structured parser, fast and effective for basic HTML articles.
+2. **Trafilatura** – Lightweight extractor with user-agent spoofing.
+3. **BeautifulSoup** – Raw paragraph scanner for minimal HTML fallback.
+4. **RSS Summary Fallback** – Uses `entry.summary` if all scrapers fail.
+5. *(Coming Soon)*:
+     - **AMP Variant** – Attempts to load the `/amp` version of article URL.
+     - **Wayback Machine** – Pulls archived versions via Internet Archive.
+     - **Free News APIs** – Fallback to NewsData, GNews, or other summarization endpoints.
+     - **Playwright Automation** – Last-resort JS-rendered scrape (e.g. for NYT or Reuters).
 
-This ensures that every article passed to the AI agents contains readable, high-signal content — even if protected, JS-rendered, or blocked.
+Each extraction attempt is logged, and the fallback tier used is optionally stored in the database for transparency. The pipeline enforces a minimum text threshold before allowing AI agents to process content.
 
-The fallback system is centralized in `article_fetcher.py` and automatically wired into the `/articles/ingest` FastAPI route.
+The full ladder lives inside `article_fetcher.py` and connects directly to `/articles/ingest`. This ensures every article routed to the summarizer has a fallback mechanism to guarantee signal, not silence.
+
+### 7. Frontend Display Gaps & Timeline Roadmap
+
+As of Batch 14, article ingestion, AI enrichment, and database storage are all live. However, the frontend (particularly the Timeline tab) currently has critical display limitations:
+
+#### ❌ Known Display Gaps
+- Articles shown after ingest disappear when tab is changed.
+- Timeline tab is not yet wired to pull from the `summarized_articles` table.
+- No frontend-side article limit (`load more` or pagination missing).
+- Fallback tier (e.g. RSS summary, BS4) is not visually surfaced.
+- Links within cards can overflow and break layout.
+- Cards vary in size due to summary length, causing layout jitter.
+- Chips (tags) are inconsistently rendered and overflow on wrap.
+- "Classification of the text" and similar verbose phrases reduce clarity.
+
+#### ✅ Planned Fixes (Batch 15+)
+- DB-driven TimelineView (query summaries from backend)
+- Unified card height with `line-clamp` and max-width
+- Standardized chip rendering (truncated tags + color scale)
+- Fallback tier badges (e.g. `via RSS`, `via AMP`)
+- Tone/filter dropdowns
+- Dark mode visual audit
+- UI cleanup: less verbose phrasing, tighter spacing
+
+These changes will bring the frontend into alignment with the AI processing power and resilience already present in the ingest pipeline.

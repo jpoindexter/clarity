@@ -2,7 +2,9 @@
 
 ## README.md
 ### High-Level Project Summary
-Clarity Reports is an AI-driven financial intelligence platform that detects media manipulation, ranks news credibility, and delivers AI-generated market insights and reports. Users can access reports via a secure dashboard or API.
+Clarity Reports is an AI-driven intelligence platform that ingests news articles, applies multi-layer extraction and enrichment pipelines, and stores structured summaries for further analysis. It detects narrative bias, tags topical clusters, and enables contradiction detection and trend tracking over time.
+
+Users can access reports through a secure dashboard or via API. Each article is summarized, tagged, tone-scored, and persisted to a structured database. The ingest system uses a resilient content ladder (newspaper3k, trafilatura, bs4, RSS fallback) and AI processing stack (Mistral, LLaMA3, DeepSeek) to ensure signal from even blocked or paywalled sources.
 
 ## project_overview.md
 ### Business Plan, Revenue Model & Execution Roadmap
@@ -22,7 +24,7 @@ Clarity Reports is an AI-driven financial intelligence platform that detects med
 - **Data Pipeline:** NewsAPI, Twitter Scraper → AI Processing → Sentiment & Credibility Scoring → Report Generation.
 - **Frontend (Later Phase):** Minimal UI for purchasing and scheduling reports.
 
-## api_documentation.yaml
+## api_documentation.yaml 
 ```yaml
 openapi: 3.0.0
 info:

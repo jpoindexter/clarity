@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from typing import Optional, Literal, List
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ArticleBase(BaseModel):
@@ -74,3 +73,17 @@ class SummarizedArticleCreate(BaseModel):
     tone: str
     source: str
     raw_text: str
+
+
+class ArticleOut(BaseModel):
+    """✅ Output schema for serialized summarized article data."""
+    id: int
+    title: str
+    url: str
+    summary: str
+    tags: Optional[List[str]] = None
+    tone: Optional[str] = None
+    source: str
+    published_at: datetime
+
+    model_config = ConfigDict(from_attributes=True) 

@@ -17,7 +17,7 @@ export default function ResultCard({ title, summary, tags = [], time }: Props) {
         {time && <div className="text-xs text-zinc-500">{time}</div>}
         <div className="font-medium">{title}</div>
         <div className="text-sm text-zinc-300">{summary}</div>
-        {tags.length > 0 && (
+        {(tags?.length ?? 0) > 0 && (
           <div className="flex flex-wrap gap-2 text-xs text-zinc-400 pt-2">
             {tags.map((tag, i) => (
               <Tag key={i}>{tag}</Tag>
@@ -27,4 +27,4 @@ export default function ResultCard({ title, summary, tags = [], time }: Props) {
       </CardContent>
     </Card>
   );
-}
+} 

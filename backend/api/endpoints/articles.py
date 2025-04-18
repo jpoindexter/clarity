@@ -8,6 +8,7 @@ from backend.models.article import Article  # ✅ Using Article model
 
 # ✅ Schemas
 from backend.schemas.article import Article as ArticleSchema
+from backend.schemas.article import ArticleOut
 from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
 from backend.schemas.article import ArticleIngestRequest, SummarizedArticle, SummarizedArticleCreate
 from backend.utils.article_fetcher import fetch_article_text
@@ -24,7 +25,7 @@ router = APIRouter(prefix="/articles", tags=["Articles"])
 
 @router.get(
     "/",
-    response_model=list[ArticleSchema],
+    response_model=dict[str, list[ArticleOut]],
     summary="Retrieve all articles",
     description="Returns a list of ingested articles from the database."
 )
@@ -33,16 +34,15 @@ def get_articles(db: Session = Depends(get_db)):
     Retrieve all stored articles. 
 
     Returns:
-        list[ArticleSchema]: List of stored articles.
-        If no articles exist, returns an empty list.
+        dict[str, list[ArticleOut]]: Dictionary with key "articles" containing a list of stored articles.
     """
     articles = db.query(Article).all()
-    return articles if articles else []  # ✅ Returns an empty list instead of 404
+    return {"articles": [ArticleOut.from_orm(a) for a in articles]}
 
 # 🔹 **Create a New Article Entry**
 
 
-@router.post( 
+@router.post(  
     "/",
     response_model=ArticleSchema,
     summary="Add a new article",
@@ -107,7 +107,7 @@ def ingest_articles(request: ArticleIngestRequest, db: Session = Depends(get_db)
             summarized_data = SummarizedArticleCreate(
                 title=entry.get("title", "Untitled"),
                 url=entry.get("url"),
-                summary=summary,
+                summary=summary, 
                 tags=tags,
                 tone="neutral",  # Placeholder or from classifier if available
                 source="rss",

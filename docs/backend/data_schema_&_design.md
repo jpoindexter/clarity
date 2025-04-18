@@ -2,7 +2,7 @@
 
 ## 1. Core Schema Overview
 
-Clarity operates as an AI-driven intelligence platform for contradiction detection, misinformation tracking, and narrative intelligence.
+Clarity operates as an AI-driven intelligence platform for contradiction detection, misinformation tracking, and narrative intelligence. 
 
 - ✅ No user-generated content or engagement tracking.
 - ✅ Strictly focused on real-time intelligence processing.
@@ -10,16 +10,25 @@ Clarity operates as an AI-driven intelligence platform for contradiction detecti
 
 ## 2. Primary Data Structures
 
-- **Articles Table**  
-  Stores all ingested news, reports, and intelligence data.
+- **SummarizedArticles Table**  
+  Stores all successfully ingested and enriched articles, including:
+  - `id` (int): Primary key
+  - `title` (str): Original article title
+  - `url` (str): Canonical link
+  - `summary` (text): AI-generated abstract
+  - `tags` (array or JSON): AI-classified topics
+  - `tone` (str): AI-evaluated sentiment
+  - `source` (str): "rss", "url", etc.
+  - `timestamp` (datetime): Ingestion time
+  - `raw_text` (text): Extracted article body
 
 - **Contradictions Table**  
   Tracks AI-identified contradictions between articles and sources over time.
 
 - **Source Reputation Table**  
-  Tracks the credibility of news sources over time.
+  Tracks credibility signals and longitudinal scoring for all source domains.
 
-## 3. Data Ingestion Pipeline
+## 3. Data Ingestion Pipeline 
 
 Ingests data from major news sources, government reports, and finance feeds.
 
