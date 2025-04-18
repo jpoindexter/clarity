@@ -9,11 +9,12 @@ from backend.models.article import Article  # ✅ Using Article model
 # ✅ Schemas
 from backend.schemas.article import Article as ArticleSchema
 from backend.schemas.article import ArticleCreate  # ✅ Correct Schema
-from backend.schemas.article import ArticleIngestRequest, SummarizedArticle
+from backend.schemas.article import ArticleIngestRequest, SummarizedArticle, SummarizedArticleCreate
 from backend.utils.article_fetcher import fetch_article_text
 from backend.utils.article_summarizer import summarize_article
 from backend.utils.article_classifier import classify_article  # New import
 from backend.rss.parser import fetch_and_parse_feed
+from backend.crud.articles import save_summarized_article
 
 # ✅ Initialize Router (Correct Prefix)
 router = APIRouter(prefix="/articles", tags=["Articles"])
@@ -79,7 +80,7 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     summary="Ingest article(s) from RSS or URL",
     description="Fetches article(s) from a given URL or RSS feed and returns summarized content."
 ) 
-def ingest_articles(request: ArticleIngestRequest):
+def ingest_articles(request: ArticleIngestRequest, db: Session = Depends(get_db)):
     if request.source == "url":
         text = fetch_article_text(request.input)
         summary = summarize_article(text)
@@ -103,6 +104,16 @@ def ingest_articles(request: ArticleIngestRequest):
             print(f"🧪 RAW content from {entry.get('url')}:\n{content[:500]}")
             summary = summarize_article(content)
             tags = classify_article(content)  # Classifying the article
+            summarized_data = SummarizedArticleCreate(
+                title=entry.get("title", "Untitled"),
+                url=entry.get("url"),
+                summary=summary,
+                tags=tags,
+                tone="neutral",  # Placeholder or from classifier if available
+                source="rss",
+                raw_text=content
+            )
+            save_summarized_article(db, summarized_data)
             results.append({
                 "title": entry.get("title", "Untitled"),
                 "url": entry.get("url"),
@@ -111,6 +122,6 @@ def ingest_articles(request: ArticleIngestRequest):
                 "published": entry.get("published", datetime.utcnow().isoformat()),
                 "tags": tags  # Adding tags to the response
             })
-        return results    
+        return results     
 
     raise HTTPException(status_code=400, detail="Invalid source type.")

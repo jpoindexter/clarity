@@ -22,3 +22,15 @@ def create_article(db: Session, article_data: ArticleCreate):
     db.commit()
     db.refresh(new_article)
     return new_article
+
+from backend.schemas.article import SummarizedArticleCreate
+from backend.models import SummarizedArticle
+
+def save_summarized_article(db: Session, article_data: SummarizedArticleCreate):
+    """Save summarized article content to the database after AI processing."""
+    new_summary = SummarizedArticle(**article_data.model_dump())
+    db.add(new_summary)
+    db.commit()
+    db.refresh(new_summary)
+    return new_summary
+   

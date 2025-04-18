@@ -63,3 +63,14 @@ class SummarizedArticle(BaseModel):
         default=None,
         description="List of tags or classifications assigned by AI"
     )
+
+
+class SummarizedArticleCreate(BaseModel):
+    """🆕 Input schema for creating summarized articles in DB"""
+    title: str
+    url: str
+    summary: str
+    tags: List[str]
+    tone: str
+    source: str
+    raw_text: str

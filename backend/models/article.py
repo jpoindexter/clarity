@@ -15,3 +15,17 @@ class Article(Base):
     published_at = Column(
         DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
     )  # ✅ Ensure default is set!
+
+
+class SummarizedArticle(Base):
+    __tablename__ = "summarized_articles"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String, nullable=False)
+    url = Column(String, unique=True, nullable=False)
+    summary = Column(Text, nullable=False)
+    tags = Column(String)  # Store as comma-separated or JSON string
+    tone = Column(String, nullable=True)
+    source = Column(String, nullable=False)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    raw_text = Column(Text, nullable=True)
