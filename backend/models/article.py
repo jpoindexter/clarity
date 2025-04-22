@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
 from backend.models import Base  # ✅ Ensure correct Base import
 
 
@@ -24,7 +25,7 @@ class SummarizedArticle(Base):
     title = Column(String, nullable=False)
     url = Column(String, unique=True, nullable=False)
     summary = Column(Text, nullable=False)
-    tags = Column(String)  # Store as comma-separated or JSON string
+    tags = Column(JSONB)  # Store as comma-separated or JSON string
     tone = Column(String, nullable=True)
     source = Column(String, nullable=False)
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))

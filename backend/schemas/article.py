@@ -2,6 +2,18 @@ from datetime import datetime, timezone
 from typing import Optional, Literal, List
 from pydantic import BaseModel, Field, ConfigDict
 
+class AgentTag(BaseModel):
+    id: str
+    label: str
+    type: Literal["emotional", "signal", "meta", "custom"]
+    severity: Optional[Literal["critical", "high", "medium", "low", "info"]] = "info"
+    confidence: Optional[float] = None
+    importance: Optional[int] = None
+    source: Optional[str] = None
+    icon: Optional[str] = None
+    color_key: Optional[str] = None
+    client_visible: Optional[bool] = True
+
 
 class ArticleBase(BaseModel):
     """✅ Base schema for an article, used for creation & updates."""
@@ -58,9 +70,9 @@ class SummarizedArticle(BaseModel):
     summary: str
     source: str
     published: Optional[str] = None 
-    tags: Optional[List[str]] = Field(
+    tags: Optional[List[AgentTag]] = Field(
         default=None,
-        description="List of tags or classifications assigned by AI"
+        description="List of structured tags returned by AI agents"
     )
 
 
@@ -69,7 +81,7 @@ class SummarizedArticleCreate(BaseModel):
     title: str
     url: str
     summary: str
-    tags: List[str]
+    tags: List[AgentTag]
     tone: str
     source: str
     raw_text: str
@@ -81,9 +93,9 @@ class ArticleOut(BaseModel):
     title: str
     url: str
     summary: str
-    tags: Optional[List[str]] = None
+    tags: Optional[List[AgentTag]] = None
     tone: Optional[str] = None
     source: str
     published_at: datetime
 
-    model_config = ConfigDict(from_attributes=True) 
+    model_config = ConfigDict(from_attributes=True)   

@@ -8,19 +8,20 @@ export default function TimelineView() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getArticles();
-        setArticles(data);
-      } catch (error) {
-        console.error("Failed to fetch articles", error);
-      } finally {
-        setLoading(false);
-      }
+  const fetchArticles = async () => {
+    try {
+      setLoading(true);
+      const data = await getArticles();
+      setArticles(data);
+    } catch (error) {
+      console.error("Failed to fetch articles", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchArticles();
   }, []);
 
   return (
@@ -36,6 +37,7 @@ export default function TimelineView() {
               summary={entry.summary}
               tags={entry.tags}
               time={entry.published_at}
+              status={entry.status}
             />
           ))
         )}

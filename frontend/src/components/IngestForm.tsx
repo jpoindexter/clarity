@@ -7,14 +7,27 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ResultCard from "@/components/ResultCard";
 
+type AgentTag = {
+  id: string;
+  label: string;
+  type: "emotional" | "signal" | "meta" | "custom";
+  severity?: "critical" | "high" | "medium" | "low" | "info";
+  confidence?: number;
+  importance?: number;
+  source?: string;
+  icon?: string;
+  color_key?: string;
+  client_visible?: boolean;
+};
+
 type Article = {
   title: string;
   url: string;
   summary: string;
-  tags?: string[];
+  tags?: AgentTag[];
 };
 
-export default function IngestForm() {
+export default function IngestForm({ onIngestComplete }: { onIngestComplete?: () => void }) {
   const [input, setInput] = useState("");
   const [source, setSource] = useState<"url" | "rss">("url");
   const [results, setResults] = useState<Article[]>([]);
@@ -39,6 +52,9 @@ export default function IngestForm() {
 
       const data = await res.json();
       setResults(data);
+      if (onIngestComplete) {
+        onIngestComplete();
+      }
       resultsRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -47,7 +63,7 @@ export default function IngestForm() {
         setError("Unknown error");
       }
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -83,7 +99,7 @@ export default function IngestForm() {
             <ResultCard
               key={idx}
               title={article.title}
-              summary={article.summary}
+              summary={article.summary} 
               tags={article.tags}
               time={article.url}
             />
