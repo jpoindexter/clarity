@@ -19,14 +19,14 @@ export default function TimelineView() {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchArticles();
   }, []);
 
   return (
-    <div className="overflow-x-auto py-4">
-      <div className="flex gap-4 min-w-[800px]">
+    <div className="w-full px-4 py-6 overflow-y-auto">
+      <div className="flex flex-col gap-6 max-w-3xl mx-auto">
         {loading ? (
           <p className="text-muted">Loading articles...</p>
         ) : (
