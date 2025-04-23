@@ -1,56 +1,57 @@
-# Clarity Reports - Project Documentation
+# Clarity - Project Overview
 
-## project_overview.md
-### Business Plan, Revenue Model & Execution Roadmap
+## Purpose & Vision
 
-### **1. Business Model & Monetization**
-Clarity Reports is an **AI-powered financial intelligence platform** that provides real-time market intelligence through an interactive dashboard and API. The platform detects media manipulation, ranks news credibility, and delivers automated financial reports tailored for hedge funds, traders, and institutions.
+Clarity is a narrative intelligence platform that helps users investigate how media stories evolve over time. It reveals shifts in tone, rhetorical framing, and potential manipulation by analyzing articles across time, source, and language techniques.
 
-**Revenue Streams:**
-- **Subscription Model (Accessible via Dashboard):**
-  - $299/month - Basic Intelligence Reports (weekly)
-  - $999/month - Premium Access (daily reports + custom alerts)
-- **One-Time Reports:**
-  - $99 - Individual Market Intelligence Reports
-- **Enterprise & Hedge Fund Custom Reports:**
-  - $2,500 - $10,000 per custom report (tailored for institutional clients)
-- **API Access (Planned for Phase 3):**
-  - Institutional clients can integrate real-time AI intelligence into their trading models.
-  - Pricing tiers: $1,999/month for standard access, $4,999/month for high-frequency trading support.
+Unlike feed-based news apps, Clarity is built for investigation. Users enter a topic or question and receive a curated timeline of news artifacts enriched by AI. These include tone classification, framing markers, and manipulation risk indicators. The platform is inspired by investigative intelligence systems like Splunk SOAR, IBM i2 Analyst’s Notebook, and Recorded Future.
 
-### **2. Target Market & Clients**
-**Ideal Customer Profiles:**
-1. **Hedge Funds & Proprietary Trading Firms** → Need early warning signals on financial misinformation via AI-driven dashboards and automated reports.
-2. **Independent Traders & Analysts** → Require real-time insights into media bias & market manipulation.
-3. **Business Intelligence & Risk Firms** → Need credible financial sentiment tracking.
+## What Clarity Is Not
 
-### **3. Go-To-Market Strategy**
-- **Cold Outreach to Hedge Funds & Traders** (LinkedIn, Twitter/X DMs, Email)
-- **Organic Social Proof** (Posting AI-driven market insights on LinkedIn & X)
-- **Exclusive Early Access** (Beta testing reports for hedge funds at a discount, allowing them to access automated dashboards and financial trend analysis tools)
-- **Affiliate Partnerships** (Partnering with financial newsletters & trading groups)
+- Not a news reader
+- Not a feed-scroller
+- Not a finance report generator
+- Not a social media aggregator
 
-### **4. Execution Roadmap (First 6 Months)**
-#### **Phase 1 (0-1 Month) - MVP & Early Sales**
-✅ Finalize AI pipeline for financial news credibility detection  
-✅ Build landing page & minimal dashboard for report access (Next.js + Firebase)  
-✅ Generate first reports manually (before automation)  
-✅ Get **at least 5 early paying customers**
+## Target Users
 
-#### **Phase 2 (1-3 Months) - Automation & Scaling**
-✅ Automate AI-generated reports (first via scheduled scripts, then full SaaS integration)  
-✅ Secure **10+ hedge funds & trading firms** as early adopters  
-✅ Scale outbound cold email campaign **with data-driven targeting**  
-✅ Develop **real-time AI alerts & structured API access for institutional traders (Phase 2)**  
+Clarity serves a wide spectrum of high-context users:
+- Investigative journalists
+- Media analysts
+- Curious readers
+- Researchers and students
 
-#### **Phase 3 (3-6 Months) - Growth & Monetization**
-✅ Scale up sales with **referrals, partnerships, and PR campaigns**  
-✅ Expand API for **quant traders & institutional AI trading desks**  
-✅ Build out enterprise tier with **custom intelligence reporting**  
+The interface is designed for clarity, speed, and strategic analysis—not entertainment.
 
-### **5. Key Metrics for Success**
-📈 **First 30 Days:** At least **$5K in revenue** from early adopters using the dashboard for AI-generated market reports.  
-📈 **3 Months:** 20+ paying users & at least **$15K MRR (Monthly Recurring Revenue).**  
-📈 **6 Months:** **50+ hedge funds & financial analysts subscribing.**  
+## MVP Scope
 
-🚀 **This is not a long-term experiment. Clarity Reports must generate revenue ASAP.**
+### Supported Modes:
+- **Explore** → Query-first homepage
+- **Timeline** → Scrollable artifact view with tone/risk filters
+- **Investigation** → Optional detail view for manipulation breakdown
+
+### AI Analysis Includes:
+- Tone (critical, neutral, supportive)
+- Rhetorical framing (emotional, economic, authoritative, etc.)
+- Fallacies (slippery slope, false dichotomy, etc.)
+- Manipulation score (0.0–1.0)
+- Optional rationale
+
+### Data Sources:
+- Google News RSS (query-matched)
+- GDELT + Common Crawl (optional)
+- Curated RSS mesh (stable sources)
+- No social media
+- No user-submitted content
+
+## Business Model
+
+None for MVP. This is a research-grade prototype and portfolio product.
+
+## Long-Term Potential
+
+Future versions may support:
+- Saved investigations
+- Narrative alerting
+- Private knowledge graphs
+- Enterprise white-label versions

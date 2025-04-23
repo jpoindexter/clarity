@@ -24,12 +24,13 @@ type Props = {
   status?: string; // ✅ added for degraded card rendering
 };
  
-export default function ResultCard({ title, summary, tags = [], time }: Props) {
+export default function ResultCard({ title, summary, tags = [], time, tone }: Props) {
   return (
     <Card className="w-full max-w-3xl">
       <CardContent className="p-5 space-y-2">
         {time && <div className="text-xs text-zinc-500">{time}</div>}
         <div className="font-medium">{title}</div>
+        {tone && <div className="text-xs text-zinc-400 italic">Tone: {tone}</div>}
         <div className="text-sm text-zinc-300 line-clamp-5">{summary}</div>
         {(tags?.length ?? 0) > 0 && (
           <div className="flex flex-wrap gap-2 text-xs text-zinc-400 pt-2 overflow-hidden">
@@ -41,4 +42,4 @@ export default function ResultCard({ title, summary, tags = [], time }: Props) {
       </CardContent>
     </Card>
   ); 
-}
+} 

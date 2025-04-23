@@ -23,9 +23,18 @@ export interface Article {
   status?: string; // ✅ added for degraded card support
 }
 
-export async function getArticles(limit = 50, sort: 'asc' | 'desc' = 'desc'): Promise<Article[]> {
+export async function getArticles(
+  filters?: { tags?: string[]; tone?: string | null; source?: string | null },
+  limit = 50,
+  sort: 'asc' | 'desc' = 'desc'
+): Promise<Article[]> {
   const query = new URLSearchParams({ limit: limit.toString(), sort });
-  const res = await fetch(`http://localhost:8000/articles?${query.toString()}`);
+
+  if (filters?.tone) query.append("tone", filters.tone);
+  if (filters?.source) query.append("source", filters.source);
+  filters?.tags?.forEach(tag => query.append("tag", tag));
+
+  const res = await fetch(`http://localhost:8000/articles/?${query.toString()}`);
 
   if (!res.ok) {
     console.error("Failed to fetch articles:", res.statusText);
@@ -33,5 +42,5 @@ export async function getArticles(limit = 50, sort: 'asc' | 'desc' = 'desc'): Pr
   }
 
   const data = await res.json();
-  return data.articles ?? [];
+  return data.articles ?? data ?? [];
 }

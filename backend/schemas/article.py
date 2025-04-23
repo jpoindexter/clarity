@@ -97,11 +97,11 @@ class SummarizedArticleRead(BaseModel):
     tags: Optional[List[AgentTag]] = None
     tone: Optional[str] = None
     source: str
-    published_at: datetime
+    published_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
-
+ 
 class ArticleOut(BaseModel):
     """✅ Output schema for serialized summarized article data."""
     id: int
@@ -111,6 +111,6 @@ class ArticleOut(BaseModel):
     tags: Optional[List[AgentTag]] = None
     tone: Optional[str] = None
     source: str
-    published_at: datetime
+    published_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)   

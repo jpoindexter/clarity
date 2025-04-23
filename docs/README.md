@@ -2,9 +2,11 @@
 
 ## README.md
 ### High-Level Project Summary
-Clarity Reports is an AI-driven intelligence platform that ingests news articles, applies multi-layer extraction and enrichment pipelines, and stores structured summaries for further analysis. It detects narrative bias, tags topical clusters, and enables contradiction detection and trend tracking over time.
+Clarity is a narrative intelligence platform that helps users investigate how media stories evolve over time. It reveals shifts in tone, rhetorical framing, and potential manipulation by analyzing articles across time, source, and language techniques.
 
-Users can access reports through a secure dashboard or via API. Each article is summarized, tagged, tone-scored, and persisted to a structured database. The ingest system uses a resilient content ladder (newspaper3k, trafilatura, bs4, RSS fallback) and AI processing stack (Mistral, LLaMA3, DeepSeek) to ensure signal from even blocked or paywalled sources.
+Users explore narratives through a dark-themed investigative interface inspired by professional intelligence tools like Splunk and Palantir. Each article is enriched with AI-generated metadata including tone, rhetorical markers, manipulation risk, and timeline context. The system does not require login or account tracking — all sessions are ephemeral and focused on critical insight.
+
+The ingest system uses RSS and open data sources (e.g. Google News RSS, GDELT, Common Crawl) and processes content locally using DeepSeek and Mistral agents to preserve privacy and control.
 
 ## project_overview.md
 ### Business Plan, Revenue Model & Execution Roadmap

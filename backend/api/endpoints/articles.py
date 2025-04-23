@@ -1,5 +1,6 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Annotated, Optional, List
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 # ✅ Database & Models
@@ -45,25 +46,35 @@ router = APIRouter(prefix="/articles", tags=["Articles"])
     summary="Retrieve all articles",
     description="Returns a list of ingested articles from the database."
 )
-def get_articles(db: Session = Depends(get_db)):
+def get_articles(
+    db: Session = Depends(get_db),
+    tag: Annotated[Optional[List[str]], Query()] = None,
+    tone: Optional[str] = None,
+    source: Optional[str] = None,
+):
     """ 
-    Retrieve all stored articles. 
+    Retrieve all stored articles with optional filters. 
 
     Returns:
         dict[str, list[ArticleOut]]: Dictionary with key "articles" containing a list of stored articles.
     """
-    articles = (
-        db.query(SummarizedArticle)
-        .filter(SummarizedArticle.summary.isnot(None))
-        .order_by(SummarizedArticle.timestamp.desc())
-        .limit(100)
-        .all()
-    )
+    query = db.query(SummarizedArticle).filter(SummarizedArticle.summary.isnot(None))
+
+    if tone:
+        query = query.filter(SummarizedArticle.tone == tone)
+    if source:
+        query = query.filter(SummarizedArticle.source == source)
+    if tag:
+        for t in tag:
+            norm_t = t.strip(' "\'').lower()
+            query = query.filter(SummarizedArticle.tags.ilike(f"%{norm_t}%"))
+
+    articles = query.order_by(SummarizedArticle.timestamp.desc()).limit(100).all()
     return {"articles": [ArticleOut.from_orm(a) for a in articles]}
 
 # 🔹 **Create a New Article Entry**
 
-
+ 
 @router.post(    
     "/",
     response_model=ArticleSchema,

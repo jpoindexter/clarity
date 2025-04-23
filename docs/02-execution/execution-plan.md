@@ -11,7 +11,7 @@ Focused on execution, code structure, debugging, and AI implementation.
 
 ### Product Manager (PM): 
 Aligns everything to the roadmap, ensures prioritization, tracks tasks.
-
+ 
 ### AI & Research Lead (AI-RL): 
 Optimizes AI models, integrations, and automation workflows.
 
@@ -27,13 +27,23 @@ Positioning, branding, and acquisition strategy.
 
 ### Step 1: Finalizing Your Vision & Core Direction
 
-**Clarity’s True Scope & Market Positioning**  
-Clarity is not just an AI-powered intelligence tool but a next-gen decision-making infrastructure for financial, political, and media intelligence.
+**Clarity’s True Scope & Platform Positioning**  
+Clarity is not a news aggregator or consumer app. It is a **narrative intelligence platform** that helps analysts, researchers, journalists, and critical thinkers investigate how stories evolve over time. Clarity visualizes shifts in tone, framing, and manipulation across time, sources, and rhetorical styles.
 
-**Primary Market:** Hedge funds, analysts, and media watchdogs.  
-**Secondary Market:** Investigative journalists, enterprise research teams, and regulatory bodies.
+**Core Use Cases:**
+- Investigate how narratives shift across time and source
+- Surface rhetorical patterns, emotional framing, and fallacies
+- Highlight manipulation risks with explainable AI
+- Enable timeline playback of narrative evolution
 
-**Why This Matters:** This aligns Clarity with trillion-dollar markets while ensuring its core value proposition remains indispensable.
+**Target Users:**  
+- Analysts & policy researchers  
+- Investigative journalists  
+- Educators & academic researchers  
+- Info-curious professionals who need clarity in chaotic information streams
+
+**Why This Matters:**  
+There are no platforms today that combine local AI, professional-grade UX, and epistemic clarity around narrative structure. Clarity fills that gap with investigative power and a modular research interface.
 
 ### Step 2: AI Model Expansion Plan
 
