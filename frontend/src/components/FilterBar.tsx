@@ -1,10 +1,11 @@
- 
 import React from "react";
 
 type Filter = {
   tags?: string[];
   tone?: string | null;
   source?: string | null;
+  rhetoric?: string[];
+  manipulationRisk?: string | null;
 };
 
 type Props = {
@@ -33,6 +34,18 @@ export default function FilterBar({ filters, onRemove }: Props) {
           <button onClick={() => onRemove("source", filters.source!)} className="text-zinc-400 hover:text-white">&times;</button>
         </span>
       )}
+      {filters.rhetoric?.map(rhetoric => (
+        <span key={rhetoric} className="bg-zinc-800 px-2 py-1 rounded-full flex items-center gap-1">
+          Rhetoric: {rhetoric}
+          <button onClick={() => onRemove("rhetoric", rhetoric)} className="text-zinc-400 hover:text-white">&times;</button>
+        </span>
+      ))}
+      {filters.manipulationRisk && (
+        <span className="bg-zinc-800 px-2 py-1 rounded-full flex items-center gap-1">
+          Risk: {filters.manipulationRisk}
+          <button onClick={() => onRemove("manipulationRisk", filters.manipulationRisk!)} className="text-zinc-400 hover:text-white">&times;</button>
+        </span>
+      )}
     </div>
   );
-}
+} 

@@ -9,6 +9,7 @@ from backend.models import Base
 # ✅ Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 # ✅ Load DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -16,7 +17,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     logger.error("❌ DATABASE_URL is not set. Please define it in the environment.")
     raise ValueError("❌ DATABASE_URL is not set. Please define it in the environment.")
-
+ 
 # ✅ Configure PostgreSQL engine with efficient pooling
 engine = create_engine(
     DATABASE_URL,
