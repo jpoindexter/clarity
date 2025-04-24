@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.endpoints import (
-    summarize,
+    summarize, 
     news,
     articles,
     analyze,
     fetch,
     search
 )
- 
+   
 # ✅ Initialize FastAPI application
 app = FastAPI(title="Clarity AI")
 
@@ -40,7 +40,7 @@ def root():
 def health_check():
     return {"status": "ok"}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
- 
+# ✅ Ping route for uptime confirmation
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}

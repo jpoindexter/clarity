@@ -1,15 +1,18 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import logging
 import time  # ✅ Added missing import
 from contextlib import contextmanager
 from sqlalchemy import create_engine, inspect, event
 from sqlalchemy.orm import sessionmaker, scoped_session
 from backend.models import Base
-
+ 
 # ✅ Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.WARNING)
+  
 # ✅ Load DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -45,10 +48,6 @@ def with_retry(session_func, retries=3):
             time.sleep(2 ** attempt)  # Exponential backoff
 
 
-# ✅ Enable SQL Query Logging
-@event.listens_for(engine, "before_cursor_execute")
-def log_query(conn, cursor, statement, parameters, context, executemany):
-    logger.info(f"SQL Query: {statement} | Params: {parameters}")
 
 
 # ✅ Create session factory
