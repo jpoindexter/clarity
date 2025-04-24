@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy import Column, DateTime, Integer, String, Text, Float
 from sqlalchemy.dialects.postgresql import JSONB
 from backend.models import Base  # ✅ Ensure correct Base import
-
+ 
 
 class Article(Base):
     __tablename__ = "articles"
@@ -27,6 +27,7 @@ class SummarizedArticle(Base):
     summary = Column(Text, nullable=False)
     tags = Column(JSONB)  # Store as comma-separated or JSON string
     tone = Column(String, nullable=True)
+    manipulation_risk = Column(Float, nullable=True)
     source = Column(String, nullable=False)
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    raw_text = Column(Text, nullable=True)
+    raw_text = Column(Text, nullable=True) 

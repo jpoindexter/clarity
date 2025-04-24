@@ -8,6 +8,7 @@ from backend.api.endpoints import (
     fetch,
     search
 )
+from backend.agents.ingest_mesh import start_ingest_mesh
    
 # ✅ Initialize FastAPI application
 app = FastAPI(title="Clarity AI")
@@ -44,3 +45,7 @@ def health_check():
 @app.get("/ping")
 def ping():
     return {"status": "ok"}
+
+@app.on_event("startup")
+async def startup_event():
+    start_ingest_mesh()

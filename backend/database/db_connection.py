@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine, inspect, event
 from sqlalchemy.orm import sessionmaker, scoped_session
 from backend.models import Base
- 
+  
 # ✅ Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,7 +59,7 @@ Session = scoped_session(SessionLocal)
 try:
     with engine.connect() as connection:
         inspector = inspect(connection)
-        tables_to_check = ["articles", "users"]  # ✅ Ensure all tables are checked
+        tables_to_check = ["articles", "users", "summarized_articles"]  # ✅ Ensure all tables are checked
         for table in tables_to_check:
             if not inspector.has_table(table):  # ✅ Fix for has_table()
                 logger.info(f"Creating missing table: {table}")

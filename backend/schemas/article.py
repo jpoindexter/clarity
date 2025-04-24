@@ -14,7 +14,7 @@ class AgentTag(BaseModel):
     color_key: Optional[str] = None
     client_visible: Optional[bool] = True
 
-
+ 
 class ArticleBase(BaseModel):
     """✅ Base schema for an article, used for creation & updates."""
 
@@ -114,3 +114,14 @@ class ArticleOut(BaseModel):
     published_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)   
+
+class ArticleSearchResult(BaseModel):
+    """🔍 Minimal schema for /articles search results"""
+    title: str
+    summary: str
+    date: datetime
+    source: str
+    tone: Optional[str] = None
+    manipulation_risk: Optional[float] = None
+
+    model_config = ConfigDict(from_attributes=True)

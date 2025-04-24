@@ -10,7 +10,7 @@ export interface AgentTag {
   color_key?: string;
   client_visible?: boolean;
 }
-
+ 
 export interface Article {
   id: string;
   title: string;
@@ -43,4 +43,44 @@ export async function getArticles(
 
   const data = await res.json();
   return data.articles ?? data ?? [];
+}
+export interface ArticleSearchResult {
+  title: string;
+  summary: string;
+  date: string;
+  source: string;
+  tone?: string;
+  manipulation_risk?: number;
+}
+
+export interface ArticleSearchResponse {
+  articles: ArticleSearchResult[];
+  total_count: number;
+}
+
+export async function searchArticles(params: {
+  query: string;
+  tone?: string;
+  source?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<ArticleSearchResponse> {
+  const queryParams = new URLSearchParams();
+  queryParams.append("query", params.query);
+  if (params.tone) queryParams.append("tone", params.tone);
+  if (params.source) queryParams.append("source", params.source);
+  if (params.limit !== undefined) queryParams.append("limit", params.limit.toString());
+  if (params.offset !== undefined) queryParams.append("offset", params.offset.toString());
+
+  const res = await fetch(`/articles?${queryParams.toString()}`);
+  if (!res.ok) {
+    console.error("Failed to search articles:", res.statusText);
+    return { articles: [], total_count: 0 };
+  }
+
+  const data = await res.json();
+  return {
+    articles: data.articles ?? [],
+    total_count: data.total_count ?? 0,
+  };
 }
