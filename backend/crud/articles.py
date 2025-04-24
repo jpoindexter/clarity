@@ -2,15 +2,15 @@ import json
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List 
+from typing import List  
 
 from backend.schemas.content import ArticleCreate
 from backend.schemas.article import SummarizedArticleRead
 from backend.database import get_db
 
-# --- Added as per instructions ---
 from backend.models.article import Article
 from backend.models.article import SummarizedArticle
+from backend.schemas.article import SummarizedArticleCreate  # Import SummarizedArticleCreate schema
   
 def fetch_articles(db: Session, tag: List[str] = None, tone: str = None, source: str = None):
     query = db.query(SummarizedArticle).filter(SummarizedArticle.summary.isnot(None))
@@ -52,6 +52,13 @@ def create_article(db: Session, article: ArticleCreate):
     db.refresh(new_article)
     return new_article   
 
+def save_summarized_article(db: Session, article_data: SummarizedArticleCreate):
+    new_summary = SummarizedArticle(**article_data.model_dump())
+    db.add(new_summary)
+    db.commit()
+    db.refresh(new_summary)
+    return new_summary 
+
 router = APIRouter()  
 
 @router.get("/articles", response_model=List[SummarizedArticleRead])
@@ -62,14 +69,3 @@ def read_articles(db: Session = Depends(get_db)):
 def add_article(article: ArticleCreate, db: Session = Depends(get_db)):
     new_article = create_article(db, article)
     return new_article  
-
-
-# Restore save_summarized_article to support saving AI-generated summaries.
-from backend.schemas.article import SummarizedArticleCreate
-
-def save_summarized_article(db: Session, article_data: SummarizedArticleCreate):
-    new_summary = SummarizedArticle(**article_data.model_dump())
-    db.add(new_summary)
-    db.commit()
-    db.refresh(new_summary)
-    return new_summary 

@@ -2,17 +2,17 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import logging
-import time  # ✅ Added missing import
+import time
 from contextlib import contextmanager
 from sqlalchemy import create_engine, inspect, event
 from sqlalchemy.orm import sessionmaker, scoped_session
 from backend.models import Base
-  
+
 # ✅ Configure Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
-  
+
 # ✅ Load DATABASE_URL from environment
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -32,8 +32,6 @@ engine = create_engine(
 )
 
 # ✅ Add support for retry logic to handle transient DB failures
-
-
 def with_retry(session_func, retries=3):
     """Retries a database session function if it fails due to a transient error."""
     for attempt in range(retries):
@@ -47,13 +45,9 @@ def with_retry(session_func, retries=3):
                 raise
             time.sleep(2 ** attempt)  # Exponential backoff
 
-
-
-
 # ✅ Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(SessionLocal)
-
 
 # ✅ Ensure tables exist before first request
 try:
@@ -67,7 +61,6 @@ try:
 except Exception as e:
     logger.error(f"❌ Database Initialization Failed: {e}")
 
-
 # ✅ Dependency Injection for FastAPI
 def get_db():
     """✅ Provide database session with proper cleanup."""
@@ -78,7 +71,6 @@ def get_db():
         logger.error(f"❌ Database Session Error: {e}")
     finally:
         db.close()  # ✅ Ensuring session closes properly
-
 
 # ✅ Context manager for manual session handling (if needed outside FastAPI)
 @contextmanager
