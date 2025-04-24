@@ -2,9 +2,11 @@
 
 ## README.md
 ### High-Level Project Summary
-Clarity is a narrative intelligence platform that helps users investigate how media stories evolve over time. It reveals shifts in tone, rhetorical framing, and potential manipulation by analyzing articles across time, source, and language techniques.
+Clarity is a clean, AI-assisted research viewer that helps users explore how topics are framed across media sources. Inspired by platforms like Elicit and Consensus, it supports search-driven queries and displays structured insights across tone, source, and rhetorical framing. It focuses on providing a clear, portfolio-grade UX for investigating story bias, tone contrast, and manipulation risk.
 
-Users explore narratives through a dark-themed investigative interface inspired by professional intelligence tools like Splunk and Palantir. Each article is enriched with AI-generated metadata including tone, rhetorical markers, manipulation risk, and timeline context. The system does not require login or account tracking — all sessions are ephemeral and focused on critical insight.
+The system is local-first, with no login, no tracking, and no feed. Users query a topic and receive an organized breakdown of articles, summaries, and filterable tags (tone, source, date, etc.). AI tagging is performed by a local DeepSeek-R1 model for tone and manipulation metadata.
+
+Users explore narratives through a light-themed, research-style interface. Each article is enriched with AI-generated metadata including tone, rhetorical markers, manipulation risk.
 
 The ingest system uses RSS and open data sources (e.g. Google News RSS, GDELT, Common Crawl) and processes content locally using DeepSeek and Mistral agents to preserve privacy and control.
 
