@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-
+ 
 # ✅ Database & Models
 from backend.database.db_connection import get_db
 from backend.models.article import Article  # ✅ Using Article model
@@ -65,9 +65,11 @@ def get_articles(
     if source:
         query = query.filter(SummarizedArticle.source == source)
     if tag:
+        import json
         for t in tag:
             norm_t = t.strip(' "\'').lower()
-            query = query.filter(SummarizedArticle.tags.ilike(f"%{norm_t}%"))
+            # Use JSONB containment operator for filtering tags
+            query = query.filter(SummarizedArticle.tags.op('@>')(json.dumps([norm_t])))
 
     articles = query.order_by(SummarizedArticle.timestamp.desc()).limit(100).all()
     return {"articles": [ArticleOut.from_orm(a) for a in articles]}

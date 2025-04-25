@@ -23,7 +23,8 @@ def fetch_articles(db: Session, tag: List[str] = None, tone: str = None, source:
         for t in tag:
             # Normalize tag: remove quotes and lowercase for matching
             norm_t = t.strip(' "\'').lower()
-            query = query.filter(SummarizedArticle.tags.ilike(f"%{norm_t}%"))
+            # Use JSONB containment operator to filter by tags
+            query = query.filter(SummarizedArticle.tags.op('@>')(json.dumps([norm_t])))
 
     articles = query.order_by(SummarizedArticle.timestamp.desc()).limit(100).all()
 
@@ -52,7 +53,7 @@ def create_article(db: Session, article: ArticleCreate):
     db.refresh(new_article)
     return new_article   
 
-router = APIRouter()  
+router = APIRouter()   
 
 @router.get("/articles", response_model=List[SummarizedArticleRead])
 def read_articles(db: Session = Depends(get_db)):

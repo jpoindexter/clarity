@@ -75,14 +75,14 @@ class SummarizedArticle(BaseModel):
         description="List of structured tags returned by AI agents"
     )
 
- 
+  
 
 class SummarizedArticleCreate(BaseModel):
     """🆕 Input schema for creating summarized articles in DB"""
     title: str
     url: str
     summary: str
-    tags: List[AgentTag]
+    tags: List[AgentTag]  # Ensure 'tags' is a list of 'AgentTag' instances
     tone: str
     source: str
     raw_text: str
@@ -108,9 +108,9 @@ class ArticleOut(BaseModel):
     title: str
     url: str
     summary: str
-    tags: Optional[List[AgentTag]] = None
+    tags: List[AgentTag]  # Ensure 'tags' is a list of 'AgentTag' instances
     tone: Optional[str] = None
     source: str
     published_at: Optional[datetime] = None
 
-    model_config = ConfigDict(from_attributes=True)   
+    model_config = ConfigDict(from_attributes=True)
