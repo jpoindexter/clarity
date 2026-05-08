@@ -1,59 +1,50 @@
-# 🧠 Clarity Intelligence Platform
+# clarity
 
-Clarity is an AI-powered intelligence and narrative analysis platform designed to detect contradictions, misinformation, and narrative manipulation in real-time data streams. Built for neurodivergent learners, independent researchers, and anyone seeking truth through clarity.
+AI-powered intelligence and narrative analysis platform. Detects contradictions, narrative shifts, and misinformation in real-time data streams. Built for independent researchers and anyone tracking information integrity across sources.
 
----
+## What it does
 
-## 🚀 Project Structure
+- Ingests news and RSS feeds continuously
+- Runs contradiction detection across articles and sources
+- Flags narrative manipulation and misinformation patterns
+- Adaptive learning difficulty for different research contexts
+- FastAPI backend with local LLM inference via Ollama
 
-- `backend/` – FastAPI-based backend (news, contradictions, AI inference, database)
-- `docs/` – Project documentation (vision, architecture, roadmap, PMF, etc.)
-- `alembic/` – Database migration config (via Alembic + SQLAlchemy)
-- `node_modules/` – Local frontend deps (Next.js to be rebuilt)
+## Stack
 
----
+**Backend**
+- FastAPI
+- PostgreSQL + SQLAlchemy
+- Alembic (migrations)
+- Ollama (local LLMs: Mistral, DeepSeek, LLaMA)
+- Whisper (speech-to-text input)
 
-## 🛠️ Tech Stack
+**Frontend**
+- Next.js (in progress)
 
-- **Backend**: FastAPI, PostgreSQL, Alembic, SQLAlchemy
-- **AI**: Ollama (local LLMs: Mistral, DeepSeek, LLaMA, etc.)
-- **Frontend**: [Coming Soon] Next.js (to be rebuilt)
-- **Infra**: Python 3.11+, pgAdmin 4, Alembic migrations
+## Setup
 
----
+```bash
+# Copy env template
+cp .env.example .env
 
-## 🧪 Local Dev Setup
+# Run migrations
+alembic upgrade head
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/jpoindexter/clairity.git
-   cd clarity
-   ```
+# Start backend
+uvicorn backend.main:app --reload
+```
 
-2. Create `.env` based on `.env.example`
+Requires Python 3.11+ and a running PostgreSQL instance. Ollama must be installed and running locally with at least one supported model pulled.
 
-3. Run Alembic migrations:
-   ```bash
-   alembic upgrade head
-   ```
+## Project structure
 
-4. Start the backend:
-   ```bash
-   uvicorn backend.main:app --reload
-   ```
+```
+backend/    FastAPI app, routes, AI pipeline, database models
+docs/       Architecture, vision, and roadmap documentation
+alembic/    Database migration config
+```
 
----
+## Status
 
-## 📌 MVP Phase Goals
-
-- Log contradictions in news articles
-- Summarize impact & highlight misinformation
-- Build real-time red flag alert system
-- Serve frontend visualizations via Next.js
-
----
-
-## 🔐 Status
-
-> Internal MVP — not yet deployed.  
-> For dev use only.  
+MVP. Backend functional, frontend rebuild in progress.
